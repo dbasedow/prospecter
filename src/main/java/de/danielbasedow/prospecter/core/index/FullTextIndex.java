@@ -1,4 +1,6 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.index;
+
+import de.danielbasedow.prospecter.core.QueryPosting;
 
 import java.util.ArrayList;
 import java.util.HashMap;

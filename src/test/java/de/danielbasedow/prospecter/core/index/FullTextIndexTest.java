@@ -1,7 +1,7 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.FullTextIndex;
 import de.danielbasedow.prospecter.core.QueryPosting;
+import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import junit.framework.TestCase;
 
 public class FullTextIndexTest extends TestCase {

@@ -2,8 +2,6 @@ package de.danielbasedow.prospecter.core;
 
 import com.google.inject.Inject;
 
-import java.util.ArrayList;
-
 public class QueryBuilder {
     Tokenizer tokenizer;
 

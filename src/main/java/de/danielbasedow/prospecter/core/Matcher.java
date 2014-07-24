@@ -1,6 +1,7 @@
 package de.danielbasedow.prospecter.core;
 
 import com.google.inject.Inject;
+import de.danielbasedow.prospecter.core.index.FullTextIndex;
 
 import java.util.ArrayList;
 import java.util.BitSet;

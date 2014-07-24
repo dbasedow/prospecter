@@ -2,6 +2,7 @@ package de.danielbasedow.prospecter.core;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import junit.framework.TestCase;
 
 public class MatcherTest extends TestCase {

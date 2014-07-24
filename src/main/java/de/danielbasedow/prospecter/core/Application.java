@@ -30,9 +30,10 @@ public class Application {
                 i++;
             }
             br.close();
-            System.out.print(i);
+            System.out.println(i);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(injector.getInstance(Tokenizer.class).getNewTermId());
     }
 }
