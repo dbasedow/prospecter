@@ -13,14 +13,15 @@ public class TokenMapperImpl implements TokenMapper {
     }
 
     @Override
-    public Integer getTermId(String str) {
+    public Integer getTermId(String str, boolean dontGenerateNewIds) {
         if (termMap.containsKey(str)) {
             return termMap.get(str);
-        } else {
+        } else if (!dontGenerateNewIds) {
             Integer termId = getNewTermId();
             termMap.put(str, termId);
             return termId;
         }
+        return null;
     }
 
     @Override
@@ -28,11 +29,18 @@ public class TokenMapperImpl implements TokenMapper {
         return termIdSequence++;
     }
 
-    @Override
     public ArrayList<Integer> getTermIds(ArrayList<String> tokens) {
+        return getTermIds(tokens, false);
+    }
+
+    @Override
+    public ArrayList<Integer> getTermIds(ArrayList<String> tokens, boolean dontGenerateNewIds) {
         ArrayList<Integer> termIds = new ArrayList<Integer>();
         for (String token : tokens) {
-            termIds.add(getTermId(token));
+            Integer termId = getTermId(token, dontGenerateNewIds);
+            if (termId != null) {
+                termIds.add(termId);
+            }
         }
 
         return termIds;

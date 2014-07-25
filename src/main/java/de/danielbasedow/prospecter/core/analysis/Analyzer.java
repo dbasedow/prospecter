@@ -6,4 +6,6 @@ public interface Analyzer {
     public void addFilter(Filter filter);
 
     public ArrayList<Integer> tokenize(String input);
+
+    public ArrayList<Integer> tokenize(String input, boolean dontGenerateNewIds);
 }

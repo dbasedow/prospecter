@@ -29,10 +29,13 @@ public class AnalyzerImpl implements Analyzer {
     }
 
     public ArrayList<Integer> tokenize(String input) {
-        ArrayList<Integer> tokenIds = new ArrayList<Integer>();
+        return tokenize(input, false);
+    }
+
+    public ArrayList<Integer> tokenize(String input, boolean dontGenerateNewIds) {
         input = applyFilters(input);
         ArrayList<String> tokens = tokenizer.tokenize(input);
-        return tokenMapper.getTermIds(tokens);
+        return tokenMapper.getTermIds(tokens, dontGenerateNewIds);
     }
 
 }
