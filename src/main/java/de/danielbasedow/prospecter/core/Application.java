@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Application {
@@ -43,6 +44,7 @@ public class Application {
             BufferedReader br = new BufferedReader(new FileReader(new File(args[0])));
             String line;
             long i = 0;
+            System.out.println("start indexing " + (new Date()).getTime());
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split("\\t");
                 if (columns.length == 3) {
@@ -53,24 +55,39 @@ public class Application {
                 i++;
             }
             br.close();
+            System.out.println("indexing done " + (new Date()).getTime());
             System.out.println(i);
-            System.out.println("Starting matching...");
-            Document doc = buildDoc(docBuilder, "yahoo search is the part of the log");
+            BufferedReader testDoc = new BufferedReader(new FileReader(new File(args[1])));
+            String queryStr = "";
+            while ((line = testDoc.readLine()) != null) {
+                queryStr = queryStr + line;
+            }
+            //Document doc = buildDoc(docBuilder, "yahoo search is the part of the log");
+            System.out.println("start matching " + (new Date()).getTime());
+            Document doc = buildDoc(docBuilder, queryStr);
             Matcher matcher = injector.getInstance(Matcher.class);
             schema.matchDocument(doc, matcher);
 
             //matcher.printResultStats();
             ArrayList<Query> queries = matcher.getMatchedQueries();
+            System.out.println("matching done " + (new Date()).getTime());
+
 
             System.out.println("Queries returned: " + Integer.toString(queries.size()));
             for (Query query : queries) {
                 System.out.println(query.getQueryId());
             }
+            printVMStats();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UndefinedIndexFieldException e) {
             e.printStackTrace();
         }
         System.out.println(injector.getInstance(TokenMapper.class).getNewTermId());
+    }
+
+    public static void printVMStats() {
+        Runtime runtime = Runtime.getRuntime();
+        System.out.println("used: " + (runtime.totalMemory() - runtime.freeMemory()));
     }
 }
