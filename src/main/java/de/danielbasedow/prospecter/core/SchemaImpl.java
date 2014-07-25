@@ -1,5 +1,8 @@
 package de.danielbasedow.prospecter.core;
 
+import de.danielbasedow.prospecter.core.document.Document;
+import de.danielbasedow.prospecter.core.document.Field;
+import de.danielbasedow.prospecter.core.document.FieldIterator;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 
 import java.util.ArrayList;
@@ -20,11 +23,11 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public ArrayList<QueryPosting> matchField(String fieldName) throws UndefinedIndexFieldException {
-        if (!indices.containsKey(fieldName)) {
-            throw new UndefinedIndexFieldException("No field named '" + fieldName + "'");
+    public ArrayList<QueryPosting> matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException {
+        if (!indices.containsKey(fieldIndexName)) {
+            throw new UndefinedIndexFieldException("No field named '" + fieldIndexName + "'");
         }
-        return indices.get(fieldName).match();
+        return indices.get(fieldIndexName).match(field);
     }
 
     @Override
@@ -36,5 +39,19 @@ public class SchemaImpl implements Schema {
         for (Integer termId : termIds) {
             indices.get(fieldName).addPosting(termId, postings.get(termId));
         }
+    }
+
+    @Override
+    public Matcher matchDocument(Document doc, Matcher matcher) {
+        FieldIterator fields = doc.getFields();
+        while (fields.hasNext()) {
+            Field field = fields.next();
+            try {
+                matcher.addHits(matchField(field.getName(), field));
+            } catch (UndefinedIndexFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        return matcher;
     }
 }

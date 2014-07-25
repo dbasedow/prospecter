@@ -28,6 +28,12 @@ public class Matcher {
         }
     }
 
+    public void addHits(ArrayList<QueryPosting> postings) {
+        for (QueryPosting posting : postings) {
+            addHit(posting);
+        }
+    }
+
     private void addHit(QueryPosting posting) {
         BitSet bits;
         if (hits.containsKey(posting.getQueryId())) {
@@ -37,5 +43,20 @@ public class Matcher {
             hits.put(posting.getQueryId(), bits);
         }
         bits.set(posting.getQueryBit());
+    }
+
+    public void printResultStats() {
+        System.out.println("Hits: " + Integer.toString(hits.size()));
+    }
+
+    public ArrayList<Query> getMatchedQueries() {
+        ArrayList<Query> results = new ArrayList<Query>();
+        for (Long queryId : hits.keySet()) {
+            Query query = queryManager.getQuery(queryId);
+            if (query.testBits(hits.get(queryId))) {
+                results.add(query);
+            }
+        }
+        return results;
     }
 }

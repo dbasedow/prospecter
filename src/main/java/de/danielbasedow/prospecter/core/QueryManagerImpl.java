@@ -16,4 +16,9 @@ public class QueryManagerImpl implements QueryManager {
         queries.put(query.getQueryId(), query);
     }
 
+    @Override
+    public Query getQuery(Long queryId) {
+        return queries.get(queryId);
+    }
+
 }

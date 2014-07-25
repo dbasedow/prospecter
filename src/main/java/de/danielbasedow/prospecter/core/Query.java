@@ -18,7 +18,7 @@ public class Query {
         this.queryId = queryId;
 
         mask = new BitSet(termIds.size());
-        mask.set(0, termIds.size() - 1, true); //all bits set to 1
+        mask.set(0, termIds.size(), true); //all bits set to 1
     }
 
     public HashMap<Integer, QueryPosting> getPostings() {
@@ -29,5 +29,9 @@ public class Query {
             bit++;
         }
         return postings;
+    }
+
+    public boolean testBits(BitSet hits) {
+        return mask.equals(hits);
     }
 }

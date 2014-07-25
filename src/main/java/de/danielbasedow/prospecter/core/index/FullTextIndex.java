@@ -1,6 +1,8 @@
 package de.danielbasedow.prospecter.core.index;
 
+import de.danielbasedow.prospecter.core.Query;
 import de.danielbasedow.prospecter.core.QueryPosting;
+import de.danielbasedow.prospecter.core.document.Field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,12 +36,19 @@ public class FullTextIndex implements FieldIndex {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
-    public ArrayList<QueryPosting> match() {
-        return new ArrayList<QueryPosting>();
+    public ArrayList<QueryPosting> match(Field field) {
+        ArrayList<QueryPosting> postings = new ArrayList<QueryPosting>();
+        for (Integer termId : field.getTermIds()) {
+            ArrayList<QueryPosting> additionalPostings = index.get(termId);
+            if (additionalPostings != null) {
+                postings.addAll(additionalPostings);
+            }
+        }
+        return postings;
     }
 
 }

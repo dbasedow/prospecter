@@ -1,5 +1,7 @@
 package de.danielbasedow.prospecter.core;
 
 public interface QueryManager {
-    void addQuery(Query query);
+    public void addQuery(Query query);
+
+    public Query getQuery(Long queryId);
 }
