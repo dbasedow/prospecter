@@ -5,10 +5,12 @@ import de.danielbasedow.prospecter.core.QueryPosting;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FullTextIndex {
+public class FullTextIndex implements FieldIndex {
     protected HashMap<Integer, ArrayList<QueryPosting>> index;
+    protected String name;
 
-    public FullTextIndex() {
+    public FullTextIndex(String name) {
+        this.name = name;
         index = new HashMap<Integer, ArrayList<QueryPosting>>();
     }
 
@@ -29,4 +31,15 @@ public class FullTextIndex {
         }
         return null;
     }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public QueryPosting[] match() {
+        return new QueryPosting[0];
+    }
+
 }

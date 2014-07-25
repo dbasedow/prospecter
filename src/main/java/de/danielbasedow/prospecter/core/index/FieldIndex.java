@@ -7,5 +7,5 @@ public interface FieldIndex {
 
     public QueryPosting[] match();
 
-    public void addPosting(QueryPosting posting);
+    public void addPosting(Integer tokenId, QueryPosting posting);
 }

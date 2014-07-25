@@ -2,6 +2,8 @@ package de.danielbasedow.prospecter.core;
 
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SchemaImpl implements Schema {
@@ -22,5 +24,16 @@ public class SchemaImpl implements Schema {
             throw new UndefinedIndexFieldException("No field named '" + fieldName + "'");
         }
         return indices.get(fieldName).match();
+    }
+
+    @Override
+    public void addPostingsToField(String fieldName, HashMap<Integer, QueryPosting> postings) throws UndefinedIndexFieldException {
+        if (!indices.containsKey(fieldName)) {
+            throw new UndefinedIndexFieldException("No field named '" + fieldName + "'");
+        }
+        Set<Integer> termIds = postings.keySet();
+        for (Integer termId : termIds) {
+            indices.get(fieldName).addPosting(termId, postings.get(termId));
+        }
     }
 }
