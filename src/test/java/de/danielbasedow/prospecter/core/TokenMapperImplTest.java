@@ -2,9 +2,9 @@ package de.danielbasedow.prospecter.core;
 
 import junit.framework.TestCase;
 
-public class TokenizerImplTest extends TestCase {
+public class TokenMapperImplTest extends TestCase {
     public void testTokenization() {
-        TokenizerImpl tokenizer = new TokenizerImpl();
+        TokenMapperImpl tokenizer = new TokenMapperImpl();
         assertEquals(0, tokenizer.getTermId("foo").intValue());
         assertEquals(1, tokenizer.getTermId("bar").intValue());
         assertEquals(1, tokenizer.getTermId("bar").intValue());

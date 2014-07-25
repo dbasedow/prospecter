@@ -47,6 +47,6 @@ public class Application {
         } catch (UndefinedIndexFieldException e) {
             e.printStackTrace();
         }
-        System.out.println(injector.getInstance(Tokenizer.class).getNewTermId());
+        System.out.println(injector.getInstance(TokenMapper.class).getNewTermId());
     }
 }

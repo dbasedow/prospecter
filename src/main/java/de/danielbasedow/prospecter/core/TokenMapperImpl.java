@@ -3,11 +3,11 @@ package de.danielbasedow.prospecter.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TokenizerImpl implements Tokenizer {
+public class TokenMapperImpl implements TokenMapper {
     protected int termIdSequence;
     protected HashMap<String, Integer> termMap;
 
-    public TokenizerImpl() {
+    public TokenMapperImpl() {
         termIdSequence = 0;
         termMap = new HashMap<String, Integer>();
     }
@@ -29,12 +29,10 @@ public class TokenizerImpl implements Tokenizer {
     }
 
     @Override
-    public Integer[] getTermIds(String[] tokens) {
-        Integer[] termIds = new Integer[tokens.length];
-        int i = 0;
+    public ArrayList<Integer> getTermIds(ArrayList<String> tokens) {
+        ArrayList<Integer> termIds = new ArrayList<Integer>();
         for (String token : tokens) {
-            termIds[i] = getTermId(token);
-            i++;
+            termIds.add(getTermId(token));
         }
 
         return termIds;

@@ -3,10 +3,10 @@ package de.danielbasedow.prospecter.core;
 import java.util.ArrayList;
 
 
-public interface Tokenizer {
+public interface TokenMapper {
     Integer getTermId(String str);
 
     Integer getNewTermId();
 
-    public Integer[] getTermIds(String[] tokens);
+    public ArrayList<Integer> getTermIds(ArrayList<String> tokens);
 }

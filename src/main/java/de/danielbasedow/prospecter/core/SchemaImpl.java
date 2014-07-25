@@ -2,6 +2,7 @@ package de.danielbasedow.prospecter.core;
 
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +20,7 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public QueryPosting[] matchField(String fieldName) throws UndefinedIndexFieldException {
+    public ArrayList<QueryPosting> matchField(String fieldName) throws UndefinedIndexFieldException {
         if (!indices.containsKey(fieldName)) {
             throw new UndefinedIndexFieldException("No field named '" + fieldName + "'");
         }

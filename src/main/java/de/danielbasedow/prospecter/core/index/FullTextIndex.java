@@ -38,8 +38,8 @@ public class FullTextIndex implements FieldIndex {
     }
 
     @Override
-    public QueryPosting[] match() {
-        return new QueryPosting[0];
+    public ArrayList<QueryPosting> match() {
+        return new ArrayList<QueryPosting>();
     }
 
 }

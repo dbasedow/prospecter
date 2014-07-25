@@ -5,6 +5,8 @@ import com.google.inject.Injector;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+
 public class MatcherTest extends TestCase {
     private Injector injector;
 
@@ -17,7 +19,9 @@ public class MatcherTest extends TestCase {
         QueryPosting posting = new QueryPosting(1, (short) 1);
         ft.addPosting(1, posting);
         Matcher m = injector.getInstance(Matcher.class);
-        m.collectHits(ft, new Integer[]{1});
+        ArrayList<Integer> tokens = new ArrayList<Integer>();
+        tokens.add(1);
+        m.collectHits(ft, tokens);
         assertEquals(1, m.hits.size());
     }
 }

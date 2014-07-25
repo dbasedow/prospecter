@@ -1,23 +1,24 @@
 package de.danielbasedow.prospecter.core;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 
 public class Query {
     protected Long queryId;
     protected BitSet mask;
-    protected Integer[] termIds;
+    protected ArrayList<Integer> termIds;
 
     public Long getQueryId() {
         return queryId;
     }
 
-    public Query(Long queryId, Integer[] termIds) {
+    public Query(Long queryId, ArrayList<Integer> termIds) {
         this.termIds = termIds;
         this.queryId = queryId;
 
-        mask = new BitSet(termIds.length);
-        mask.set(0, termIds.length - 1, true); //all bits set to 1
+        mask = new BitSet(termIds.size());
+        mask.set(0, termIds.size() - 1, true); //all bits set to 1
     }
 
     public HashMap<Integer, QueryPosting> getPostings() {
