@@ -13,7 +13,7 @@ public class MatcherTest extends TestCase {
     }
 
     public void test() {
-        FullTextIndex ft = new FullTextIndex();
+        FullTextIndex ft = new FullTextIndex("_all");
         QueryPosting posting = new QueryPosting(1, (short) 1);
         ft.addPosting(1, posting);
         Matcher m = injector.getInstance(Matcher.class);

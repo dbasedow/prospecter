@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class FullTextIndexTest extends TestCase {
     public void test() {
-        FullTextIndex ft = new FullTextIndex();
+        FullTextIndex ft = new FullTextIndex("_all");
         assertEquals(0, ft.index.size());
         QueryPosting posting = new QueryPosting(1, (short) 1);
         ft.addPosting(1, posting);
