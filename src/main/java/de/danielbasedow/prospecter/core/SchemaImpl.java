@@ -31,13 +31,13 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public void addPostingsToField(String fieldName, HashMap<Integer, QueryPosting> postings) throws UndefinedIndexFieldException {
+    public void addPostingsToField(String fieldName, HashMap<Token, QueryPosting> postings) throws UndefinedIndexFieldException {
         if (!indices.containsKey(fieldName)) {
             throw new UndefinedIndexFieldException("No field named '" + fieldName + "'");
         }
-        Set<Integer> termIds = postings.keySet();
-        for (Integer termId : termIds) {
-            indices.get(fieldName).addPosting(termId, postings.get(termId));
+        Set<Token> termIds = postings.keySet();
+        for (Token token : termIds) {
+            indices.get(fieldName).addPosting(token, postings.get(token));
         }
     }
 

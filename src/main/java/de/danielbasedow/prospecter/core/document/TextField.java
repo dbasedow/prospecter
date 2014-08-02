@@ -1,19 +1,21 @@
 package de.danielbasedow.prospecter.core.document;
 
+import de.danielbasedow.prospecter.core.Token;
+
 import java.util.ArrayList;
 
 public class TextField implements Field {
     protected String name;
-    protected ArrayList<Integer> termIds;
+    protected ArrayList<Token> tokens;
 
-    public TextField(String name, ArrayList<Integer> termIds) {
+    public TextField(String name, ArrayList<Token> tokens) {
         this.name = name;
-        this.termIds = termIds;
+        this.tokens = tokens;
     }
 
     @Override
-    public ArrayList<Integer> getTermIds() {
-        return termIds;
+    public ArrayList<Token> getTokens() {
+        return tokens;
     }
 
     @Override

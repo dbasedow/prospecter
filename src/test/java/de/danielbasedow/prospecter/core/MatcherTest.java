@@ -17,10 +17,10 @@ public class MatcherTest extends TestCase {
     public void test() {
         FullTextIndex ft = new FullTextIndex("_all");
         QueryPosting posting = new QueryPosting(1, (short) 1);
-        ft.addPosting(1, posting);
+        ft.addPosting(new Token<Integer>(1), posting);
         Matcher m = injector.getInstance(Matcher.class);
-        ArrayList<Integer> tokens = new ArrayList<Integer>();
-        tokens.add(1);
+        ArrayList<Token> tokens = new ArrayList<Token>();
+        tokens.add(new Token<Integer>(1));
         m.collectHits(ft, tokens);
         assertEquals(1, m.hits.size());
     }

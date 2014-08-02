@@ -29,17 +29,18 @@ public class TokenMapperImpl implements TokenMapper {
         return termIdSequence++;
     }
 
-    public ArrayList<Integer> getTermIds(ArrayList<String> tokens) {
+    public ArrayList<Token> getTermIds(ArrayList<String> tokens) {
         return getTermIds(tokens, false);
     }
 
     @Override
-    public ArrayList<Integer> getTermIds(ArrayList<String> tokens, boolean dontGenerateNewIds) {
-        ArrayList<Integer> termIds = new ArrayList<Integer>();
+    public ArrayList<Token> getTermIds(ArrayList<String> tokens, boolean dontGenerateNewIds) {
+        ArrayList<Token> termIds = new ArrayList<Token>();
         for (String token : tokens) {
             Integer termId = getTermId(token, dontGenerateNewIds);
-            if (termId != null && !termIds.contains(termId)) {
-                termIds.add(termId);
+            Token<Integer> t = new Token<Integer>(termId);
+            if (termId != null && !termIds.contains(t)) {
+                termIds.add(t);
             }
         }
 

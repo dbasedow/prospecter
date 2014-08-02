@@ -17,8 +17,8 @@ public class Matcher {
         hits = new HashMap<Long, BitSet>();
     }
 
-    public void collectHits(FullTextIndex index, ArrayList<Integer> tokens) {
-        for (Integer token : tokens) {
+    public void collectHits(FullTextIndex index, ArrayList<Token> tokens) {
+        for (Token token : tokens) {
             ArrayList<QueryPosting> postings = index.getQueryPostingsForTermId(token);
             if (postings != null) {
                 for (QueryPosting posting : postings) {

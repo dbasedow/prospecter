@@ -1,35 +1,35 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.Query;
 import de.danielbasedow.prospecter.core.QueryPosting;
+import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FullTextIndex implements FieldIndex {
-    protected HashMap<Integer, ArrayList<QueryPosting>> index;
+    protected HashMap<Token, ArrayList<QueryPosting>> index;
     protected String name;
 
     public FullTextIndex(String name) {
         this.name = name;
-        index = new HashMap<Integer, ArrayList<QueryPosting>>();
+        index = new HashMap<Token, ArrayList<QueryPosting>>();
     }
 
-    public void addPosting(Integer termId, QueryPosting posting) {
+    public void addPosting(Token token, QueryPosting posting) {
         ArrayList<QueryPosting> postingList;
-        if (index.containsKey(termId)) {
-            postingList = index.get(termId);
+        if (index.containsKey(token)) {
+            postingList = index.get(token);
         } else {
             postingList = new ArrayList<QueryPosting>();
-            index.put(termId, postingList);
+            index.put(token, postingList);
         }
         postingList.add(posting);
     }
 
-    public ArrayList<QueryPosting> getQueryPostingsForTermId(Integer termId) {
-        if (index.containsKey(termId)) {
-            return index.get(termId);
+    public ArrayList<QueryPosting> getQueryPostingsForTermId(Token token) {
+        if (index.containsKey(token)) {
+            return index.get(token);
         }
         return null;
     }
@@ -42,8 +42,8 @@ public class FullTextIndex implements FieldIndex {
     @Override
     public ArrayList<QueryPosting> match(Field field) {
         ArrayList<QueryPosting> postings = new ArrayList<QueryPosting>();
-        for (Integer termId : field.getTermIds()) {
-            ArrayList<QueryPosting> additionalPostings = index.get(termId);
+        for (Token token : field.getTokens()) {
+            ArrayList<QueryPosting> additionalPostings = index.get(token);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }

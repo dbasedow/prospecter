@@ -1,6 +1,7 @@
 package de.danielbasedow.prospecter.core.analysis;
 
 import com.google.inject.Inject;
+import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 
 import java.util.ArrayList;
@@ -25,11 +26,11 @@ public class AnalyzerImpl implements Analyzer {
         return input;
     }
 
-    public ArrayList<Integer> tokenize(String input) {
+    public ArrayList<Token> tokenize(String input) {
         return tokenize(input, false);
     }
 
-    public ArrayList<Integer> tokenize(String input, boolean dontGenerateNewIds) {
+    public ArrayList<Token> tokenize(String input, boolean dontGenerateNewIds) {
         input = applyFilters(input);
         ArrayList<String> tokens = tokenizer.tokenize(input);
         return tokenMapper.getTermIds(tokens, dontGenerateNewIds);

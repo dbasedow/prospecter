@@ -12,7 +12,7 @@ public interface Schema {
 
     public ArrayList<QueryPosting> matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException;
 
-    public void addPostingsToField(String fieldName, HashMap<Integer, QueryPosting> postings) throws UndefinedIndexFieldException;
+    public void addPostingsToField(String fieldName, HashMap<Token, QueryPosting> postings) throws UndefinedIndexFieldException;
 
     public Matcher matchDocument(Document doc, Matcher matcher);
 }

@@ -14,7 +14,7 @@ public class QueryBuilder {
     }
 
     public Query buildFromString(Long queryId, String query) {
-        ArrayList<Integer> tokenIds = analyzer.tokenize(query);
+        ArrayList<Token> tokenIds = analyzer.tokenize(query);
         return new Query(queryId, tokenIds);
     }
 
