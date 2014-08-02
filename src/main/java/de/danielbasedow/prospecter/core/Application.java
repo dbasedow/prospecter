@@ -43,7 +43,6 @@ public class Application {
         QueryBuilder queryBuilder = injector.getInstance(QueryBuilder.class);
         Schema schema = buildSchema();
         DocumentBuilder docBuilder = injector.getInstance(DocumentBuilder.class);
-        HashMap<Long, String> rawQueries = new HashMap<Long, String>();
 
         Analyzer analyzer = queryBuilder.getAnalyzer();
         analyzer.addFilter(new NormalizeWhiteSpaceFilter());
@@ -58,7 +57,6 @@ public class Application {
                 String[] columns = line.trim().split("\\t");
                 i++;
                 if (columns.length == 3) {
-                    rawQueries.put(i, columns[2].trim());
                     Query q = queryBuilder.buildFromString(i, columns[2].trim());
                     queryManager.addQuery(q);
                     schema.addPostingsToField("_all", q.getPostings());
@@ -100,6 +98,8 @@ public class Application {
 
     public static void printVMStats() {
         Runtime runtime = Runtime.getRuntime();
+        System.out.println("used: " + (runtime.totalMemory() - runtime.freeMemory()));
+        runtime.gc();
         System.out.println("used: " + (runtime.totalMemory() - runtime.freeMemory()));
     }
 }
