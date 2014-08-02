@@ -38,7 +38,7 @@ public class TokenMapperImpl implements TokenMapper {
         ArrayList<Integer> termIds = new ArrayList<Integer>();
         for (String token : tokens) {
             Integer termId = getTermId(token, dontGenerateNewIds);
-            if (termId != null) {
+            if (termId != null && !termIds.contains(termId)) {
                 termIds.add(termId);
             }
         }
