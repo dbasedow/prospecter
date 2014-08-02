@@ -2,6 +2,10 @@ package de.danielbasedow.prospecter.core;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import de.danielbasedow.prospecter.core.analysis.Analyzer;
+import de.danielbasedow.prospecter.core.analysis.filters.NormalizeWhiteSpaceFilter;
+import de.danielbasedow.prospecter.core.analysis.filters.RemoveNonAlphaNumFilter;
+import de.danielbasedow.prospecter.core.analysis.filters.ToLowerCaseFilter;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.TextField;
@@ -39,6 +43,11 @@ public class Application {
         QueryBuilder queryBuilder = injector.getInstance(QueryBuilder.class);
         Schema schema = buildSchema();
         DocumentBuilder docBuilder = injector.getInstance(DocumentBuilder.class);
+        HashMap<Long, String> rawQueries = new HashMap<Long, String>();
+
+        Analyzer analyzer = queryBuilder.getAnalyzer();
+        analyzer.addFilter(new NormalizeWhiteSpaceFilter());
+        analyzer.addFilter(new ToLowerCaseFilter());
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(args[0])));
@@ -46,13 +55,14 @@ public class Application {
             long i = 0;
             System.out.println("start indexing " + (new Date()).getTime());
             while ((line = br.readLine()) != null) {
-                String[] columns = line.split("\\t");
+                String[] columns = line.trim().split("\\t");
+                i++;
                 if (columns.length == 3) {
-                    Query q = queryBuilder.buildFromString(i, columns[2]);
+                    rawQueries.put(i, columns[2].trim());
+                    Query q = queryBuilder.buildFromString(i, columns[2].trim());
                     queryManager.addQuery(q);
                     schema.addPostingsToField("_all", q.getPostings());
                 }
-                i++;
             }
             br.close();
             System.out.println("indexing done " + (new Date()).getTime());
@@ -60,7 +70,7 @@ public class Application {
             BufferedReader testDoc = new BufferedReader(new FileReader(new File(args[1])));
             String queryStr = "";
             while ((line = testDoc.readLine()) != null) {
-                queryStr = queryStr + line;
+                queryStr = queryStr + " " + line;
             }
             //Document doc = buildDoc(docBuilder, "yahoo search is the part of the log");
             System.out.println("start matching " + (new Date()).getTime());
@@ -75,7 +85,9 @@ public class Application {
 
             System.out.println("Queries returned: " + Integer.toString(queries.size()));
             for (Query query : queries) {
-                System.out.println(query.getQueryId());
+                System.out.print(query.getQueryId());
+                System.out.print(",");
+                //System.out.println(": " + rawQueries.get(query.getQueryId()));
             }
             printVMStats();
         } catch (IOException e) {

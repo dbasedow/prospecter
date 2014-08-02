@@ -17,4 +17,8 @@ public class QueryBuilder {
         ArrayList<Integer> tokenIds = analyzer.tokenize(query);
         return new Query(queryId, tokenIds);
     }
+
+    public Analyzer getAnalyzer() {
+        return analyzer;
+    }
 }
