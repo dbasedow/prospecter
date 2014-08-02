@@ -44,10 +44,6 @@ public class Application {
         Schema schema = buildSchema();
         DocumentBuilder docBuilder = injector.getInstance(DocumentBuilder.class);
 
-        Analyzer analyzer = queryBuilder.getAnalyzer();
-        analyzer.addFilter(new NormalizeWhiteSpaceFilter());
-        analyzer.addFilter(new ToLowerCaseFilter());
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(args[0])));
             String line;

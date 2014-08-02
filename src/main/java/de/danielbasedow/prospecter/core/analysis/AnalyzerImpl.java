@@ -4,21 +4,18 @@ import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.TokenMapper;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class AnalyzerImpl implements Analyzer {
-    protected ArrayList<Filter> filterChain;
+    protected Set<Filter> filterChain;
     private TokenMapper tokenMapper;
     private Tokenizer tokenizer;
 
     @Inject
-    public AnalyzerImpl(TokenMapper tokenMapper, Tokenizer tokenizer) {
+    public AnalyzerImpl(TokenMapper tokenMapper, Tokenizer tokenizer, Set<Filter> filterChain) {
         this.tokenMapper = tokenMapper;
         this.tokenizer = tokenizer;
-        filterChain = new ArrayList<Filter>();
-    }
-
-    public void addFilter(Filter filter) {
-        filterChain.add(filter);
+        this.filterChain = filterChain;
     }
 
     protected String applyFilters(String input) {
