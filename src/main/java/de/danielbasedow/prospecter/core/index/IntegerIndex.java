@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.Instance;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
@@ -19,10 +18,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * field = 1
  */
 public class IntegerIndex extends AbstractFieldIndex {
-    /**
-     * indexGreaterThan contains postings for field > x. During matching all entries smaller than
-     * the fields actual value will be retrieved.
-     */
+
     ConcurrentSkipListMap<Integer, ArrayList<QueryPosting>> indexGreaterThan;
     ConcurrentSkipListMap<Integer, ArrayList<QueryPosting>> indexLessThan;
     ConcurrentHashMap<Integer, ArrayList<QueryPosting>> indexEqual;
@@ -41,7 +37,8 @@ public class IntegerIndex extends AbstractFieldIndex {
         for (Token token : tokens) {
             Integer intToken = (Integer) token.getToken();
             collectEqualMatches(postings, intToken);
-            collectGreaterMatches(postings, intToken);
+            collectLessThanMatches(postings, intToken);
+            collectGreaterThanMatches(postings, intToken);
         }
         return postings;
     }
@@ -52,7 +49,7 @@ public class IntegerIndex extends AbstractFieldIndex {
         }
     }
 
-    protected void collectGreaterMatches(ArrayList<QueryPosting> postings, Integer token) {
+    protected void collectGreaterThanMatches(ArrayList<QueryPosting> postings, Integer token) {
         /**
          * The indexGreaterThan contains postings for "field > x" so if x is 10 a posting would be added for 10
          * in order to get the relevant postings we have to look at all key that are LESS than the field value
@@ -66,8 +63,18 @@ public class IntegerIndex extends AbstractFieldIndex {
         }
     }
 
-    protected void collectLessMatches(ArrayList<QueryPosting> postings, Integer token) {
-        //TODO: implement
+    protected void collectLessThanMatches(ArrayList<QueryPosting> postings, Integer token) {
+        /**
+         * The indexLessThan contains postings for "field < x" so if x is 10 a posting would be added for 10
+         * in order to get the relevant postings we have to look at all key that are GREATER than the field value
+         * A field containing y has to return all fields greater than y so: -n < 0 < x < y < n
+         */
+        ConcurrentNavigableMap<Integer, ArrayList<QueryPosting>> navigableMap = indexLessThan.tailMap(token);
+        if (navigableMap.size() > 0) {
+            for (Map.Entry<Integer, ArrayList<QueryPosting>> entry : navigableMap.entrySet()) {
+                postings.addAll(entry.getValue());
+            }
+        }
     }
 
     @Override
