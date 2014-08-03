@@ -7,43 +7,39 @@ import de.danielbasedow.prospecter.core.document.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FullTextIndex implements FieldIndex {
-    protected HashMap<Token, ArrayList<QueryPosting>> index;
-    protected String name;
+public class FullTextIndex extends AbstractFieldIndex {
+    protected HashMap<Integer, ArrayList<QueryPosting>> index;
 
     public FullTextIndex(String name) {
-        this.name = name;
-        index = new HashMap<Token, ArrayList<QueryPosting>>();
+        super(name);
+        index = new HashMap<Integer, ArrayList<QueryPosting>>();
     }
 
     public void addPosting(Token token, QueryPosting posting) {
         ArrayList<QueryPosting> postingList;
-        if (index.containsKey(token)) {
-            postingList = index.get(token);
+        if (index.containsKey((Integer) token.getToken())) {
+            postingList = index.get((Integer) token.getToken());
         } else {
             postingList = new ArrayList<QueryPosting>();
-            index.put(token, postingList);
+            index.put((Integer) token.getToken(), postingList);
         }
         postingList.add(posting);
     }
 
     public ArrayList<QueryPosting> getQueryPostingsForTermId(Token token) {
-        if (index.containsKey(token)) {
-            return index.get(token);
+        Integer t = (Integer) token.getToken();
+        if (index.containsKey(t)) {
+            return index.get(t);
         }
         return null;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
     public ArrayList<QueryPosting> match(Field field) {
         ArrayList<QueryPosting> postings = new ArrayList<QueryPosting>();
         for (Token token : field.getTokens()) {
-            ArrayList<QueryPosting> additionalPostings = index.get(token);
+            Integer t = (Integer) token.getToken();
+            ArrayList<QueryPosting> additionalPostings = index.get(t);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }

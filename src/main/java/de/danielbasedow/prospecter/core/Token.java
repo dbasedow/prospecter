@@ -2,9 +2,11 @@ package de.danielbasedow.prospecter.core;
 
 public class Token<T> {
     T token;
+    MatchCondition condition;
 
-    public Token(T token) {
+    public Token(T token, MatchCondition condition) {
         this.token = token;
+        this.condition = condition;
     }
 
     public T getToken() {
@@ -20,5 +22,9 @@ public class Token<T> {
             return token.equals(((Token) compare).getToken());
         }
         return false;
+    }
+
+    public MatchCondition getCondition() {
+        return condition;
     }
 }
