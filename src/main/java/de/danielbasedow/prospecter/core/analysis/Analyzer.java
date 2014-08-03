@@ -2,7 +2,6 @@ package de.danielbasedow.prospecter.core.analysis;
 
 import de.danielbasedow.prospecter.core.Token;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Analyzer {

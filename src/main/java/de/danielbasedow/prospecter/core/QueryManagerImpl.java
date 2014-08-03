@@ -1,7 +1,5 @@
 package de.danielbasedow.prospecter.core;
 
-import com.google.inject.Inject;
-
 import java.util.HashMap;
 
 public class QueryManagerImpl implements QueryManager {

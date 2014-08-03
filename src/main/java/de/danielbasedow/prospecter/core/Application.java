@@ -2,10 +2,6 @@ package de.danielbasedow.prospecter.core;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import de.danielbasedow.prospecter.core.analysis.Analyzer;
-import de.danielbasedow.prospecter.core.analysis.filters.NormalizeWhiteSpaceFilter;
-import de.danielbasedow.prospecter.core.analysis.filters.RemoveNonAlphaNumFilter;
-import de.danielbasedow.prospecter.core.analysis.filters.ToLowerCaseFilter;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
@@ -14,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

@@ -3,7 +3,6 @@ package de.danielbasedow.prospecter.core;
 import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueryBuilder {

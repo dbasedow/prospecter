@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

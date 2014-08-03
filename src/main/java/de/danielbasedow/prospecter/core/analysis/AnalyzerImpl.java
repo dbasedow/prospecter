@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

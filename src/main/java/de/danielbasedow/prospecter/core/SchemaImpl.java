@@ -5,7 +5,6 @@ import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.document.FieldIterator;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;

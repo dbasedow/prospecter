@@ -3,7 +3,6 @@ package de.danielbasedow.prospecter.core.document;
 
 import de.danielbasedow.prospecter.core.Token;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Field {
