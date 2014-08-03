@@ -28,19 +28,39 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(2, index.indexEqual.size());
         assertEquals(0, index.indexGreaterThan.size());
         assertEquals(0, index.indexLessThan.size());
-        int[] ints = {1, 2};
-        Field f = makeField(ints, MatchCondition.EQUALS);
+        int[] int_single = {2};
+        Field f = makeField(int_single, MatchCondition.EQUALS);
         List<QueryPosting> postings = index.match(f);
+        assertEquals(1, postings.size());
+        //multiple values in one field:
+        int[] ints_multi = {1, 2};
+        f = makeField(ints_multi, MatchCondition.EQUALS);
+        postings = index.match(f);
         assertEquals(2, postings.size());
     }
 
     public void testGreater() {
         IntegerIndex index = new IntegerIndex("foo");
         Token<Integer> t1 = new Token<Integer>(1, MatchCondition.GREATER_THAN);
+        Token<Integer> t2 = new Token<Integer>(10, MatchCondition.GREATER_THAN);
+        Token<Integer> t3 = new Token<Integer>(100, MatchCondition.GREATER_THAN);
+        Token<Integer> t4 = new Token<Integer>(-100, MatchCondition.GREATER_THAN);
         index.addPosting(t1, new QueryPosting(1, (short) 1));
+        index.addPosting(t2, new QueryPosting(1, (short) 1));
+        index.addPosting(t3, new QueryPosting(1, (short) 1));
+        index.addPosting(t4, new QueryPosting(1, (short) 1));
         assertEquals(0, index.indexEqual.size());
-        assertEquals(1, index.indexGreaterThan.size());
+        assertEquals(4, index.indexGreaterThan.size());
         assertEquals(0, index.indexLessThan.size());
+        int[] int_single = {2};
+        Field f = makeField(int_single, MatchCondition.EQUALS);
+        ArrayList<QueryPosting> postings = index.match(f);
+        assertEquals(2, postings.size());
+
+        int[] int_high = {101};
+        f = makeField(int_high, MatchCondition.EQUALS);
+        postings = index.match(f);
+        assertEquals(4, postings.size());
     }
 
     public void testGreaterEqual() {
