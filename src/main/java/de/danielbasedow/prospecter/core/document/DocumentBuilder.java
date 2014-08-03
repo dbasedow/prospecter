@@ -17,10 +17,9 @@ public class DocumentBuilder {
     }
 
     public Document build(HashMap<String, String> rawFields) {
-        //TODO: don't generate termids for terms not already present. they can never match anyway!
         Document document = new DocumentImpl();
         for (String key : rawFields.keySet()) {
-            List<Token> termIds = analyzer.tokenize(rawFields.get(key));
+            List<Token> termIds = analyzer.tokenize(rawFields.get(key), true);
             Field f = new Field(key, termIds);
             document.addField(key, f);
         }
