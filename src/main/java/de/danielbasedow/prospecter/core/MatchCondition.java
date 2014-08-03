@@ -5,5 +5,6 @@ public enum MatchCondition {
     LESS_THAN,
     GREATER_THAN,
     LESS_THAN_EQUALS,
-    GREATER_THAN_EQUALS
+    GREATER_THAN_EQUALS,
+    NONE
 }

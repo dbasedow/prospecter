@@ -6,6 +6,7 @@ import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 
 public class Matcher {
     protected HashMap<Long, BitSet> hits;
@@ -17,7 +18,7 @@ public class Matcher {
         hits = new HashMap<Long, BitSet>();
     }
 
-    public void collectHits(FullTextIndex index, ArrayList<Token> tokens) {
+    public void collectHits(FullTextIndex index, List<Token> tokens) {
         for (Token token : tokens) {
             ArrayList<QueryPosting> postings = index.getQueryPostingsForTermId(token);
             if (postings != null) {
@@ -28,7 +29,7 @@ public class Matcher {
         }
     }
 
-    public void addHits(ArrayList<QueryPosting> postings) {
+    public void addHits(List<QueryPosting> postings) {
         for (QueryPosting posting : postings) {
             addHit(posting);
         }
@@ -49,7 +50,7 @@ public class Matcher {
         System.out.println("Hits: " + Integer.toString(hits.size()));
     }
 
-    public ArrayList<Query> getMatchedQueries() {
+    public List<Query> getMatchedQueries() {
         ArrayList<Query> results = new ArrayList<Query>();
         for (Long queryId : hits.keySet()) {
             Query query = queryManager.getQuery(queryId);

@@ -5,6 +5,7 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class AnalyzerImpl implements Analyzer {
@@ -26,13 +27,13 @@ public class AnalyzerImpl implements Analyzer {
         return input;
     }
 
-    public ArrayList<Token> tokenize(String input) {
+    public List<Token> tokenize(String input) {
         return tokenize(input, false);
     }
 
-    public ArrayList<Token> tokenize(String input, boolean dontGenerateNewIds) {
+    public List<Token> tokenize(String input, boolean dontGenerateNewIds) {
         input = applyFilters(input);
-        ArrayList<String> tokens = tokenizer.tokenize(input);
+        List<String> tokens = tokenizer.tokenize(input);
         return tokenMapper.getTermIds(tokens, dontGenerateNewIds);
     }
 

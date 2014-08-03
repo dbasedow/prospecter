@@ -8,7 +8,6 @@ import de.danielbasedow.prospecter.core.analysis.filters.RemoveNonAlphaNumFilter
 import de.danielbasedow.prospecter.core.analysis.filters.ToLowerCaseFilter;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
-import de.danielbasedow.prospecter.core.document.TextField;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 
 import java.io.BufferedReader;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Application {
     public Application() {
@@ -73,7 +73,7 @@ public class Application {
             schema.matchDocument(doc, matcher);
 
             //matcher.printResultStats();
-            ArrayList<Query> queries = matcher.getMatchedQueries();
+            List<Query> queries = matcher.getMatchedQueries();
             System.out.println("matching done " + (new Date()).getTime());
 
 

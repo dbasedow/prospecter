@@ -4,6 +4,10 @@ public class Token<T> {
     T token;
     MatchCondition condition;
 
+    public Token(T token){
+        this(token, MatchCondition.NONE);
+    }
+
     public Token(T token, MatchCondition condition) {
         this.token = token;
         this.condition = condition;

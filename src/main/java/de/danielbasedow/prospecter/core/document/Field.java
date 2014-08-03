@@ -4,9 +4,23 @@ package de.danielbasedow.prospecter.core.document;
 import de.danielbasedow.prospecter.core.Token;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public interface Field {
-    public ArrayList<Token> getTokens();
+public class Field {
+    protected String name;
+    protected List<Token> tokens;
 
-    public String getName();
+    public Field(String name, List<Token> tokens) {
+        this.name = name;
+        this.tokens = tokens;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

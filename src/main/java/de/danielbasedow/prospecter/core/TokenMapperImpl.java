@@ -2,6 +2,7 @@ package de.danielbasedow.prospecter.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TokenMapperImpl implements TokenMapper {
     protected int termIdSequence;
@@ -29,12 +30,12 @@ public class TokenMapperImpl implements TokenMapper {
         return termIdSequence++;
     }
 
-    public ArrayList<Token> getTermIds(ArrayList<String> tokens) {
+    public List<Token> getTermIds(List<String> tokens) {
         return getTermIds(tokens, false);
     }
 
     @Override
-    public ArrayList<Token> getTermIds(ArrayList<String> tokens, boolean dontGenerateNewIds) {
+    public List<Token> getTermIds(List<String> tokens, boolean dontGenerateNewIds) {
         ArrayList<Token> termIds = new ArrayList<Token>();
         for (String token : tokens) {
             Integer termId = getTermId(token, dontGenerateNewIds);

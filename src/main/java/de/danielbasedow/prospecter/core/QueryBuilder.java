@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class QueryBuilder {
     protected Analyzer analyzer;
@@ -14,7 +15,7 @@ public class QueryBuilder {
     }
 
     public Query buildFromString(Long queryId, String query) {
-        ArrayList<Token> tokenIds = analyzer.tokenize(query);
+        List<Token> tokenIds = analyzer.tokenize(query);
         return new Query(queryId, tokenIds);
     }
 

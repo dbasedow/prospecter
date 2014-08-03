@@ -1,6 +1,7 @@
 package de.danielbasedow.prospecter.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public interface TokenMapper {
@@ -8,7 +9,7 @@ public interface TokenMapper {
 
     Integer getNewTermId();
 
-    public ArrayList<Token> getTermIds(ArrayList<String> tokens);
+    public List<Token> getTermIds(List<String> tokens);
 
-    public ArrayList<Token> getTermIds(ArrayList<String> tokens, boolean dontGenerateNewIds);
+    public List<Token> getTermIds(List<String> tokens, boolean dontGenerateNewIds);
 }

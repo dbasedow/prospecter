@@ -1,7 +1,7 @@
 package de.danielbasedow.prospecter.core.analysis;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface Tokenizer {
-    public ArrayList<String> tokenize(String input);
+    public List<String> tokenize(String input);
 }

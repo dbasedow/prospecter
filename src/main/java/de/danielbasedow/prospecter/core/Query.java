@@ -3,17 +3,18 @@ package de.danielbasedow.prospecter.core;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 
 public class Query {
     protected Long queryId;
     protected BitSet mask;
-    protected ArrayList<Token> tokens;
+    protected List<Token> tokens;
 
     public Long getQueryId() {
         return queryId;
     }
 
-    public Query(Long queryId, ArrayList<Token> tokens) {
+    public Query(Long queryId, List<Token> tokens) {
         this.tokens = tokens;
         this.queryId = queryId;
 

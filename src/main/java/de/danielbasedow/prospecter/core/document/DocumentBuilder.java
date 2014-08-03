@@ -7,6 +7,7 @@ import de.danielbasedow.prospecter.core.analysis.Analyzer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DocumentBuilder {
     private Analyzer analyzer;
@@ -20,8 +21,8 @@ public class DocumentBuilder {
         //TODO: don't generate termids for terms not already present. they can never match anyway!
         Document document = new DocumentImpl();
         for (String key : rawFields.keySet()) {
-            ArrayList<Token> termIds = analyzer.tokenize(rawFields.get(key));
-            Field f = new TextField(key, termIds);
+            List<Token> termIds = analyzer.tokenize(rawFields.get(key));
+            Field f = new Field(key, termIds);
             document.addField(key, f);
         }
         return document;
