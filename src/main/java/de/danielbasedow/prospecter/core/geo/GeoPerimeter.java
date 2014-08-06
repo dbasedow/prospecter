@@ -19,20 +19,20 @@ public class GeoPerimeter {
         this.distance = distance;
     }
 
-    public double getNorth() {
-        return latitude + ((double) distance / LATITUDE_DEGREE_TO_METERS);
+    public int getNorth() {
+        return GeoUtil.latitudeToInt(latitude + (distance / LATITUDE_DEGREE_TO_METERS));
     }
 
-    public double getSouth() {
-        return latitude - (distance / LATITUDE_DEGREE_TO_METERS);
+    public int getSouth() {
+        return GeoUtil.latitudeToInt(latitude - (distance / LATITUDE_DEGREE_TO_METERS));
     }
 
-    public double getEast() {
-        return longitude + getLongitudeDegreeOffset();
+    public int getEast() {
+        return GeoUtil.longitudeToInt(longitude + getLongitudeDegreeOffset());
     }
 
-    public double getWest() {
-        return longitude - getLongitudeDegreeOffset();
+    public int getWest() {
+        return GeoUtil.longitudeToInt(longitude - getLongitudeDegreeOffset());
     }
 
     public double getLongitudeDegreeOffset() {
@@ -41,5 +41,9 @@ public class GeoPerimeter {
                         (2 * Math.PI * EARTH_RADIUS * Math.cos(latitude)) / 360
                 )
         );
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

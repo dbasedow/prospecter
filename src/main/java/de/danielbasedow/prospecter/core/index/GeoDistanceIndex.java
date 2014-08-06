@@ -1,33 +1,29 @@
 package de.danielbasedow.prospecter.core.index;
 
-
-import de.danielbasedow.prospecter.core.MatchCondition;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
+import de.danielbasedow.prospecter.core.geo.GeoUtil;
 import de.danielbasedow.prospecter.core.geo.LatLng;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.*;
 
 public class GeoDistanceIndex extends AbstractFieldIndex {
-    private ConcurrentSkipListMap<Double, List<Long>> limitsWest;
-    private ConcurrentSkipListMap<Double, List<Long>> limitsEast;
-    private ConcurrentSkipListMap<Double, List<Long>> limitsNorth;
-    private ConcurrentSkipListMap<Double, List<Long>> limitsSouth;
+    private int maxDistanceInIndex;
+    private NavigableMap<Integer, List<Long>> limitsWest;
+    private NavigableMap<Integer, List<Long>> limitsEast;
+    private NavigableMap<Integer, List<Long>> limitsNorth;
+    private NavigableMap<Integer, List<Long>> limitsSouth;
     private Map<Long, QueryPosting> postings;
 
     public GeoDistanceIndex(String name) {
         super(name);
-        limitsWest = new ConcurrentSkipListMap<Double, List<Long>>();
-        limitsEast = new ConcurrentSkipListMap<Double, List<Long>>();
-        limitsNorth = new ConcurrentSkipListMap<Double, List<Long>>();
-        limitsSouth = new ConcurrentSkipListMap<Double, List<Long>>();
+        maxDistanceInIndex = 0;
+        limitsWest = new TreeMap<Integer, List<Long>>();
+        limitsEast = new TreeMap<Integer, List<Long>>();
+        limitsNorth = new TreeMap<Integer, List<Long>>();
+        limitsSouth = new TreeMap<Integer, List<Long>>();
         postings = new HashMap<Long, QueryPosting>();
     }
 
@@ -37,11 +33,14 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             LatLng latLng = (LatLng) token.getToken();
+            GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), maxDistanceInIndex * 2);
             GeoMatcher matcher = new GeoMatcher();
-            matcher.matchIndex(limitsEast, latLng.getLongitude(), MatchCondition.LESS_THAN);
-            matcher.matchIndex(limitsWest, latLng.getLongitude(), MatchCondition.GREATER_THAN);
-            matcher.matchIndex(limitsNorth, latLng.getLatitude(), MatchCondition.LESS_THAN);
-            matcher.matchIndex(limitsSouth, latLng.getLatitude(), MatchCondition.GREATER_THAN);
+            Integer intLongitude = GeoUtil.longitudeToInt(latLng.getLongitude());
+            Integer intLatitude = GeoUtil.latitudeToInt(latLng.getLatitude());
+            matcher.matchIndex(limitsEast, intLongitude, perimeter.getEast());
+            matcher.matchIndex(limitsWest, intLongitude, perimeter.getWest());
+            matcher.matchIndex(limitsNorth, intLatitude, perimeter.getNorth());
+            matcher.matchIndex(limitsSouth, intLatitude, perimeter.getSouth());
             for (Long queryId : matcher.getMatches()) {
                 postingsFound.add(postings.get(queryId));
             }
@@ -57,13 +56,16 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         }
         postings.put(posting.getQueryId(), posting);
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
+        if (perimeter.getDistance() > maxDistanceInIndex) {
+            maxDistanceInIndex = perimeter.getDistance();
+        }
         addOrCreatePostings(limitsWest, perimeter.getWest(), posting.getQueryId());
         addOrCreatePostings(limitsEast, perimeter.getEast(), posting.getQueryId());
         addOrCreatePostings(limitsNorth, perimeter.getNorth(), posting.getQueryId());
         addOrCreatePostings(limitsSouth, perimeter.getSouth(), posting.getQueryId());
     }
 
-    private void addOrCreatePostings(ConcurrentSkipListMap<Double, List<Long>> index, Double key, Long queryId) {
+    private void addOrCreatePostings(NavigableMap<Integer, List<Long>> index, Integer key, Long queryId) {
         List<Long> postings;
         if (index.containsKey(key)) {
             postings = index.get(key);
@@ -87,16 +89,16 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             roundCount = 0;
         }
 
-        public void matchIndex(ConcurrentSkipListMap<Double, List<Long>> index, Double coordinate, MatchCondition condition) {
+        public void matchIndex(NavigableMap<Integer, List<Long>> index, Integer coordinate, Integer limit) {
             roundCount++;
-            ConcurrentNavigableMap<Double, List<Long>> navigableMap;
-            if (condition == MatchCondition.GREATER_THAN) {
-                navigableMap = index.headMap(coordinate);
+            SortedMap<Integer, List<Long>> navigableMap;
+            if (limit > coordinate) {
+                navigableMap = index.subMap(coordinate, limit);
             } else {
-                navigableMap = index.tailMap(coordinate);
+                navigableMap = index.subMap(limit, coordinate);
             }
             if (navigableMap.size() > 0) {
-                for (Map.Entry<Double, List<Long>> entry : navigableMap.entrySet()) {
+                for (Map.Entry<Integer, List<Long>> entry : navigableMap.entrySet()) {
                     for (Long queryId : entry.getValue()) {
                         recordMatch(queryId);
                     }
