@@ -20,7 +20,7 @@ public class Matcher {
 
     public void collectHits(FullTextIndex index, List<Token> tokens) {
         for (Token token : tokens) {
-            ArrayList<QueryPosting> postings = index.getQueryPostingsForTermId(token);
+            List<QueryPosting> postings = index.getQueryPostingsForTermId(token);
             if (postings != null) {
                 for (QueryPosting posting : postings) {
                     addHit(posting);
@@ -51,7 +51,7 @@ public class Matcher {
     }
 
     public List<Query> getMatchedQueries() {
-        ArrayList<Query> results = new ArrayList<Query>();
+        List<Query> results = new ArrayList<Query>();
         for (Long queryId : hits.keySet()) {
             Query query = queryManager.getQuery(queryId);
             if (query.testBits(hits.get(queryId))) {
