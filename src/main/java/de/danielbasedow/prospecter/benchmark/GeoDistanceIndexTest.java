@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.benchmark;
 
-import de.danielbasedow.prospecter.core.MatchCondition;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;

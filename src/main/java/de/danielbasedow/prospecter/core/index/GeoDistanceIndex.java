@@ -11,10 +11,10 @@ import java.util.*;
 
 public class GeoDistanceIndex extends AbstractFieldIndex {
     private int maxDistanceInIndex;
-    private NavigableMap<Integer, List<Long>> limitsWest;
-    private NavigableMap<Integer, List<Long>> limitsEast;
-    private NavigableMap<Integer, List<Long>> limitsNorth;
-    private NavigableMap<Integer, List<Long>> limitsSouth;
+    private SortedMap<Integer, List<Long>> limitsWest;
+    private SortedMap<Integer, List<Long>> limitsEast;
+    private SortedMap<Integer, List<Long>> limitsNorth;
+    private SortedMap<Integer, List<Long>> limitsSouth;
     private Map<Long, QueryPosting> postings;
 
     public GeoDistanceIndex(String name) {
@@ -25,6 +25,9 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         limitsNorth = new TreeMap<Integer, List<Long>>();
         limitsSouth = new TreeMap<Integer, List<Long>>();
         postings = new HashMap<Long, QueryPosting>();
+
+        postings = new HashMap<Long, QueryPosting>();
+
     }
 
     @Override
@@ -65,7 +68,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         addOrCreatePostings(limitsSouth, perimeter.getSouth(), posting.getQueryId());
     }
 
-    private void addOrCreatePostings(NavigableMap<Integer, List<Long>> index, Integer key, Long queryId) {
+    private void addOrCreatePostings(SortedMap<Integer, List<Long>> index, Integer key, Long queryId) {
         List<Long> postings;
         if (index.containsKey(key)) {
             postings = index.get(key);
@@ -89,7 +92,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             roundCount = 0;
         }
 
-        public void matchIndex(NavigableMap<Integer, List<Long>> index, Integer coordinate, Integer limit) {
+        public void matchIndex(SortedMap<Integer, List<Long>> index, Integer coordinate, Integer limit) {
             roundCount++;
             SortedMap<Integer, List<Long>> navigableMap;
             if (limit > coordinate) {
