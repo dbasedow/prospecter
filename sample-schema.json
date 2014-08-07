@@ -1,0 +1,15 @@
+{
+    "fields": [
+        {
+            "name": "textField",
+            "type": "FullText",
+            "options": {
+                "analyzer": "default"
+            }
+        },
+        {
+            "name": "price",
+            "type": "Integer"
+        }
+    ]
+}

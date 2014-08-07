@@ -7,6 +7,8 @@ import de.danielbasedow.prospecter.core.analysis.*;
 import de.danielbasedow.prospecter.core.analysis.filters.NormalizeWhiteSpaceFilter;
 import de.danielbasedow.prospecter.core.analysis.filters.RemoveNonAlphaNumFilter;
 import de.danielbasedow.prospecter.core.analysis.filters.ToLowerCaseFilter;
+import de.danielbasedow.prospecter.core.schema.Schema;
+import de.danielbasedow.prospecter.core.schema.SchemaImpl;
 
 public class ProspecterModule extends AbstractModule {
 

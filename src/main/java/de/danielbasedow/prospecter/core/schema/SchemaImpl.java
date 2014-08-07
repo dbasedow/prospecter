@@ -1,5 +1,9 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.schema;
 
+import de.danielbasedow.prospecter.core.Matcher;
+import de.danielbasedow.prospecter.core.QueryPosting;
+import de.danielbasedow.prospecter.core.Token;
+import de.danielbasedow.prospecter.core.UndefinedIndexFieldException;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.document.FieldIterator;
@@ -53,5 +57,15 @@ public class SchemaImpl implements Schema {
             }
         }
         return matcher;
+    }
+
+    @Override
+    public int getFieldCount() {
+        return indices.size();
+    }
+
+    @Override
+    public FieldIndex getFieldIndex(String name) {
+        return indices.get(name);
     }
 }

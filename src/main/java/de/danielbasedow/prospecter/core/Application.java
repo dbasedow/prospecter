@@ -5,6 +5,8 @@ import com.google.inject.Injector;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
+import de.danielbasedow.prospecter.core.schema.Schema;
+import de.danielbasedow.prospecter.core.schema.SchemaImpl;
 
 import java.io.BufferedReader;
 import java.io.File;
