@@ -21,9 +21,9 @@ public class SchemaBuilderJSONTest extends TestCase {
                 "        }" +
                 "    ]" +
                 "}";
-        SchemaBuilder builder = new SchemaBuilderJSON(json);
         Schema schema;
         try {
+            SchemaBuilder builder = new SchemaBuilderJSON(json);
             schema = builder.getSchema();
             assertEquals(2, schema.getFieldCount());
             assertTrue(schema.getFieldIndex("price") instanceof IntegerIndex);

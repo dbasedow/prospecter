@@ -1,0 +1,26 @@
+{
+    "id": 123456,
+    "query": {
+        "conditions": [
+            {
+                "field": "description",
+                "condition": "match",
+                "value": "haunted house"
+            },
+            {
+                "field": "price",
+                "condition": "gte",
+                "value": 500000
+            },
+            {
+                "field": "location",
+                "condition": "radius",
+                "value": {
+                    "lat": 53.55,
+                    "lng": 10,
+                    "distance": 100000
+                }
+            }
+        ]
+    }
+}

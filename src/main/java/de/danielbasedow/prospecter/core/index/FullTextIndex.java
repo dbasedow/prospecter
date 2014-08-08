@@ -1,7 +1,10 @@
 package de.danielbasedow.prospecter.core.index;
 
+import com.google.inject.Guice;
+import de.danielbasedow.prospecter.core.ProspecterModule;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
+import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.document.Field;
 
 import java.util.ArrayList;
@@ -9,10 +12,13 @@ import java.util.HashMap;
 
 public class FullTextIndex extends AbstractFieldIndex {
     protected HashMap<Integer, ArrayList<QueryPosting>> index;
+    private Analyzer analyzer;
 
     public FullTextIndex(String name) {
         super(name);
         index = new HashMap<Integer, ArrayList<QueryPosting>>();
+        //TODO: analyzer should be configurable
+        analyzer = Guice.createInjector(new ProspecterModule()).getInstance(Analyzer.class);
     }
 
     public void addPosting(Token token, QueryPosting posting) {
@@ -24,6 +30,11 @@ public class FullTextIndex extends AbstractFieldIndex {
             index.put((Integer) token.getToken(), postingList);
         }
         postingList.add(posting);
+    }
+
+    @Override
+    public FieldType getFieldType() {
+        return FieldType.FULL_TEXT;
     }
 
     public ArrayList<QueryPosting> getQueryPostingsForTermId(Token token) {
@@ -47,4 +58,7 @@ public class FullTextIndex extends AbstractFieldIndex {
         return postings;
     }
 
+    public Analyzer getAnalyzer() {
+        return analyzer;
+    }
 }

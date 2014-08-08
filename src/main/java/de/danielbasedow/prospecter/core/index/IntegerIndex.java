@@ -101,6 +101,11 @@ public class IntegerIndex extends AbstractFieldIndex {
         }
     }
 
+    @Override
+    public FieldType getFieldType() {
+        return FieldType.INTEGER;
+    }
+
     private ArrayList<QueryPosting> getOrCreate(Map<Integer, ArrayList<QueryPosting>> map, Integer key) {
         ArrayList<QueryPosting> postings;
         if (map.containsKey(key)) {

@@ -1,12 +1,11 @@
 package de.danielbasedow.prospecter.core;
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
-import de.danielbasedow.prospecter.core.index.FullTextIndex;
-import de.danielbasedow.prospecter.core.schema.Schema;
-import de.danielbasedow.prospecter.core.schema.SchemaImpl;
+import de.danielbasedow.prospecter.core.schema.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,15 +20,30 @@ public class Application {
 
     }
 
-    public static Schema buildSchema() {
-        Schema schema = new SchemaImpl();
-        schema.addFieldIndex("_all", new FullTextIndex("_all"));
-        return schema;
+    public static Schema buildSchema(String fileName) throws SchemaConfigurationError {
+        SchemaBuilder schemaBuilder = new SchemaBuilderJSON(new File(fileName));
+        return schemaBuilder.getSchema();
+    }
+
+    public static String buildJsonQuery(String queryString, long id) {
+        JsonStringEncoder encoder = JsonStringEncoder.getInstance();
+        return "{" +
+                "\"id\": " + String.valueOf(id) + "," +
+                "\"query\": {" +
+                "\"conditions\": [" +
+                "{" +
+                "\"field\": \"textField\"," +
+                "\"condition\": \"match\"," +
+                "\"value\": \"" + new String(encoder.quoteAsString(queryString)) + "\"" +
+                "}" +
+                "]" +
+                "}" +
+                "}";
     }
 
     public static Document buildDoc(DocumentBuilder builder, String query) {
         HashMap<String, String> rawFields = new HashMap<String, String>();
-        rawFields.put("_all", query);
+        rawFields.put("textField", query);
         return builder.build(rawFields);
     }
 
@@ -37,12 +51,12 @@ public class Application {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new ProspecterModule());
         QueryManager queryManager = injector.getInstance(QueryManager.class);
-        QueryBuilder queryBuilder = injector.getInstance(QueryBuilder.class);
-        Schema schema = buildSchema();
-        DocumentBuilder docBuilder = injector.getInstance(DocumentBuilder.class);
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(args[0])));
+            Schema schema = buildSchema(args[0]);
+            QueryBuilder queryBuilder = schema.getQueryBuilder();
+
+            BufferedReader br = new BufferedReader(new FileReader(new File(args[1])));
             String line;
             long i = 0;
             System.out.println("start indexing " + (new Date()).getTime());
@@ -50,22 +64,22 @@ public class Application {
                 String[] columns = line.trim().split("\\t");
                 i++;
                 if (columns.length == 3) {
-                    Query q = queryBuilder.buildFromString(i, columns[2].trim());
+                    Query q = queryBuilder.buildFromJSON(buildJsonQuery(columns[2].trim(), i));
                     queryManager.addQuery(q);
-                    schema.addPostingsToField("_all", q.getPostings());
+                    schema.addQuery(q);
                 }
             }
             br.close();
             System.out.println("indexing done " + (new Date()).getTime());
             System.out.println(i);
-            BufferedReader testDoc = new BufferedReader(new FileReader(new File(args[1])));
+            BufferedReader testDoc = new BufferedReader(new FileReader(new File(args[2])));
             String queryStr = "";
             while ((line = testDoc.readLine()) != null) {
                 queryStr = queryStr + " " + line;
             }
             //Document doc = buildDoc(docBuilder, "yahoo search is the part of the log");
             System.out.println("start matching " + (new Date()).getTime());
-            Document doc = buildDoc(docBuilder, queryStr);
+            Document doc = buildDoc(schema.getDocumentBuilder(), queryStr);
             Matcher matcher = injector.getInstance(Matcher.class);
             schema.matchDocument(doc, matcher);
 
@@ -85,7 +99,12 @@ public class Application {
             e.printStackTrace();
         } catch (UndefinedIndexFieldException e) {
             e.printStackTrace();
+        } catch (SchemaConfigurationError schemaConfigurationError) {
+            schemaConfigurationError.printStackTrace();
+        } catch (MalformedQueryException e) {
+            e.printStackTrace();
         }
+
         System.out.println(injector.getInstance(TokenMapper.class).getNewTermId());
     }
 

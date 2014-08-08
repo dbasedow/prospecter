@@ -68,6 +68,11 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         addOrCreatePostings(limitsSouth, perimeter.getSouth(), posting.getQueryId());
     }
 
+    @Override
+    public FieldType getFieldType() {
+        return FieldType.GEO_DISTANCE;
+    }
+
     private void addOrCreatePostings(SortedMap<Integer, List<Long>> index, Integer key, Long queryId) {
         List<Long> postings;
         if (index.containsKey(key)) {
@@ -137,6 +142,5 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             }
             return queries;
         }
-
     }
 }

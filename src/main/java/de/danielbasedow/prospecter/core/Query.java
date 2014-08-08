@@ -1,5 +1,6 @@
 package de.danielbasedow.prospecter.core;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
@@ -7,25 +8,25 @@ import java.util.List;
 public class Query {
     protected Long queryId;
     protected BitSet mask;
-    protected List<Token> tokens;
+    protected List<Condition> conditions;
 
     public Long getQueryId() {
         return queryId;
     }
 
-    public Query(Long queryId, List<Token> tokens) {
-        this.tokens = tokens;
+    public Query(Long queryId, List<Condition> conditions) {
+        this.conditions = conditions;
         this.queryId = queryId;
 
-        mask = new BitSet(tokens.size());
-        mask.set(0, tokens.size(), true); //all bits set to 1
+        mask = new BitSet(conditions.size());
+        mask.set(0, conditions.size(), true); //all bits set to 1
     }
 
-    public HashMap<Token, QueryPosting> getPostings() {
-        HashMap<Token, QueryPosting> postings = new HashMap<Token, QueryPosting>();
+    public HashMap<Condition, QueryPosting> getPostings() {
+        HashMap<Condition, QueryPosting> postings = new HashMap<Condition, QueryPosting>();
         short bit = 0;
-        for (Token token : tokens) {
-            postings.put(token, new QueryPosting(queryId, bit));
+        for (Condition condition : conditions) {
+            postings.put(condition, new QueryPosting(queryId, bit));
             bit++;
         }
         return postings;
@@ -34,4 +35,9 @@ public class Query {
     public boolean testBits(BitSet hits) {
         return mask.equals(hits);
     }
+
+    public List<Condition> getConditions() {
+        return conditions;
+    }
+
 }

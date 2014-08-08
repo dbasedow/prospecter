@@ -9,20 +9,37 @@ import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.index.GeoDistanceIndex;
 import de.danielbasedow.prospecter.core.index.IntegerIndex;
 
-public class SchemaBuilderJSON implements SchemaBuilder {
-    private String rawJSON;
-    private ObjectMapper objectMapper;
-    private Schema schema;
+import java.io.File;
+import java.io.IOException;
 
-    public SchemaBuilderJSON(String json) {
-        objectMapper = new ObjectMapper();
-        rawJSON = json;
+public class SchemaBuilderJSON implements SchemaBuilder {
+    private Schema schema;
+    private ObjectNode root;
+
+    public SchemaBuilderJSON(String json) throws SchemaConfigurationError {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            root = (ObjectNode) objectMapper.readTree(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SchemaConfigurationError();
+        }
+        schema = new SchemaImpl();
+    }
+
+    public SchemaBuilderJSON(File file) throws SchemaConfigurationError {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            root = (ObjectNode) objectMapper.readTree(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SchemaConfigurationError();
+        }
         schema = new SchemaImpl();
     }
 
     private void parseJSON() throws SchemaConfigurationError {
         try {
-            ObjectNode root = (ObjectNode) objectMapper.readTree(rawJSON);
             ArrayNode fields = (ArrayNode) root.get("fields");
             for (JsonNode node : fields) {
                 FieldIndex index = buildField(node);

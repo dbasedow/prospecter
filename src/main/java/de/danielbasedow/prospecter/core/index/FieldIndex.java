@@ -12,4 +12,6 @@ public interface FieldIndex {
     public List<QueryPosting> match(Field field);
 
     public void addPosting(Token token, QueryPosting posting);
+
+    public FieldType getFieldType();
 }

@@ -4,24 +4,36 @@ package de.danielbasedow.prospecter.core.document;
 import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
+import de.danielbasedow.prospecter.core.index.FieldIndex;
+import de.danielbasedow.prospecter.core.index.FieldType;
+import de.danielbasedow.prospecter.core.index.FullTextIndex;
+import de.danielbasedow.prospecter.core.schema.Schema;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class DocumentBuilder {
-    private Analyzer analyzer;
+    private Schema schema;
 
-    @Inject
-    public DocumentBuilder(Analyzer analyzer) {
-        this.analyzer = analyzer;
+    public DocumentBuilder(Schema schema) {
+        this.schema = schema;
     }
 
     public Document build(HashMap<String, String> rawFields) {
         Document document = new DocumentImpl();
         for (String key : rawFields.keySet()) {
-            List<Token> termIds = analyzer.tokenize(rawFields.get(key), true);
-            Field f = new Field(key, termIds);
-            document.addField(key, f);
+            FieldIndex fieldIndex = schema.getFieldIndex(key);
+            if (fieldIndex != null) {
+                if (fieldIndex.getFieldType() == FieldType.FULL_TEXT) {
+                    Analyzer analyzer = ((FullTextIndex) fieldIndex).getAnalyzer();
+                    List<Token> termIds = analyzer.tokenize(rawFields.get(key), true);
+                    Field f = new Field(key, termIds);
+                    document.addField(key, f);
+                } else {
+                    throw new NotImplementedException();
+                }
+            }
         }
         return document;
     }

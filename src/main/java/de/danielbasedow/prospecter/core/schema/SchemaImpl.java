@@ -1,24 +1,27 @@
 package de.danielbasedow.prospecter.core.schema;
 
-import de.danielbasedow.prospecter.core.Matcher;
-import de.danielbasedow.prospecter.core.QueryPosting;
-import de.danielbasedow.prospecter.core.Token;
-import de.danielbasedow.prospecter.core.UndefinedIndexFieldException;
+import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
+import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.document.FieldIterator;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SchemaImpl implements Schema {
     protected ConcurrentHashMap<String, FieldIndex> indices;
+    protected QueryBuilder queryBuilder;
+    protected DocumentBuilder documentBuilder;
 
     public SchemaImpl() {
         indices = new ConcurrentHashMap<String, FieldIndex>();
+        queryBuilder = new QueryBuilder(this);
+        documentBuilder = new DocumentBuilder(this);
     }
 
     @Override
@@ -45,6 +48,20 @@ public class SchemaImpl implements Schema {
         }
     }
 
+    public void addQuery(Query query) throws UndefinedIndexFieldException {
+        HashMap<Condition, QueryPosting> postings = query.getPostings();
+        for (Map.Entry<Condition, QueryPosting> entry : postings.entrySet()) {
+            Condition condition = entry.getKey();
+            QueryPosting posting = entry.getValue();
+
+            if (!indices.containsKey(condition.getFieldName())) {
+                throw new UndefinedIndexFieldException("No field named '" + condition.getFieldName() + "'");
+            }
+
+            indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
+        }
+    }
+
     @Override
     public Matcher matchDocument(Document doc, Matcher matcher) {
         FieldIterator fields = doc.getFields();
@@ -67,5 +84,15 @@ public class SchemaImpl implements Schema {
     @Override
     public FieldIndex getFieldIndex(String name) {
         return indices.get(name);
+    }
+
+    @Override
+    public QueryBuilder getQueryBuilder() {
+        return queryBuilder;
+    }
+
+    @Override
+    public DocumentBuilder getDocumentBuilder() {
+        return documentBuilder;
     }
 }
