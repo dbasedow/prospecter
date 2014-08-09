@@ -62,6 +62,7 @@ public class SchemaImpl implements Schema {
 
             indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
         }
+        queryManager.addQuery(query);
     }
 
     @Override

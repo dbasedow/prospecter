@@ -49,11 +49,8 @@ public class Application {
 
 
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector(new ProspecterModule());
-
         try {
             Schema schema = buildSchema(args[0]);
-            QueryManager queryManager = schema.getQueryManager();
             QueryBuilder queryBuilder = schema.getQueryBuilder();
 
             BufferedReader br = new BufferedReader(new FileReader(new File(args[1])));
@@ -65,7 +62,6 @@ public class Application {
                 i++;
                 if (columns.length == 3) {
                     Query q = queryBuilder.buildFromJSON(buildJsonQuery(columns[2].trim(), i));
-                    queryManager.addQuery(q);
                     schema.addQuery(q);
                 }
             }
@@ -77,23 +73,18 @@ public class Application {
             while ((line = testDoc.readLine()) != null) {
                 queryStr = queryStr + " " + line;
             }
-            //Document doc = buildDoc(docBuilder, "yahoo search is the part of the log");
             System.out.println("start matching " + (new Date()).getTime());
             Document doc = buildDoc(schema.getDocumentBuilder(), queryStr);
             Matcher matcher = schema.getMatcher();
             schema.matchDocument(doc, matcher);
-
-            //matcher.printResultStats();
-            List<Query> queries = matcher.getMatchedQueries();
             System.out.println("matching done " + (new Date()).getTime());
 
+            System.out.println("start testing " + (new Date()).getTime());
+            List<Query> queries = matcher.getMatchedQueries();
+            System.out.println("testing done " + (new Date()).getTime());
 
             System.out.println("Queries returned: " + Integer.toString(queries.size()));
-            for (Query query : queries) {
-                System.out.print(query.getQueryId());
-                System.out.print(",");
-                //System.out.println(": " + rawQueries.get(query.getQueryId()));
-            }
+
             printVMStats();
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,7 +96,6 @@ public class Application {
             e.printStackTrace();
         }
 
-        System.out.println(injector.getInstance(TokenMapper.class).getNewTermId());
     }
 
     public static void printVMStats() {
