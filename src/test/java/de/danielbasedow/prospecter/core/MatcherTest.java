@@ -18,7 +18,7 @@ public class MatcherTest extends TestCase {
         FullTextIndex ft = new FullTextIndex("_all");
         QueryPosting posting = new QueryPosting(1, (short) 1);
         ft.addPosting(new Token<Integer>(1, MatchCondition.EQUALS), posting);
-        Matcher m = injector.getInstance(Matcher.class);
+        Matcher m = new Matcher(new QueryManager());
         ArrayList<Token> tokens = new ArrayList<Token>();
         tokens.add(new Token<Integer>(1, MatchCondition.EQUALS));
         m.collectHits(ft, tokens);

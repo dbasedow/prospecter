@@ -17,11 +17,13 @@ public class SchemaImpl implements Schema {
     protected ConcurrentHashMap<String, FieldIndex> indices;
     protected QueryBuilder queryBuilder;
     protected DocumentBuilder documentBuilder;
+    protected QueryManager queryManager;
 
     public SchemaImpl() {
         indices = new ConcurrentHashMap<String, FieldIndex>();
         queryBuilder = new QueryBuilder(this);
         documentBuilder = new DocumentBuilder(this);
+        queryManager = new QueryManager();
     }
 
     @Override
@@ -94,5 +96,15 @@ public class SchemaImpl implements Schema {
     @Override
     public DocumentBuilder getDocumentBuilder() {
         return documentBuilder;
+    }
+
+    @Override
+    public Matcher getMatcher() {
+        return new Matcher(queryManager);
+    }
+
+    @Override
+    public QueryManager getQueryManager() {
+        return queryManager;
     }
 }

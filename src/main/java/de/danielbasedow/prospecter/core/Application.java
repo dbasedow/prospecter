@@ -50,10 +50,10 @@ public class Application {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new ProspecterModule());
-        QueryManager queryManager = injector.getInstance(QueryManager.class);
 
         try {
             Schema schema = buildSchema(args[0]);
+            QueryManager queryManager = schema.getQueryManager();
             QueryBuilder queryBuilder = schema.getQueryBuilder();
 
             BufferedReader br = new BufferedReader(new FileReader(new File(args[1])));
@@ -80,7 +80,7 @@ public class Application {
             //Document doc = buildDoc(docBuilder, "yahoo search is the part of the log");
             System.out.println("start matching " + (new Date()).getTime());
             Document doc = buildDoc(schema.getDocumentBuilder(), queryStr);
-            Matcher matcher = injector.getInstance(Matcher.class);
+            Matcher matcher = schema.getMatcher();
             schema.matchDocument(doc, matcher);
 
             //matcher.printResultStats();

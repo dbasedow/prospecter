@@ -27,4 +27,8 @@ public interface Schema {
     public QueryBuilder getQueryBuilder();
 
     public DocumentBuilder getDocumentBuilder();
+
+    public Matcher getMatcher();
+
+    public QueryManager getQueryManager();
 }

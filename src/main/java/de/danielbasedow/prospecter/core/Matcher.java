@@ -12,7 +12,6 @@ public class Matcher {
     protected HashMap<Long, BitSet> hits;
     protected QueryManager queryManager;
 
-    @Inject
     public Matcher(QueryManager qm) {
         queryManager = qm;
         hits = new HashMap<Long, BitSet>();
