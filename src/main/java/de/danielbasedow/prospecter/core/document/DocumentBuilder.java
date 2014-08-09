@@ -1,9 +1,9 @@
 package de.danielbasedow.prospecter.core.document;
 
 
-import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
+import de.danielbasedow.prospecter.core.analysis.TokenizerException;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FieldType;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
@@ -24,15 +24,19 @@ public class DocumentBuilder {
         Document document = new DocumentImpl();
         for (String key : rawFields.keySet()) {
             FieldIndex fieldIndex = schema.getFieldIndex(key);
-            if (fieldIndex != null) {
-                if (fieldIndex.getFieldType() == FieldType.FULL_TEXT) {
-                    Analyzer analyzer = ((FullTextIndex) fieldIndex).getAnalyzer();
-                    List<Token> termIds = analyzer.tokenize(rawFields.get(key), true);
-                    Field f = new Field(key, termIds);
-                    document.addField(key, f);
-                } else {
-                    throw new NotImplementedException();
+            try {
+                if (fieldIndex != null) {
+                    if (fieldIndex.getFieldType() == FieldType.FULL_TEXT) {
+                        Analyzer analyzer = ((FullTextIndex) fieldIndex).getAnalyzer();
+                        List<Token> termIds = analyzer.tokenize(rawFields.get(key), true);
+                        Field f = new Field(key, termIds);
+                        document.addField(key, f);
+                    } else {
+                        throw new NotImplementedException();
+                    }
                 }
+            } catch (TokenizerException e) {
+                e.printStackTrace();
             }
         }
         return document;

@@ -17,7 +17,8 @@ public class ProspecterModule extends AbstractModule {
         bind(TokenMapper.class).to(TokenMapperImpl.class).in(Singleton.class);
         bind(Tokenizer.class).to(TokenizerImpl.class);
         bind(Schema.class).to(SchemaImpl.class).in(Singleton.class);
-        bind(Analyzer.class).to(AnalyzerImpl.class);
+        //bind(Analyzer.class).to(AnalyzerImpl.class);
+        bind(Analyzer.class).to(LuceneAnalyzer.class);
 
         Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);
         filterBinder.addBinding().to(NormalizeWhiteSpaceFilter.class);

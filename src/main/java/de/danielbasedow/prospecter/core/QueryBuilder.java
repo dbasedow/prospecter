@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
+import de.danielbasedow.prospecter.core.analysis.TokenizerException;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
@@ -38,7 +39,11 @@ public class QueryBuilder {
         FieldIndex fieldIndex = schema.getFieldIndex(fieldName);
         switch (fieldIndex.getFieldType()) {
             case FULL_TEXT:
-                return handleFullText(fieldName, node);
+                try {
+                    return handleFullText(fieldName, node);
+                } catch (TokenizerException e) {
+                    e.printStackTrace();
+                }
             case INTEGER:
                 return handleInteger(fieldName, node);
         }
@@ -66,7 +71,7 @@ public class QueryBuilder {
         return conditions;
     }
 
-    public List<Condition> handleFullText(String fieldName, ObjectNode node) {
+    public List<Condition> handleFullText(String fieldName, ObjectNode node) throws TokenizerException {
         String query = node.get("value").asText();
         Analyzer analyzer = ((FullTextIndex) schema.getFieldIndex(fieldName)).getAnalyzer();
 
