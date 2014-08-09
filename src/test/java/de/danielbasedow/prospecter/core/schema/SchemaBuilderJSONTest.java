@@ -7,19 +7,17 @@ import junit.framework.TestCase;
 public class SchemaBuilderJSONTest extends TestCase {
     public void testValidJSON() {
         String json = "{" +
-                "    \"fields\": [" +
-                "        {" +
-                "            \"name\": \"textField\"," +
+                "    \"fields\": {" +
+                "        \"textField\": {" +
                 "            \"type\": \"FullText\"," +
                 "            \"options\": {" +
                 "                \"analyzer\": \"default\"" +
                 "            }" +
                 "        }," +
-                "        {" +
-                "            \"name\": \"price\"," +
+                "        \"price\": {" +
                 "            \"type\": \"Integer\"" +
                 "        }" +
-                "    ]" +
+                "    }" +
                 "}";
         Schema schema;
         try {

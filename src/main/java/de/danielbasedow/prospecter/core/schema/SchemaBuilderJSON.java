@@ -11,6 +11,8 @@ import de.danielbasedow.prospecter.core.index.IntegerIndex;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 public class SchemaBuilderJSON implements SchemaBuilder {
     private Schema schema;
@@ -40,9 +42,11 @@ public class SchemaBuilderJSON implements SchemaBuilder {
 
     private void parseJSON() throws SchemaConfigurationError {
         try {
-            ArrayNode fields = (ArrayNode) root.get("fields");
-            for (JsonNode node : fields) {
-                FieldIndex index = buildField(node);
+            ObjectNode fields = (ObjectNode) root.get("fields");
+            Iterator<Map.Entry<String, JsonNode>> iterator = fields.fields();
+            while (iterator.hasNext()) {
+                Map.Entry<String, JsonNode> entry = iterator.next();
+                FieldIndex index = buildField(entry.getKey(), entry.getValue());
                 schema.addFieldIndex(index.getName(), index);
             }
         } catch (Exception e) {
@@ -50,17 +54,16 @@ public class SchemaBuilderJSON implements SchemaBuilder {
         }
     }
 
-    protected FieldIndex buildField(JsonNode node) {
+    protected FieldIndex buildField(String fieldName, JsonNode node) {
         FieldIndex index = null;
         String type = node.get("type").asText();
-        String name = node.get("name").asText();
 
         if ("FullText".equals(type)) {
-            index = new FullTextIndex(name);
+            index = new FullTextIndex(fieldName);
         } else if ("Integer".equals(type)) {
-            index = new IntegerIndex(name);
+            index = new IntegerIndex(fieldName);
         } else if ("GeoDistance".equals(type)) {
-            index = new GeoDistanceIndex(name);
+            index = new GeoDistanceIndex(fieldName);
         }
 
         return index;
