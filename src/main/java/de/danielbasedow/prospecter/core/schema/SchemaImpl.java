@@ -1,10 +1,7 @@
 package de.danielbasedow.prospecter.core.schema;
 
 import de.danielbasedow.prospecter.core.*;
-import de.danielbasedow.prospecter.core.document.Document;
-import de.danielbasedow.prospecter.core.document.DocumentBuilder;
-import de.danielbasedow.prospecter.core.document.Field;
-import de.danielbasedow.prospecter.core.document.FieldIterator;
+import de.danielbasedow.prospecter.core.document.*;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 
 import java.util.HashMap;

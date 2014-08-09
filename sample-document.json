@@ -1,0 +1,6 @@
+{
+    "field1": "test goes here",
+    "locationField": {"lat": 53.55, "lng": 10},
+    "category": ["category1", "category2"],
+    "price": 2000
+}

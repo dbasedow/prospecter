@@ -1,10 +1,25 @@
 package de.danielbasedow.prospecter.core.document;
 
 
-public interface Document {
-    public void addField(String name, Field field);
+import java.util.HashMap;
 
-    public Field getField(String name);
+public class Document {
+    protected HashMap<String, Field> fields;
 
-    public FieldIterator getFields();
+    public Document() {
+        fields = new HashMap<String, Field>();
+    }
+
+    public void addField(String name, Field field) {
+        fields.put(name, field);
+    }
+
+    public Field getField(String name) {
+        return fields.get(name);
+    }
+
+    public FieldIterator getFields() {
+        return new FieldIterator(fields);
+    }
+
 }

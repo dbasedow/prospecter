@@ -1,10 +1,9 @@
 package de.danielbasedow.prospecter.core;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
+import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
 import de.danielbasedow.prospecter.core.schema.*;
 
 import java.io.BufferedReader;
@@ -42,9 +41,14 @@ public class Application {
     }
 
     public static Document buildDoc(DocumentBuilder builder, String query) {
-        HashMap<String, String> rawFields = new HashMap<String, String>();
-        rawFields.put("textField", query);
-        return builder.build(rawFields);
+        JsonStringEncoder encoder = JsonStringEncoder.getInstance();
+        String json = "{\"textField\": \"" + new String(encoder.quoteAsString(query)) + "\"}";
+        try {
+            return builder.build(json);
+        } catch (MalformedDocumentException e) {
+            e.printStackTrace();
+        }
+        return new Document();
     }
 
 
