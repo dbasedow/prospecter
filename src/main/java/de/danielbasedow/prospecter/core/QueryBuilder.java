@@ -12,6 +12,9 @@ import de.danielbasedow.prospecter.core.schema.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Makes Query instances from JSON query definitions
+ */
 public class QueryBuilder {
     private Schema schema;
 
@@ -19,6 +22,13 @@ public class QueryBuilder {
         this.schema = schema;
     }
 
+    /**
+     * Build a Query instance from a JSON String
+     *
+     * @param json JSON string
+     * @return query instance
+     * @throws MalformedQueryException
+     */
     public Query buildFromJSON(String json) throws MalformedQueryException {
         List<Condition> conditions = new ArrayList<Condition>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -34,6 +44,13 @@ public class QueryBuilder {
         }
     }
 
+    /**
+     * Handle Condition encountered in JSON structure. One condition in JSON can result in several Condition objects.
+     *
+     * @param node ObjectNode for the condition
+     * @return list of conditions
+     * @throws MalformedQueryException
+     */
     protected List<Condition> handleCondition(ObjectNode node) throws MalformedQueryException {
         String fieldName = node.get("field").asText();
         FieldIndex fieldIndex = schema.getFieldIndex(fieldName);

@@ -1,10 +1,13 @@
 package de.danielbasedow.prospecter.core;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * represents a Query (a tuple of queryId, bitmask and a list of conditions)
+ */
 public class Query {
     protected Long queryId;
     protected BitSet mask;
@@ -22,8 +25,13 @@ public class Query {
         mask.set(0, conditions.size(), true); //all bits set to 1
     }
 
-    public HashMap<Condition, QueryPosting> getPostings() {
-        HashMap<Condition, QueryPosting> postings = new HashMap<Condition, QueryPosting>();
+    /**
+     * Get QueryPostings for every Condition
+     *
+     * @return map of Condition -> QueryPosting
+     */
+    public Map<Condition, QueryPosting> getPostings() {
+        Map<Condition, QueryPosting> postings = new HashMap<Condition, QueryPosting>();
         short bit = 0;
         for (Condition condition : conditions) {
             postings.put(condition, new QueryPosting(queryId, bit));

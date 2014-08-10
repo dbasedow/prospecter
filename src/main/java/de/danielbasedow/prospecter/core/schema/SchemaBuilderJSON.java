@@ -14,10 +14,19 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Build a Schema from a JSON configuration.
+ */
 public class SchemaBuilderJSON implements SchemaBuilder {
     private Schema schema;
     private ObjectNode root;
 
+    /**
+     * Build Schema from JSON String
+     *
+     * @param json raw JSON string
+     * @throws SchemaConfigurationError
+     */
     public SchemaBuilderJSON(String json) throws SchemaConfigurationError {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -29,6 +38,12 @@ public class SchemaBuilderJSON implements SchemaBuilder {
         schema = new SchemaImpl();
     }
 
+    /**
+     * Build Schema from a JSON file
+     *
+     * @param file file to read JSON from
+     * @throws SchemaConfigurationError
+     */
     public SchemaBuilderJSON(File file) throws SchemaConfigurationError {
         ObjectMapper objectMapper = new ObjectMapper();
         try {

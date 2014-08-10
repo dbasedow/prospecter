@@ -36,19 +36,8 @@ public class SchemaImpl implements Schema {
         return indices.get(fieldIndexName).match(field);
     }
 
-    @Override
-    public void addPostingsToField(String fieldName, HashMap<Token, QueryPosting> postings) throws UndefinedIndexFieldException {
-        if (!indices.containsKey(fieldName)) {
-            throw new UndefinedIndexFieldException("No field named '" + fieldName + "'");
-        }
-        Set<Token> termIds = postings.keySet();
-        for (Token token : termIds) {
-            indices.get(fieldName).addPosting(token, postings.get(token));
-        }
-    }
-
     public void addQuery(Query query) throws UndefinedIndexFieldException {
-        HashMap<Condition, QueryPosting> postings = query.getPostings();
+        Map<Condition, QueryPosting> postings = query.getPostings();
         for (Map.Entry<Condition, QueryPosting> entry : postings.entrySet()) {
             Condition condition = entry.getKey();
             QueryPosting posting = entry.getValue();
