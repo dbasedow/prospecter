@@ -14,6 +14,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Thin wrapper around Lucene's org.apache.lucene.analysis.Analyzer
+ */
 public class LuceneAnalyzer implements Analyzer {
     private TokenMapper tokenMapper;
     private org.apache.lucene.analysis.Analyzer luceneAnalyzer;

@@ -7,6 +7,9 @@ import de.danielbasedow.prospecter.core.TokenMapper;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Simple implementation of Analyzer interface. Works even if lucene is not available.
+ */
 public class AnalyzerImpl implements Analyzer {
     protected Set<Filter> filterChain;
     private TokenMapper tokenMapper;

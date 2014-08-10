@@ -17,13 +17,26 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Build Document instances from JSON representations
+ */
 public class DocumentBuilder {
     protected Schema schema;
 
+    /**
+     * @param schema Schema to use
+     */
     public DocumentBuilder(Schema schema) {
         this.schema = schema;
     }
 
+    /**
+     * Get Document instance from a JSON representation
+     *
+     * @param json raw JSON
+     * @return Document instance
+     * @throws MalformedDocumentException
+     */
     public Document build(String json) throws MalformedDocumentException {
         ObjectMapper mapper = new ObjectMapper();
         Document doc = new Document();
@@ -37,19 +50,26 @@ public class DocumentBuilder {
                 doc.addField(fieldName, handleField(entry.getKey(), entry.getValue()));
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new MalformedDocumentException();
+            throw new MalformedDocumentException("Error parsing the JSON string", e);
         } catch (TokenizerException e) {
-            e.printStackTrace();
-            throw new MalformedDocumentException();
+            throw new MalformedDocumentException("Error tokenizing field content", e);
         }
         return doc;
     }
 
-    protected Field handleField(String fieldName, JsonNode node) throws MalformedDocumentException, TokenizerException {
+    /**
+     * build method dispatches every encountered field in JSON to this method.
+     *
+     * @param fieldName name of the field
+     * @param node      ObjectNode representing the field
+     * @return Field instance
+     * @throws MalformedDocumentException
+     * @throws TokenizerException
+     */
+    private Field handleField(String fieldName, JsonNode node) throws MalformedDocumentException, TokenizerException {
         FieldIndex index = schema.getFieldIndex(fieldName);
         if (index == null) {
-            throw new MalformedDocumentException();
+            throw new MalformedDocumentException("The document field '" + fieldName + "' doesn't exist in schema");
         }
 
         switch (index.getFieldType()) {
@@ -64,6 +84,13 @@ public class DocumentBuilder {
         }
     }
 
+    /**
+     * GeoDistanceIndex backed fields are handled here
+     *
+     * @param fieldName name of the field
+     * @param node      JsonNode representing the field content. This can be an array or an object
+     * @return Field instance
+     */
     private Field handleGeoDistanceField(String fieldName, JsonNode node) {
         List<Token> tokens = new ArrayList<Token>();
         if (node.getNodeType() == JsonNodeType.ARRAY) {
@@ -84,6 +111,13 @@ public class DocumentBuilder {
         return new Field(fieldName, tokens);
     }
 
+    /**
+     * IntegerIndex backed fields are handled here
+     *
+     * @param fieldName name of the field
+     * @param node      JsonNode representing the field content. This can be an array or a number
+     * @return Field instance
+     */
     private Field handleIntegerField(String fieldName, JsonNode node) {
         List<Token> tokens = new ArrayList<Token>();
         if (node.getNodeType() == JsonNodeType.ARRAY) {
@@ -100,6 +134,14 @@ public class DocumentBuilder {
         return new Field(fieldName, tokens);
     }
 
+    /**
+     * FullTextIndex backed fields are handled here
+     *
+     * @param fieldName name of the field
+     * @param node      JsonNode representing the field content. This has to be a text node
+     * @return Field instance
+     * @throws TokenizerException
+     */
     private Field handleFullTextField(String fieldName, JsonNode node) throws TokenizerException {
         Analyzer analyzer = ((FullTextIndex) schema.getFieldIndex(fieldName)).getAnalyzer();
         List<Token> tokens = analyzer.tokenize(node.asText(), true);
