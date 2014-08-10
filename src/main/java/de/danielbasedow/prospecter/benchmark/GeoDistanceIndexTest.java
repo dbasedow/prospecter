@@ -1,49 +1,97 @@
 package de.danielbasedow.prospecter.benchmark;
 
-import de.danielbasedow.prospecter.core.QueryPosting;
-import de.danielbasedow.prospecter.core.Token;
+import de.danielbasedow.prospecter.core.*;
+import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.Field;
+import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.LatLng;
 import de.danielbasedow.prospecter.core.index.GeoDistanceIndex;
+import de.danielbasedow.prospecter.core.schema.Schema;
+import de.danielbasedow.prospecter.core.schema.SchemaBuilder;
+import de.danielbasedow.prospecter.core.schema.SchemaBuilderJSON;
+import de.danielbasedow.prospecter.core.schema.SchemaConfigurationError;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class GeoDistanceIndexTest {
+    protected static final String schemaJSON = "{\n" +
+            "    \"fields\": {\n" +
+            "        \"location\": {\n" +
+            "            \"type\": \"GeoDistance\"\n" +
+            "        }\n" +
+            "    }\n" +
+            "}";
+
+    protected static final String documentJSON = "{\n" +
+            "        \"location\": {\n" +
+            "            \"lat\": 53.55,\n" +
+            "            \"lng\": 10\n" +
+            "        }\n" +
+            "}";
+
     public static void main(String[] args) {
-        GeoDistanceIndex index = new GeoDistanceIndex("foo");
-        System.out.print((new Date()).getTime());
-        System.out.println(" start filling index");
-        fillIndex(index, 1000000, 5.5, 15.0, 55.0, 47.0, 100000);
-        System.out.print((new Date()).getTime());
-        System.out.println(" done filling index");
+        try {
+            SchemaBuilder schemaBuilder = new SchemaBuilderJSON(schemaJSON);
+            Schema schema = schemaBuilder.getSchema();
+            System.out.print((new Date()).getTime());
+            System.out.println(" start filling index");
+            fillIndex(schema, 1000000, 5.5, 15.0, 55.0, 47.0, 100000);
+            System.out.print((new Date()).getTime());
+            System.out.println(" done filling index");
+            System.out.print((new Date()).getTime());
+            System.out.println(" start matching");
+            Document doc = schema.getDocumentBuilder().build(documentJSON);
 
-        List<Token> tokens = new ArrayList<Token>();
-        tokens.add(new Token<LatLng>(new LatLng(53.55, 10)));
+            Matcher matcher = schema.matchDocument(doc, schema.getMatcher());
+            System.out.print((new Date()).getTime());
+            System.out.println(" done matching");
+            System.out.println("Matched: " + Integer.toString(matcher.getMatchedQueries().size()));
+        } catch (SchemaConfigurationError e) {
+            e.printStackTrace();
+        } catch (MalformedDocumentException e) {
+            e.printStackTrace();
+        }
 
-        System.out.print((new Date()).getTime());
-        System.out.println(" start matching");
-        List<QueryPosting> postings = index.match(new Field("foo", tokens));
-        System.out.print((new Date()).getTime());
-        System.out.println(" done matching");
-        System.out.println("Matched: " + Integer.toString(postings.size()));
         printVMStats();
     }
 
-    private static void fillIndex(GeoDistanceIndex index, int count, double west, double east, double north, double south, int maxDistance) {
+    private static void fillIndex(Schema schema, int count, double west, double east, double north, double south, int maxDistance) {
+        QueryBuilder queryBuilder = schema.getQueryBuilder();
         for (int i = 0; i < count; i++) {
-            GeoPerimeter perimeter = getRandomLatLng(west, east, north, south, maxDistance);
-            Token<GeoPerimeter> token = new Token<GeoPerimeter>(perimeter);
-            index.addPosting(token, new QueryPosting(i, (short) 1));
+            String json = getRandomQuery(west, east, north, south, maxDistance, (long) i);
+            try {
+                Query q = queryBuilder.buildFromJSON(json);
+                schema.addQuery(q);
+            } catch (MalformedQueryException e) {
+                e.printStackTrace();
+            } catch (UndefinedIndexFieldException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private static GeoPerimeter getRandomLatLng(double west, double east, double north, double south, int maxDistance) {
+    private static String getRandomQuery(double west, double east, double north, double south, int maxDistance, Long queryId) {
         double latitude = Math.random() * (north - south) + south;
         double longitude = Math.random() * (east - west) + west;
-        return new GeoPerimeter(latitude, longitude, (int) (Math.random() * maxDistance));
+        return "{\n" +
+                "\"id\": " + String.valueOf(queryId) + ",\n" +
+                "\"query\": {" +
+                "   \"conditions\": [\n" +
+                "            {\n" +
+                "                \"field\": \"location\",\n" +
+                "                \"condition\": \"radius\",\n" +
+                "                \"value\": {\n" +
+                "                    \"lat\": " + String.valueOf(latitude) + ",\n" +
+                "                    \"lng\": " + String.valueOf(longitude) + ",\n" +
+                "                    \"distance\": " + String.valueOf((int) (Math.random() * maxDistance)) + "\n" +
+                "                }\n" +
+                "            }" +
+                "        ]" +
+                "    }" +
+                "}";
     }
 
     public static void printVMStats() {

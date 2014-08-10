@@ -8,6 +8,9 @@
         },
         "price": {
             "type": "Integer"
+        },
+        "location": {
+            "type": "GeoDistance"
         }
     }
 }

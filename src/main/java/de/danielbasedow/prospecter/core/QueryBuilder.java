@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.analysis.TokenizerException;
+import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
@@ -63,6 +64,8 @@ public class QueryBuilder {
                 }
             case INTEGER:
                 return handleInteger(fieldName, node);
+            case GEO_DISTANCE:
+                return handleGeoDistance(fieldName, node);
         }
         throw new MalformedQueryException();
     }
@@ -96,6 +99,20 @@ public class QueryBuilder {
         for (Token token : analyzer.tokenize(query)) {
             conditions.add(new Condition(fieldName, token));
         }
+        return conditions;
+    }
+
+    public List<Condition> handleGeoDistance(String fieldName, ObjectNode node) {
+        ObjectNode location = (ObjectNode) node.get("value");
+        List<Condition> conditions = new ArrayList<Condition>();
+
+        GeoPerimeter geo = new GeoPerimeter(
+                location.get("lat").asDouble(),
+                location.get("lng").asDouble(),
+                location.get("distance").asInt()
+        );
+        conditions.add(new Condition(fieldName, new Token<GeoPerimeter>(geo)));
+
         return conditions;
     }
 }
