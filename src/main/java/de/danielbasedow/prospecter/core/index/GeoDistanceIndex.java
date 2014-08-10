@@ -10,12 +10,15 @@ import de.danielbasedow.prospecter.core.geo.LatLng;
 import java.util.*;
 
 public class GeoDistanceIndex extends AbstractFieldIndex {
+    /**
+     * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
+     */
     private int maxDistanceInIndex;
     private SortedMap<Integer, List<Long>> limitsWest;
     private SortedMap<Integer, List<Long>> limitsEast;
     private SortedMap<Integer, List<Long>> limitsNorth;
     private SortedMap<Integer, List<Long>> limitsSouth;
-    private Map<Long, QueryPosting> postings;
+    private PostingAliasMap postings;
 
     public GeoDistanceIndex(String name) {
         super(name);
@@ -24,10 +27,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         limitsEast = new TreeMap<Integer, List<Long>>();
         limitsNorth = new TreeMap<Integer, List<Long>>();
         limitsSouth = new TreeMap<Integer, List<Long>>();
-        postings = new HashMap<Long, QueryPosting>();
-
-        postings = new HashMap<Long, QueryPosting>();
-
+        postings = new PostingAliasMap();
     }
 
     @Override
@@ -44,8 +44,8 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             matcher.matchIndex(limitsWest, intLongitude, perimeter.getWest());
             matcher.matchIndex(limitsNorth, intLatitude, perimeter.getNorth());
             matcher.matchIndex(limitsSouth, intLatitude, perimeter.getSouth());
-            for (Long queryId : matcher.getMatches()) {
-                postingsFound.add(postings.get(queryId));
+            for (Long aliasId : matcher.getMatches()) {
+                postingsFound.add(postings.get(aliasId));
             }
         }
         return postingsFound;
@@ -53,19 +53,23 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
 
     @Override
     public void addPosting(Token token, QueryPosting posting) {
-        if (postings.containsKey(posting.getQueryId())) {
-            //TODO: remove this limitation (don't just use queryId but bit position as well)
-            throw new UnsupportedOperationException("Multiple geo distance queries in one query are currently not supported");
-        }
-        postings.put(posting.getQueryId(), posting);
+        Long aliasId = postings.aliasPosting(posting);
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
         if (perimeter.getDistance() > maxDistanceInIndex) {
             maxDistanceInIndex = perimeter.getDistance();
         }
-        addOrCreatePostings(limitsWest, perimeter.getWest(), posting.getQueryId());
-        addOrCreatePostings(limitsEast, perimeter.getEast(), posting.getQueryId());
-        addOrCreatePostings(limitsNorth, perimeter.getNorth(), posting.getQueryId());
-        addOrCreatePostings(limitsSouth, perimeter.getSouth(), posting.getQueryId());
+        writeToIndex(perimeter, aliasId);
+        if (perimeter.spans180Longitude()) {
+            aliasId = postings.aliasPosting(posting);
+            writeToIndex(perimeter.mirrorInFakeSpace(), aliasId);
+        }
+    }
+
+    private void writeToIndex(GeoPerimeter perimeter, Long aliasId) {
+        addOrCreatePostings(limitsWest, perimeter.getWest(), aliasId);
+        addOrCreatePostings(limitsEast, perimeter.getEast(), aliasId);
+        addOrCreatePostings(limitsNorth, perimeter.getNorth(), aliasId);
+        addOrCreatePostings(limitsSouth, perimeter.getSouth(), aliasId);
     }
 
     @Override
@@ -73,7 +77,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         return FieldType.GEO_DISTANCE;
     }
 
-    private void addOrCreatePostings(SortedMap<Integer, List<Long>> index, Integer key, Long queryId) {
+    private void addOrCreatePostings(SortedMap<Integer, List<Long>> index, Integer key, Long aliasId) {
         List<Long> postings;
         if (index.containsKey(key)) {
             postings = index.get(key);
@@ -81,11 +85,15 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             postings = new ArrayList<Long>();
             index.put(key, postings);
         }
-        postings.add(queryId);
+        postings.add(aliasId);
     }
 
     protected class GeoMatcher {
+        /**
+         * Maps aliasId to counter
+         */
         private Map<Long, Byte> matches;
+
         /**
          * We have to match four times: east, west, north and south. Not necessarily in that order.
          * When discovering a match in a round greater one, we can ignore it if not already in matches table
@@ -107,17 +115,17 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             }
             if (navigableMap.size() > 0) {
                 for (Map.Entry<Integer, List<Long>> entry : navigableMap.entrySet()) {
-                    for (Long queryId : entry.getValue()) {
-                        recordMatch(queryId);
+                    for (Long aliasId : entry.getValue()) {
+                        recordMatch(aliasId);
                     }
                 }
             }
         }
 
-        private void recordMatch(Long queryId) {
+        private void recordMatch(Long aliasId) {
             Byte matchCount;
-            if (matches.containsKey(queryId)) {
-                matchCount = matches.get(queryId);
+            if (matches.containsKey(aliasId)) {
+                matchCount = matches.get(aliasId);
                 matchCount++;
             } else {
                 //Only create new entries in first round
@@ -127,20 +135,58 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
                     return;
                 }
             }
-            matches.put(queryId, matchCount);
+            matches.put(aliasId, matchCount);
         }
 
         public List<Long> getMatches() {
             if (roundCount < 4) {
                 throw new IllegalStateException("It looks like the matching phase has not completed");
             }
-            List<Long> queries = new ArrayList<Long>();
+            List<Long> aliases = new ArrayList<Long>();
             for (Map.Entry<Long, Byte> entry : matches.entrySet()) {
                 if (entry.getValue() == roundCount) {
-                    queries.add(entry.getKey());
+                    aliases.add(entry.getKey());
                 }
             }
-            return queries;
+            return aliases;
+        }
+    }
+
+    /**
+     * A single QueryPosting can result in two index entries if it spans from hemispheres at 180/-180
+     * PostingAliasMap supplies an alias id that allows looking up the QueryPosting
+     */
+    private class PostingAliasMap {
+        private HashMap<Long, QueryPosting> postings;
+        private long nextId;
+
+        public PostingAliasMap() {
+            postings = new HashMap<Long, QueryPosting>();
+            nextId = 0;
+        }
+
+        /**
+         * Gets an alias id and maps this id to the query posting. Calling this with the same posting more than once
+         * results in multiple aliases mapping to the same posting.
+         *
+         * @param posting posting to alias
+         * @return alias id
+         */
+        public Long aliasPosting(QueryPosting posting) {
+            Long id = nextId;
+            nextId++;
+            postings.put(id, posting);
+            return id;
+        }
+
+        /**
+         * Get posting for alias id
+         *
+         * @param id alias id
+         * @return aliased query posting
+         */
+        public QueryPosting get(Long id) {
+            return postings.get(id);
         }
     }
 }

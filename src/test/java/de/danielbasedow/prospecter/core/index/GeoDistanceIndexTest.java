@@ -26,4 +26,36 @@ public class GeoDistanceIndexTest extends TestCase {
         List<QueryPosting> postings = index.match(field);
         assertEquals(1, postings.size());
     }
+
+    public void testWesternWrap() {
+        GeoDistanceIndex index = new GeoDistanceIndex("foo");
+        GeoPerimeter perimeter = new GeoPerimeter(53.55, -179.98, 100000); //somewhere in Russia +100km
+        Token<GeoPerimeter> t = new Token<GeoPerimeter>(perimeter);
+        QueryPosting qp = new QueryPosting(1, (short) 1);
+        index.addPosting(t, qp);
+
+        LatLng latLng = new LatLng(53.55, 179.98); //also somewhere in Russia
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(new Token<LatLng>(latLng));
+        Field field = new Field("foo", tokens);
+
+        List<QueryPosting> postings = index.match(field);
+        assertEquals(1, postings.size());
+    }
+
+    public void testEasternWrap() {
+        GeoDistanceIndex index = new GeoDistanceIndex("foo");
+        GeoPerimeter perimeter = new GeoPerimeter(53.55, 179.98, 100000); //somewhere in Russia +100km
+        Token<GeoPerimeter> t = new Token<GeoPerimeter>(perimeter);
+        QueryPosting qp = new QueryPosting(1, (short) 1);
+        index.addPosting(t, qp);
+
+        LatLng latLng = new LatLng(53.55, -179.98); //also somewhere in Russia
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(new Token<LatLng>(latLng));
+        Field field = new Field("foo", tokens);
+
+        List<QueryPosting> postings = index.match(field);
+        assertEquals(1, postings.size());
+    }
 }

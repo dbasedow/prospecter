@@ -1,5 +1,12 @@
 package de.danielbasedow.prospecter.core.geo;
 
+/**
+ * In indices prospecter uses Integers to represent the latitude and longitude of coordinates.
+ *
+ * This class provides methods to switch between the Double and Integer representation.
+ *
+ * To
+ */
 public class GeoUtil {
     public static int latitudeToInt(double latitude) {
         if (latitude < -90) {
@@ -21,19 +28,17 @@ public class GeoUtil {
     public static int longitudeToInt(double longitude) {
         if (longitude < -360) {
             longitude = -360;
-        } else if (longitude < -360 || longitude > 180) {
-            longitude = 180;
+        } else if (longitude > 360) {
+            longitude = 360;
         }
-        //to have same resolution east and west of 0° we shift the range to -270 to 270
-        longitude += 90;
 
         int result = 0;
 
         if (longitude < 0) {
-            result = (int) ((Integer.MIN_VALUE / 270) * Math.abs(longitude));
+            result = (int) ((Integer.MIN_VALUE / 360) * Math.abs(longitude));
         }
         if (longitude > 0) {
-            result = (int) ((Integer.MAX_VALUE / 270) * Math.abs(longitude));
+            result = (int) ((Integer.MAX_VALUE / 360) * Math.abs(longitude));
         }
         return result;
     }
@@ -41,12 +46,10 @@ public class GeoUtil {
     public static double longitudeToDouble(int longitude) {
         double result = 0;
         if (longitude < 0) {
-            result = (-270.0 * longitude) / Integer.MIN_VALUE;
+            result = (-360.0 * longitude) / Integer.MIN_VALUE;
         } else if (longitude > 0) {
-            result = (270.0 * longitude) / Integer.MAX_VALUE;
+            result = (360.0 * longitude) / Integer.MAX_VALUE;
         }
-        //shift 90 degrees back
-        result -= 90;
         return result;
     }
 
