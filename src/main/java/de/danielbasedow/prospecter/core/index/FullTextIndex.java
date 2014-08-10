@@ -9,20 +9,24 @@ import de.danielbasedow.prospecter.core.document.Field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+/**
+ * Index enabling full text search
+ */
 public class FullTextIndex extends AbstractFieldIndex {
-    protected HashMap<Integer, ArrayList<QueryPosting>> index;
+    protected HashMap<Integer, List<QueryPosting>> index;
     private Analyzer analyzer;
 
     public FullTextIndex(String name) {
         super(name);
-        index = new HashMap<Integer, ArrayList<QueryPosting>>();
+        index = new HashMap<Integer, List<QueryPosting>>();
         //TODO: analyzer should be configurable
         analyzer = Guice.createInjector(new ProspecterModule()).getInstance(Analyzer.class);
     }
 
     public void addPosting(Token token, QueryPosting posting) {
-        ArrayList<QueryPosting> postingList;
+        List<QueryPosting> postingList;
         if (index.containsKey((Integer) token.getToken())) {
             postingList = index.get((Integer) token.getToken());
         } else {
@@ -37,7 +41,7 @@ public class FullTextIndex extends AbstractFieldIndex {
         return FieldType.FULL_TEXT;
     }
 
-    public ArrayList<QueryPosting> getQueryPostingsForTermId(Token token) {
+    public List<QueryPosting> getQueryPostingsForTermId(Token token) {
         Integer t = (Integer) token.getToken();
         if (index.containsKey(t)) {
             return index.get(t);
@@ -46,11 +50,11 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public ArrayList<QueryPosting> match(Field field) {
-        ArrayList<QueryPosting> postings = new ArrayList<QueryPosting>();
+    public List<QueryPosting> match(Field field) {
+        List<QueryPosting> postings = new ArrayList<QueryPosting>();
         for (Token token : field.getTokens()) {
             Integer t = (Integer) token.getToken();
-            ArrayList<QueryPosting> additionalPostings = index.get(t);
+            List<QueryPosting> additionalPostings = index.get(t);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }

@@ -1,5 +1,8 @@
 package de.danielbasedow.prospecter.core.geo;
 
+/**
+ * Represents coordinates on earth
+ */
 public class LatLng {
     private final double latitude;
     private final double longitude;

@@ -54,7 +54,7 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(0, index.indexLessThan.size());
         int[] int_single = {2};
         Field f = makeField(int_single);
-        ArrayList<QueryPosting> postings = index.match(f);
+        List<QueryPosting> postings = index.match(f);
         assertEquals(2, postings.size());
 
         int[] int_high = {101};
@@ -80,7 +80,7 @@ public class IntegerIndexTest extends TestCase {
 
         int[] int_single = {2};
         Field f = makeField(int_single);
-        ArrayList<QueryPosting> postings = index.match(f);
+        List<QueryPosting> postings = index.match(f);
         assertEquals(2, postings.size());
 
         int[] int_high = {100};
@@ -99,7 +99,7 @@ public class IntegerIndexTest extends TestCase {
 
         int[] int_single = {0};
         Field f = makeField(int_single);
-        ArrayList<QueryPosting> postings = index.match(f);
+        List<QueryPosting> postings = index.match(f);
         assertEquals(1, postings.size());
     }
 

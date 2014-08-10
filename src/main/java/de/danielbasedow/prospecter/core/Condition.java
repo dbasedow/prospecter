@@ -1,5 +1,8 @@
 package de.danielbasedow.prospecter.core;
 
+/**
+ * A Condition is represented by a field name and token combination.
+ */
 public class Condition {
     private final String fieldName;
     private final Token token;

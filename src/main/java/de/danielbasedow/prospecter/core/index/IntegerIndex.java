@@ -4,9 +4,7 @@ import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -19,20 +17,20 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class IntegerIndex extends AbstractFieldIndex {
 
-    ConcurrentSkipListMap<Integer, ArrayList<QueryPosting>> indexGreaterThan;
-    ConcurrentSkipListMap<Integer, ArrayList<QueryPosting>> indexLessThan;
-    ConcurrentHashMap<Integer, ArrayList<QueryPosting>> indexEqual;
+    SortedMap<Integer, List<QueryPosting>> indexGreaterThan;
+    SortedMap<Integer, List<QueryPosting>> indexLessThan;
+    Map<Integer, List<QueryPosting>> indexEqual;
 
     public IntegerIndex(String name) {
         super(name);
-        indexGreaterThan = new ConcurrentSkipListMap<Integer, ArrayList<QueryPosting>>();
-        indexLessThan = new ConcurrentSkipListMap<Integer, ArrayList<QueryPosting>>();
-        indexEqual = new ConcurrentHashMap<Integer, ArrayList<QueryPosting>>();
+        indexGreaterThan = new ConcurrentSkipListMap<Integer, List<QueryPosting>>();
+        indexLessThan = new ConcurrentSkipListMap<Integer, List<QueryPosting>>();
+        indexEqual = new ConcurrentHashMap<Integer, List<QueryPosting>>();
     }
 
     @Override
-    public ArrayList<QueryPosting> match(Field field) {
-        ArrayList<QueryPosting> postings = new ArrayList<QueryPosting>();
+    public List<QueryPosting> match(Field field) {
+        List<QueryPosting> postings = new ArrayList<QueryPosting>();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             Integer intToken = (Integer) token.getToken();
@@ -43,35 +41,35 @@ public class IntegerIndex extends AbstractFieldIndex {
         return postings;
     }
 
-    protected void collectEqualMatches(ArrayList<QueryPosting> postings, Integer token) {
+    protected void collectEqualMatches(List<QueryPosting> postings, Integer token) {
         if (indexEqual.containsKey(token)) {
             postings.addAll(indexEqual.get(token));
         }
     }
 
-    protected void collectGreaterThanMatches(ArrayList<QueryPosting> postings, Integer token) {
+    protected void collectGreaterThanMatches(List<QueryPosting> postings, Integer token) {
         /**
          * The indexGreaterThan contains postings for "field > x" so if x is 10 a posting would be added for 10
          * in order to get the relevant postings we have to look at all key that are LESS than the field value
          * A field containing y has to return all fields less than y so: -n < 0 < x < y < n
          */
-        ConcurrentNavigableMap<Integer, ArrayList<QueryPosting>> navigableMap = indexGreaterThan.headMap(token);
+        Map<Integer, List<QueryPosting>> navigableMap = indexGreaterThan.headMap(token);
         if (navigableMap.size() > 0) {
-            for (Map.Entry<Integer, ArrayList<QueryPosting>> entry : navigableMap.entrySet()) {
+            for (Map.Entry<Integer, List<QueryPosting>> entry : navigableMap.entrySet()) {
                 postings.addAll(entry.getValue());
             }
         }
     }
 
-    protected void collectLessThanMatches(ArrayList<QueryPosting> postings, Integer token) {
+    protected void collectLessThanMatches(List<QueryPosting> postings, Integer token) {
         /**
          * The indexLessThan contains postings for "field < x" so if x is 10 a posting would be added for 10
          * in order to get the relevant postings we have to look at all key that are GREATER than the field value
          * A field containing y has to return all fields greater than y so: -n < 0 < x < y < n
          */
-        ConcurrentNavigableMap<Integer, ArrayList<QueryPosting>> navigableMap = indexLessThan.tailMap(token);
+        Map<Integer, List<QueryPosting>> navigableMap = indexLessThan.tailMap(token);
         if (navigableMap.size() > 0) {
-            for (Map.Entry<Integer, ArrayList<QueryPosting>> entry : navigableMap.entrySet()) {
+            for (Map.Entry<Integer, List<QueryPosting>> entry : navigableMap.entrySet()) {
                 postings.addAll(entry.getValue());
             }
         }
@@ -106,8 +104,8 @@ public class IntegerIndex extends AbstractFieldIndex {
         return FieldType.INTEGER;
     }
 
-    private ArrayList<QueryPosting> getOrCreate(Map<Integer, ArrayList<QueryPosting>> map, Integer key) {
-        ArrayList<QueryPosting> postings;
+    private List<QueryPosting> getOrCreate(Map<Integer, List<QueryPosting>> map, Integer key) {
+        List<QueryPosting> postings;
         if (map.containsKey(key)) {
             postings = map.get(key);
         } else {

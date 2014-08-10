@@ -9,6 +9,17 @@ import de.danielbasedow.prospecter.core.geo.LatLng;
 
 import java.util.*;
 
+/**
+ * Enables geo distance search queries.
+ * <p/>
+ * Indexing a geo distance Token results in entries in sorted maps for all four cardinal directions (N, E, S, W).
+ * <p/>
+ * To reduce range searches and simplifying calculations this implementation add 360° to the earth's longitudes. As in
+ * reality, 180W equals 180E. Additionally 360E equals 180W and 360W. Same goes for the other direction.
+ * <p/>
+ * This allows simple calculations of eastern and western limits by adding or subtracting from the center. For searches
+ * spanning 180° a second posting in all maps is added on the other side of the system.
+ */
 public class GeoDistanceIndex extends AbstractFieldIndex {
     /**
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
@@ -60,6 +71,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         }
         writeToIndex(perimeter, aliasId);
         if (perimeter.spans180Longitude()) {
+            //if it spans 180° add fake posting on other side of earth
             aliasId = postings.aliasPosting(posting);
             writeToIndex(perimeter.mirrorInFakeSpace(), aliasId);
         }
@@ -88,6 +100,10 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         postings.add(aliasId);
     }
 
+    /**
+     * Special matcher used to find all postings that have ALL FOUR limits around the coordinate in the document field.
+     * All four maps HAVE TO match to match the query posting.
+     */
     protected class GeoMatcher {
         /**
          * Maps aliasId to counter
@@ -105,6 +121,13 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             roundCount = 0;
         }
 
+        /**
+         * Check SortedMap for entries between coordinate and limit.
+         *
+         * @param index      map to search
+         * @param coordinate document fields longitude or latitude
+         * @param limit      eastern, western, northern or southern limit
+         */
         public void matchIndex(SortedMap<Integer, List<Long>> index, Integer coordinate, Integer limit) {
             roundCount++;
             SortedMap<Integer, List<Long>> navigableMap;
@@ -122,6 +145,11 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             }
         }
 
+        /**
+         * Record match to keep track of how often a posting alias was encountered.
+         *
+         * @param aliasId matched alias id
+         */
         private void recordMatch(Long aliasId) {
             Byte matchCount;
             if (matches.containsKey(aliasId)) {
@@ -138,6 +166,11 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             matches.put(aliasId, matchCount);
         }
 
+        /**
+         * Get all aliases that have been matched exactly 4 times.
+         *
+         * @return matching aliases
+         */
         public List<Long> getMatches() {
             if (roundCount < 4) {
                 throw new IllegalStateException("It looks like the matching phase has not completed");

@@ -1,18 +1,12 @@
 package de.danielbasedow.prospecter.core;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 
 public class MatcherTest extends TestCase {
-    private Injector injector;
-
-    public void setUp() {
-        injector = Guice.createInjector(new ProspecterModule());
-    }
 
     public void test() {
         FullTextIndex ft = new FullTextIndex("_all");
@@ -21,7 +15,7 @@ public class MatcherTest extends TestCase {
         Matcher m = new Matcher(new QueryManager());
         ArrayList<Token> tokens = new ArrayList<Token>();
         tokens.add(new Token<Integer>(1, MatchCondition.EQUALS));
-        m.collectHits(ft, tokens);
+        m.addHits(ft.match(new Field("_all", tokens)));
         assertEquals(1, m.hits.size());
     }
 }

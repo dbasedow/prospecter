@@ -6,12 +6,33 @@ import de.danielbasedow.prospecter.core.document.Field;
 
 import java.util.List;
 
+/**
+ * Interface representing an index for a field encountered in queries and documents. The data types and methods for
+ * matching vary from index type to index type.
+ */
 public interface FieldIndex {
     public String getName();
 
+    /**
+     * Finds all QueryPosting that match the given Field and returns them as a List
+     *
+     * @param field Field instance from Document to match against
+     * @return query postings matching field
+     */
     public List<QueryPosting> match(Field field);
 
+    /**
+     * Add a single QueryPosting that will be matched if token is present in the field in match()
+     *
+     * @param token   Token to match on later on
+     * @param posting query posting
+     */
     public void addPosting(Token token, QueryPosting posting);
 
+    /**
+     * Get FieldType of this FieldIndex
+     *
+     * @return type of this field
+     */
     public FieldType getFieldType();
 }
