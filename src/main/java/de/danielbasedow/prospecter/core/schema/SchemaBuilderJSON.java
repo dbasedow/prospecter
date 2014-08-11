@@ -32,7 +32,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
             root = (ObjectNode) objectMapper.readTree(json);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SchemaConfigurationError();
+            throw new SchemaConfigurationError("Could not parse schema JSON.");
         }
         schema = new SchemaImpl();
     }
@@ -49,7 +49,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
             root = (ObjectNode) objectMapper.readTree(file);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SchemaConfigurationError();
+            throw new SchemaConfigurationError("Could not parse schema JSON from file " + file.getAbsoluteFile());
         }
         schema = new SchemaImpl();
     }
@@ -64,7 +64,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
                 schema.addFieldIndex(index.getName(), index);
             }
         } catch (Exception e) {
-            throw new SchemaConfigurationError();
+            throw new SchemaConfigurationError("Could not parse JSON tree");
         }
     }
 

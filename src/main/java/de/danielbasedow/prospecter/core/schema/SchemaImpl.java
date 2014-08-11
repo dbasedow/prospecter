@@ -24,7 +24,10 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public void addFieldIndex(String fieldName, FieldIndex index) {
+    public void addFieldIndex(String fieldName, FieldIndex index) throws SchemaConfigurationError {
+        if (indices.containsKey(fieldName)) {
+            throw new SchemaConfigurationError("Field '" + fieldName + "' is defined more than once!");
+        }
         indices.put(fieldName, index);
     }
 

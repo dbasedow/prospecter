@@ -21,7 +21,7 @@ public interface Schema {
      * @param fieldName name of the field
      * @param index     index instance used to back this field
      */
-    public void addFieldIndex(String fieldName, FieldIndex index);
+    public void addFieldIndex(String fieldName, FieldIndex index) throws SchemaConfigurationError;
 
     /**
      * Get matches for a specific field. Useful for debugging index implementations.
