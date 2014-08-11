@@ -84,9 +84,63 @@ public class DocumentBuilder {
                 return handleGeoDistanceField(fieldName, node);
             case DATE_TIME:
                 return handleDateTimeField(fieldName, node);
+            case STRING:
+                return handleStringField(fieldName, node);
+            case DOUBLE:
+                return handleDoubleField(fieldName, node);
+            case LONG:
+                return handleLongField(fieldName, node);
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    private Field handleLongField(String fieldName, JsonNode node) {
+        List<Token> tokens = new ArrayList<Token>();
+        if (node.getNodeType() == JsonNodeType.ARRAY) {
+            Iterator<JsonNode> iterator = ((ArrayNode) node).elements();
+            while (iterator.hasNext()) {
+                JsonNode subNode = iterator.next();
+                if (subNode.getNodeType() == JsonNodeType.NUMBER) {
+                    tokens.add(new Token<Long>(subNode.asLong()));
+                }
+            }
+        } else if (node.getNodeType() == JsonNodeType.NUMBER) {
+            tokens.add(new Token<Long>(node.asLong()));
+        }
+        return new Field(fieldName, tokens);
+    }
+
+    private Field handleDoubleField(String fieldName, JsonNode node) {
+        List<Token> tokens = new ArrayList<Token>();
+        if (node.getNodeType() == JsonNodeType.ARRAY) {
+            Iterator<JsonNode> iterator = ((ArrayNode) node).elements();
+            while (iterator.hasNext()) {
+                JsonNode subNode = iterator.next();
+                if (subNode.getNodeType() == JsonNodeType.NUMBER) {
+                    tokens.add(new Token<Double>(subNode.asDouble()));
+                }
+            }
+        } else if (node.getNodeType() == JsonNodeType.NUMBER) {
+            tokens.add(new Token<Double>(node.asDouble()));
+        }
+        return new Field(fieldName, tokens);
+    }
+
+    private Field handleStringField(String fieldName, JsonNode node) {
+        List<Token> tokens = new ArrayList<Token>();
+        if (node.getNodeType() == JsonNodeType.ARRAY) {
+            Iterator<JsonNode> iterator = ((ArrayNode) node).elements();
+            while (iterator.hasNext()) {
+                JsonNode subNode = iterator.next();
+                if (subNode.getNodeType() == JsonNodeType.STRING) {
+                    tokens.add(new Token<String>(subNode.asText()));
+                }
+            }
+        } else if (node.getNodeType() == JsonNodeType.STRING) {
+            tokens.add(new Token<String>(node.asText()));
+        }
+        return new Field(fieldName, tokens);
     }
 
     /**

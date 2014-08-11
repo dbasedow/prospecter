@@ -7,5 +7,8 @@ public enum FieldType {
     FULL_TEXT,
     INTEGER,
     GEO_DISTANCE,
-    DATE_TIME
+    DATE_TIME,
+    LONG,
+    DOUBLE,
+    STRING
 }

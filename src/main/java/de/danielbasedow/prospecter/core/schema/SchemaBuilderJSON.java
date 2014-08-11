@@ -78,6 +78,12 @@ public class SchemaBuilderJSON implements SchemaBuilder {
             index = new IntegerIndex(fieldName);
         } else if ("GeoDistance".equals(type)) {
             index = new GeoDistanceIndex(fieldName);
+        } else if ("String".equals(type)) {
+            index = new StringIndex(fieldName);
+        } else if ("Long".equals(type)) {
+            index = new LongIndex(fieldName);
+        } else if ("Double".equals(type)) {
+            index = new DoubleIndex(fieldName);
         } else if ("DateTime".equals(type)) {
             JsonNode format = node.get("format");
             DateFormat df;

@@ -71,8 +71,42 @@ public class QueryBuilder {
                 return handleGeoDistance(fieldName, node);
             case DATE_TIME:
                 return handleDateTime(fieldName, node);
+            case LONG:
+                return handleLong(fieldName, node);
+            case DOUBLE:
+                return handleDouble(fieldName, node);
+            case STRING:
+                return handleString(fieldName, node);
         }
         throw new MalformedQueryException("Field '" + fieldName + "' does not seem to be supported.");
+    }
+
+    private List<Condition> handleString(String fieldName, ObjectNode node) {
+        String value = node.get("value").asText();
+        Token<String> token = new Token<String>(value, MatchCondition.EQUALS);
+        List<Condition> conditions = new ArrayList<Condition>();
+        conditions.add(new Condition(fieldName, token));
+        return conditions;
+    }
+
+    private List<Condition> handleLong(String fieldName, ObjectNode node) {
+        Long value = node.get("value").asLong();
+        String comparator = node.get("condition").asText();
+        MatchCondition matchCondition = getMatchCondition(comparator);
+        Token<Long> token = new Token<Long>(value, matchCondition);
+        List<Condition> conditions = new ArrayList<Condition>();
+        conditions.add(new Condition(fieldName, token));
+        return conditions;
+    }
+
+    private List<Condition> handleDouble(String fieldName, ObjectNode node) {
+        Double value = node.get("value").asDouble();
+        String comparator = node.get("condition").asText();
+        MatchCondition matchCondition = getMatchCondition(comparator);
+        Token<Double> token = new Token<Double>(value, matchCondition);
+        List<Condition> conditions = new ArrayList<Condition>();
+        conditions.add(new Condition(fieldName, token));
+        return conditions;
     }
 
     private MatchCondition getMatchCondition(String comparator) {
