@@ -1,6 +1,7 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.benchmark;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
@@ -55,12 +56,20 @@ public class Application {
     public static void main(String[] args) {
         try {
             Schema schema = buildSchema(args[0]);
+
+            String line;
+            BufferedReader testDoc = new BufferedReader(new FileReader(new File(args[2])));
+            String queryStr = "";
+            while ((line = testDoc.readLine()) != null) {
+                queryStr = queryStr + " " + line;
+            }
+            //Document testDocument = buildDoc(schema.getDocumentBuilder(), queryStr);
+
+
             QueryBuilder queryBuilder = schema.getQueryBuilder();
 
             BufferedReader br = new BufferedReader(new FileReader(new File(args[1])));
-            String line;
             long i = 0;
-            System.out.println("start indexing " + (new Date()).getTime());
             while ((line = br.readLine()) != null) {
                 String[] columns = line.trim().split("\\t");
                 i++;
@@ -68,27 +77,22 @@ public class Application {
                     Query q = queryBuilder.buildFromJSON(buildJsonQuery(columns[2].trim(), i));
                     schema.addQuery(q);
                 }
+                if (i % 10000 == 0) {
+                    System.out.println("indexed " + String.valueOf(i));
+                    for (int p = 0; p < 3; p++) {
+                        testPerformance(schema, queryStr);
+                    }
+                }
             }
             br.close();
-            System.out.println("indexing done " + (new Date()).getTime());
-            System.out.println(i);
-            BufferedReader testDoc = new BufferedReader(new FileReader(new File(args[2])));
-            String queryStr = "";
-            while ((line = testDoc.readLine()) != null) {
-                queryStr = queryStr + " " + line;
-            }
-            System.out.println("start matching " + (new Date()).getTime());
-            Document doc = buildDoc(schema.getDocumentBuilder(), queryStr);
-            Matcher matcher = schema.getMatcher();
-            schema.matchDocument(doc, matcher);
-            System.out.println("matching done " + (new Date()).getTime());
-
-            System.out.println("start testing " + (new Date()).getTime());
-            List<Query> queries = matcher.getMatchedQueries();
-            System.out.println("testing done " + (new Date()).getTime());
-
-            System.out.println("Queries returned: " + Integer.toString(queries.size()));
-
+            /*
+            //Insert some tweets here
+            System.out.println("run tweets");
+            runMatching(schema, "");
+            runMatching(schema, "");
+            runMatching(schema, "");
+            runMatching(schema, "");
+            */
             printVMStats();
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,6 +103,31 @@ public class Application {
         } catch (MalformedQueryException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public static void testPerformance(Schema schema, String doc) {
+        long start = (new Date()).getTime();
+        Document document = buildDoc(schema.getDocumentBuilder(), doc);
+        Matcher matcher = schema.matchDocument(document);
+        List<Query> queries = matcher.getMatchedQueries();
+        long end = (new Date()).getTime();
+        System.out.print(queries.size());
+        System.out.print(" ");
+        System.out.println(end - start);
+    }
+
+    public static void runMatching(Schema schema, String queryStr) {
+        System.out.println("start matching " + (new Date()).getTime());
+        Document doc = buildDoc(schema.getDocumentBuilder(), queryStr);
+        Matcher matcher = schema.matchDocument(doc);
+        System.out.println("matching done " + (new Date()).getTime());
+
+        System.out.println("start testing " + (new Date()).getTime());
+        List<Query> queries = matcher.getMatchedQueries();
+        System.out.println("testing done " + (new Date()).getTime());
+
+        System.out.println("Queries returned: " + Integer.toString(queries.size()));
 
     }
 
