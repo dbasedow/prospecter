@@ -2,15 +2,14 @@ package de.danielbasedow.prospecter.core.schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import de.danielbasedow.prospecter.core.index.FieldIndex;
-import de.danielbasedow.prospecter.core.index.FullTextIndex;
-import de.danielbasedow.prospecter.core.index.GeoDistanceIndex;
-import de.danielbasedow.prospecter.core.index.IntegerIndex;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import de.danielbasedow.prospecter.core.index.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -79,6 +78,15 @@ public class SchemaBuilderJSON implements SchemaBuilder {
             index = new IntegerIndex(fieldName);
         } else if ("GeoDistance".equals(type)) {
             index = new GeoDistanceIndex(fieldName);
+        } else if ("DateTime".equals(type)) {
+            JsonNode format = node.get("format");
+            DateFormat df;
+            if (format != null) {
+                df = new SimpleDateFormat(format.asText());
+            } else {
+                df = new ISO8601DateFormat();
+            }
+            index = new DateTimeIndex(fieldName, df);
         }
 
         return index;

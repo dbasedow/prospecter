@@ -9,12 +9,15 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.analysis.TokenizerException;
 import de.danielbasedow.prospecter.core.geo.LatLng;
+import de.danielbasedow.prospecter.core.index.DateTimeIndex;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -79,6 +82,8 @@ public class DocumentBuilder {
                 return handleIntegerField(fieldName, node);
             case GEO_DISTANCE:
                 return handleGeoDistanceField(fieldName, node);
+            case DATE_TIME:
+                return handleDateTimeField(fieldName, node);
             default:
                 throw new NotImplementedException();
         }
@@ -130,6 +135,36 @@ public class DocumentBuilder {
             }
         } else if (node.getNodeType() == JsonNodeType.NUMBER) {
             tokens.add(new Token<Integer>(node.asInt()));
+        }
+        return new Field(fieldName, tokens);
+    }
+
+    /**
+     * DateTimeIndex backed fields are handled here
+     *
+     * @param fieldName name of the field
+     * @param node      JsonNode representing the field content. This can be an array or a formatted date
+     * @return Field instance
+     */
+    private Field handleDateTimeField(String fieldName, JsonNode node) {
+        List<Token> tokens = new ArrayList<Token>();
+        DateFormat dateFormat = ((DateTimeIndex) schema.getFieldIndex(fieldName)).getDateFormat();
+        try {
+            if (node.getNodeType() == JsonNodeType.ARRAY) {
+                Iterator<JsonNode> iterator = ((ArrayNode) node).elements();
+                while (iterator.hasNext()) {
+                    JsonNode subNode = iterator.next();
+                    if (subNode.getNodeType() == JsonNodeType.STRING) {
+                        String value = subNode.asText();
+                        tokens.add(new Token<Long>(dateFormat.parse(value).getTime()));
+                    }
+                }
+            } else if (node.getNodeType() == JsonNodeType.STRING) {
+                String value = node.asText();
+                tokens.add(new Token<Long>(dateFormat.parse(value).getTime()));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return new Field(fieldName, tokens);
     }

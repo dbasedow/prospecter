@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.analysis.TokenizerException;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
+import de.danielbasedow.prospecter.core.index.DateTimeIndex;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,7 +44,7 @@ public class QueryBuilder {
             }
             return new Query(queryId, conditions);
         } catch (Exception e) {
-            throw new MalformedQueryException();
+            throw new MalformedQueryException("Error parsing query");
         }
     }
 
@@ -66,29 +69,52 @@ public class QueryBuilder {
                 return handleInteger(fieldName, node);
             case GEO_DISTANCE:
                 return handleGeoDistance(fieldName, node);
+            case DATE_TIME:
+                return handleDateTime(fieldName, node);
         }
-        throw new MalformedQueryException();
+        throw new MalformedQueryException("Field '" + fieldName + "' does not seem to be supported.");
+    }
+
+    private MatchCondition getMatchCondition(String comparator) {
+        if ("gt".equals(comparator)) {
+            return MatchCondition.GREATER_THAN;
+        } else if ("gte".equals(comparator)) {
+            return MatchCondition.GREATER_THAN_EQUALS;
+        } else if ("lt".equals(comparator)) {
+            return MatchCondition.LESS_THAN;
+        } else if ("lte".equals(comparator)) {
+            return MatchCondition.LESS_THAN_EQUALS;
+        } else if ("eq".equals(comparator)) {
+            return MatchCondition.EQUALS;
+        } else {
+            return MatchCondition.NONE;
+        }
     }
 
     private List<Condition> handleInteger(String fieldName, ObjectNode node) {
         Integer value = node.get("value").asInt();
         String comparator = node.get("condition").asText();
-        MatchCondition matchCondition = MatchCondition.NONE;
-        if ("gt".equals(comparator)) {
-            matchCondition = MatchCondition.GREATER_THAN;
-        } else if ("gte".equals(comparator)) {
-            matchCondition = MatchCondition.GREATER_THAN_EQUALS;
-        } else if ("lt".equals(comparator)) {
-            matchCondition = MatchCondition.LESS_THAN;
-        } else if ("lte".equals(comparator)) {
-            matchCondition = MatchCondition.LESS_THAN_EQUALS;
-        } else if ("eq".equals(comparator)) {
-            matchCondition = MatchCondition.EQUALS;
-        }
+        MatchCondition matchCondition = getMatchCondition(comparator);
         Token<Integer> token = new Token<Integer>(value, matchCondition);
         List<Condition> conditions = new ArrayList<Condition>();
         conditions.add(new Condition(fieldName, token));
         return conditions;
+    }
+
+    private List<Condition> handleDateTime(String fieldName, ObjectNode node) throws MalformedQueryException {
+        String rawValue = node.get("value").asText();
+        try {
+            //Get DateFormat from Schema and parse value according to format
+            Date date = ((DateTimeIndex) schema.getFieldIndex(fieldName)).getDateFormat().parse(rawValue);
+            String comparator = node.get("condition").asText();
+            MatchCondition matchCondition = getMatchCondition(comparator);
+            Token<Long> token = new Token<Long>(date.getTime(), matchCondition);
+            List<Condition> conditions = new ArrayList<Condition>();
+            conditions.add(new Condition(fieldName, token));
+            return conditions;
+        } catch (ParseException e) {
+            throw new MalformedQueryException("Date could not be parsed: '" + rawValue + "'", e);
+        }
     }
 
     public List<Condition> handleFullText(String fieldName, ObjectNode node) throws TokenizerException {
