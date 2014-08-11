@@ -81,22 +81,20 @@ public class DateTimeIndexTest extends TestCase {
             schema.addQuery(query);
             DocumentBuilder builder = schema.getDocumentBuilder();
 
+            Matcher matcher;
             //EQUAL
-            Matcher matcher = schema.getMatcher();
             Document doc = builder.build("{\"dateTime\": \"2014-08-10T19:22:51Z\"}");
-            schema.matchDocument(doc, matcher);
+            matcher = schema.matchDocument(doc);
             assertEquals(1, matcher.getMatchedQueries().size());
 
             //GREATER
-            matcher = schema.getMatcher();
             doc = builder.build("{\"dateTime\": \"2014-08-10T19:23:00Z\"}");
-            schema.matchDocument(doc, matcher);
+            matcher = schema.matchDocument(doc);
             assertEquals(1, matcher.getMatchedQueries().size());
 
             //LESS
-            matcher = schema.getMatcher();
             doc = builder.build("{\"dateTime\": \"2014-08-10T19:22:50Z\"}"); // one second less
-            schema.matchDocument(doc, matcher);
+            matcher = schema.matchDocument(doc);
             assertEquals(0, matcher.getMatchedQueries().size()); //date has to be GREATER or EQUAL the value in query
         } catch (Exception e) {
             assertTrue(false);

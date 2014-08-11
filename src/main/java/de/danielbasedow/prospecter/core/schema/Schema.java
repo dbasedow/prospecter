@@ -50,6 +50,14 @@ public interface Schema {
      */
     public Matcher matchDocument(Document doc, Matcher matcher);
 
+    /**
+     * Collect all matches from a document. A new Matcher instance is automatically created
+     *
+     * @param doc document instance
+     * @return matcher
+     */
+    public Matcher matchDocument(Document doc);
+
     public int getFieldCount();
 
     public FieldIndex getFieldIndex(String name);

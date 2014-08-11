@@ -52,6 +52,11 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
+    public Matcher matchDocument(Document doc) {
+        return matchDocument(doc, getMatcher());
+    }
+
+    @Override
     public Matcher matchDocument(Document doc, Matcher matcher) {
         FieldIterator fields = doc.getFields();
         while (fields.hasNext()) {

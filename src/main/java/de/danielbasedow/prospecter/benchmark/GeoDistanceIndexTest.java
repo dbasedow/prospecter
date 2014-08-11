@@ -45,7 +45,7 @@ public class GeoDistanceIndexTest {
             System.out.println(" start matching");
             Document doc = schema.getDocumentBuilder().build(documentJSON);
 
-            Matcher matcher = schema.matchDocument(doc, schema.getMatcher());
+            Matcher matcher = schema.matchDocument(doc);
             System.out.print((new Date()).getTime());
             System.out.println(" done matching");
             System.out.println("Matched: " + Integer.toString(matcher.getMatchedQueries().size()));
