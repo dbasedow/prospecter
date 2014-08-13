@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import de.danielbasedow.prospecter.core.analysis.AbstractAnalyzer;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.index.*;
 
@@ -110,7 +109,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
     }
 
     private Analyzer getAnalyzer(JsonNode options) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        String analyzerName = "de.danielbasedow.prospecter.core.analysis.LuceneAnalyzer";
+        String analyzerName = "de.danielbasedow.prospecter.core.analysis.LuceneStandardAnalyzer";
         if (options != null && options.getNodeType() == JsonNodeType.OBJECT) {
             JsonNode analyzerNode = options.get("analyzer");
             if (analyzerNode != null && analyzerNode.getNodeType() == JsonNodeType.STRING) {
@@ -119,7 +118,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
         }
         Class class_ = Class.forName(analyzerName);
         Method factory = class_.getMethod("make", JsonNode.class);
-        return (AbstractAnalyzer) factory.invoke(null, options);
+        return (Analyzer) factory.invoke(null, options);
     }
 
     @Override

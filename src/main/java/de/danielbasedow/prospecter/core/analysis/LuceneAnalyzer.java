@@ -1,16 +1,12 @@
 package de.danielbasedow.prospecter.core.analysis;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.util.CharArraySet;
-import org.apache.lucene.util.Version;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -20,14 +16,13 @@ import java.util.List;
 /**
  * Thin wrapper around Lucene's org.apache.lucene.analysis.Analyzer
  */
-public class LuceneAnalyzer extends AbstractAnalyzer {
-    private TokenMapper tokenMapper;
-    private org.apache.lucene.analysis.Analyzer luceneAnalyzer;
+public abstract class LuceneAnalyzer implements Analyzer {
+    protected TokenMapper tokenMapper;
+    protected org.apache.lucene.analysis.Analyzer luceneAnalyzer;
 
     @Inject
     public LuceneAnalyzer(TokenMapper mapper) {
         tokenMapper = mapper;
-        luceneAnalyzer = new StandardAnalyzer(Version.LUCENE_4_9, CharArraySet.EMPTY_SET);
     }
 
     @Override
@@ -58,8 +53,7 @@ public class LuceneAnalyzer extends AbstractAnalyzer {
     }
 
     public static Analyzer make(JsonNode options) {
-        Injector injector = Guice.createInjector(new AnalyzerModule());
-        Analyzer analyzer = injector.getInstance(LuceneAnalyzer.class);
-        return analyzer;
+        throw new NotImplementedException();
     }
+
 }

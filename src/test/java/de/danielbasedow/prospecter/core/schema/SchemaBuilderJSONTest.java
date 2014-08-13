@@ -11,7 +11,7 @@ public class SchemaBuilderJSONTest extends TestCase {
                 "        \"textField\": {" +
                 "            \"type\": \"FullText\"," +
                 "            \"options\": {" +
-                "                \"analyzer\": \"de.danielbasedow.prospecter.core.analysis.LuceneAnalyzer\"" +
+                "                \"analyzer\": \"de.danielbasedow.prospecter.core.analysis.LuceneStandardAnalyzer\"" +
                 "            }" +
                 "        }," +
                 "        \"price\": {" +
