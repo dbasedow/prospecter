@@ -1,6 +1,9 @@
 package de.danielbasedow.prospecter.core.analysis;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 import org.apache.lucene.analysis.TokenStream;
@@ -17,7 +20,7 @@ import java.util.List;
 /**
  * Thin wrapper around Lucene's org.apache.lucene.analysis.Analyzer
  */
-public class LuceneAnalyzer implements Analyzer {
+public class LuceneAnalyzer extends AbstractAnalyzer {
     private TokenMapper tokenMapper;
     private org.apache.lucene.analysis.Analyzer luceneAnalyzer;
 
@@ -52,5 +55,11 @@ public class LuceneAnalyzer implements Analyzer {
             throw new TokenizerException();
         }
         return tokenMapper.getTermIds(tokens, dontGenerateNewIds);
+    }
+
+    public static Analyzer make(JsonNode options) {
+        Injector injector = Guice.createInjector(new AnalyzerModule());
+        Analyzer analyzer = injector.getInstance(LuceneAnalyzer.class);
+        return analyzer;
     }
 }

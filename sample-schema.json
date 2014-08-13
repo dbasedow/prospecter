@@ -3,7 +3,7 @@
         "textField": {
             "type": "FullText",
             "options": {
-                "analyzer": "default"
+
             }
         },
         "price": {

@@ -78,10 +78,13 @@ public class Application {
                     schema.addQuery(q);
                 }
                 if (i % 10000 == 0) {
-                    System.out.println("indexed " + String.valueOf(i));
-                    for (int p = 0; p < 3; p++) {
-                        testPerformance(schema, queryStr);
+                    System.out.print(i);
+                    System.out.print(",");
+                    long sumTime = 0;
+                    for (int p = 0; p < 10; p++) {
+                        sumTime += testPerformance(schema, queryStr);
                     }
+                    System.out.println(sumTime / 10.0);
                 }
             }
             br.close();
@@ -106,15 +109,16 @@ public class Application {
 
     }
 
-    public static void testPerformance(Schema schema, String doc) {
+    public static long testPerformance(Schema schema, String doc) {
         long start = (new Date()).getTime();
         Document document = buildDoc(schema.getDocumentBuilder(), doc);
         Matcher matcher = schema.matchDocument(document);
         List<Query> queries = matcher.getMatchedQueries();
         long end = (new Date()).getTime();
-        System.out.print(queries.size());
-        System.out.print(" ");
-        System.out.println(end - start);
+        //System.out.print(queries.size());
+        //System.out.print(" ");
+        //System.out.println(end - start);
+        return end - start;
     }
 
     public static void runMatching(Schema schema, String queryStr) {

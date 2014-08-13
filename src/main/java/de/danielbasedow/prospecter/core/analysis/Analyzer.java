@@ -22,7 +22,7 @@ public interface Analyzer {
      * tokenizing documents, as any token in a document has to have been already seen in a query to have any chance
      * of matching.
      *
-     * @param input raw String that should be turned into tokens
+     * @param input              raw String that should be turned into tokens
      * @param dontGenerateNewIds if set to true no new tokens will be generated.
      * @return list of tokens
      * @throws TokenizerException

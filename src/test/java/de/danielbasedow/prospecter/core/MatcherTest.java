@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class MatcherTest extends TestCase {
 
     public void test() {
-        FullTextIndex ft = new FullTextIndex("_all");
+        FullTextIndex ft = new FullTextIndex("_all", null);
         QueryPosting posting = new QueryPosting(1, (short) 1);
         ft.addPosting(new Token<Integer>(1, MatchCondition.EQUALS), posting);
         Matcher m = new Matcher(new QueryManager());

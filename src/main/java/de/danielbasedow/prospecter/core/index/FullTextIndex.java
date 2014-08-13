@@ -1,7 +1,6 @@
 package de.danielbasedow.prospecter.core.index;
 
-import com.google.inject.Guice;
-import de.danielbasedow.prospecter.core.ProspecterModule;
+
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
@@ -18,11 +17,10 @@ public class FullTextIndex extends AbstractFieldIndex {
     protected HashMap<Integer, List<QueryPosting>> index;
     private Analyzer analyzer;
 
-    public FullTextIndex(String name) {
+    public FullTextIndex(String name, Analyzer analyzer) {
         super(name);
         index = new HashMap<Integer, List<QueryPosting>>();
-        //TODO: analyzer should be configurable
-        analyzer = Guice.createInjector(new ProspecterModule()).getInstance(Analyzer.class);
+        this.analyzer = analyzer;
     }
 
     public void addPosting(Token token, QueryPosting posting) {
