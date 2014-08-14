@@ -3,11 +3,10 @@ package de.danielbasedow.prospecter.core.schema;
 import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.*;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
+import de.danielbasedow.prospecter.core.persistence.QueryStorage;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SchemaImpl implements Schema {
@@ -15,6 +14,8 @@ public class SchemaImpl implements Schema {
     protected QueryBuilder queryBuilder;
     protected DocumentBuilder documentBuilder;
     protected QueryManager queryManager;
+    protected QueryStorage queryStorage;
+    private boolean writeNewQueries;
 
     public SchemaImpl() {
         indices = new ConcurrentHashMap<String, FieldIndex>();
@@ -52,6 +53,15 @@ public class SchemaImpl implements Schema {
             indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
         }
         queryManager.addQuery(query);
+    }
+
+    @Override
+    public void addQuery(String json) throws UndefinedIndexFieldException, MalformedQueryException {
+        Query query = queryBuilder.buildFromJSON(json);
+        if (queryStorage != null && writeNewQueries) {
+            queryStorage.addQuery(query.getQueryId(), json);
+        }
+        addQuery(query);
     }
 
     @Override
@@ -101,5 +111,29 @@ public class SchemaImpl implements Schema {
     @Override
     public QueryManager getQueryManager() {
         return queryManager;
+    }
+
+    @Override
+    public void setQueryStorage(QueryStorage queryStorage) {
+        this.queryStorage = queryStorage;
+    }
+
+    @Override
+    public void close() {
+        this.queryStorage.close();
+    }
+
+    @Override
+    public void init() {
+        //Disable persistence for new queries so we don't try updating every single query
+        writeNewQueries = false;
+        try {
+            for (Map.Entry<Long, String> entry : queryStorage.getAllQueries()) {
+                addQuery(entry.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeNewQueries = true;
     }
 }

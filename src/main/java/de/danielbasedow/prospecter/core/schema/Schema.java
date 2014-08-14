@@ -5,8 +5,8 @@ import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
+import de.danielbasedow.prospecter.core.persistence.QueryStorage;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +42,15 @@ public interface Schema {
     public void addQuery(Query query) throws UndefinedIndexFieldException;
 
     /**
+     * Add query to index. The supplied String will be parsed as JSON and the resulting Query object is passed to
+     * addQuery(Query query)
+     *
+     * @param json raw JSON string
+     * @throws UndefinedIndexFieldException
+     */
+    public void addQuery(String json) throws UndefinedIndexFieldException, MalformedQueryException;
+
+    /**
      * Collect all matches for a document
      *
      * @param doc     document instance
@@ -69,4 +78,16 @@ public interface Schema {
     public Matcher getMatcher();
 
     public QueryManager getQueryManager();
+
+    public void setQueryStorage(QueryStorage queryStorage);
+
+    /**
+     * Tidy up before shutting down, close files and network connections
+     */
+    public void close();
+
+    /**
+     * execute any code that should run after the SchemaBuilder is finished. For example loading queries from disk
+     */
+    public void init();
 }

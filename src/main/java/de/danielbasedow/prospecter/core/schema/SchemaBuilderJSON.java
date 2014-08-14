@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.index.*;
+import de.danielbasedow.prospecter.core.persistence.MapDBStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,9 +68,18 @@ public class SchemaBuilderJSON implements SchemaBuilder {
                 FieldIndex index = buildField(entry.getKey(), entry.getValue());
                 schema.addFieldIndex(index.getName(), index);
             }
+            JsonNode persistence = root.get("persistence");
+            if (persistence != null && persistence.getNodeType() == JsonNodeType.OBJECT) {
+                //if persistence key doesn't exist there is no persistence
+                JsonNode file = persistence.get("file");
+                if (file != null && file.getNodeType() == JsonNodeType.STRING) {
+                    schema.setQueryStorage(new MapDBStore(new File(file.asText())));
+                }
+            }
         } catch (Exception e) {
             throw new SchemaConfigurationError("Could not parse JSON tree", e);
         }
+        schema.init();
     }
 
     protected FieldIndex buildField(String fieldName, JsonNode node) throws SchemaConfigurationError {

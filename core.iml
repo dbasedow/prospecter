@@ -21,6 +21,7 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:4.9.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-common:4.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mapdb:mapdb:1.0.6" level="project" />
   </component>
 </module>
 
