@@ -96,14 +96,9 @@ public class Application {
             runMatching(schema, "");
             runMatching(schema, "");
             */
+            runMatching(schema, queryStr);
             printVMStats();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UndefinedIndexFieldException e) {
-            e.printStackTrace();
-        } catch (SchemaConfigurationError schemaConfigurationError) {
-            schemaConfigurationError.printStackTrace();
-        } catch (MalformedQueryException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
