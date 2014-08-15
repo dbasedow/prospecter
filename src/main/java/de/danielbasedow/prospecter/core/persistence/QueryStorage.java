@@ -5,5 +5,7 @@ public interface QueryStorage {
 
     public java.util.Set<java.util.Map.Entry<Long, String>> getAllQueries();
 
+    public void deleteQuery(Long queryId);
+
     public void close();
 }

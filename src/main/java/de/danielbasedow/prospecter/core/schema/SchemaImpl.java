@@ -127,12 +127,14 @@ public class SchemaImpl implements Schema {
     public void init() {
         //Disable persistence for new queries so we don't try updating every single query
         writeNewQueries = false;
-        try {
-            for (Map.Entry<Long, String> entry : queryStorage.getAllQueries()) {
-                addQuery(entry.getValue());
+        if (queryStorage != null) {
+            try {
+                for (Map.Entry<Long, String> entry : queryStorage.getAllQueries()) {
+                    addQuery(entry.getValue());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         writeNewQueries = true;
     }
