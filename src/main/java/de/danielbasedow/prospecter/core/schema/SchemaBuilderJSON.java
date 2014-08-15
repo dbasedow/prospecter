@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.index.*;
 import de.danielbasedow.prospecter.core.persistence.MapDBStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,8 @@ import java.util.Map;
  * Build a Schema from a JSON configuration.
  */
 public class SchemaBuilderJSON implements SchemaBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilderJSON.class);
+
     private Schema schema;
     private ObjectNode root;
 
@@ -34,9 +38,10 @@ public class SchemaBuilderJSON implements SchemaBuilder {
     public SchemaBuilderJSON(String json) throws SchemaConfigurationError {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            LOGGER.debug("parsing json");
             root = (ObjectNode) objectMapper.readTree(json);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getLocalizedMessage());
             throw new SchemaConfigurationError("Could not parse schema JSON.");
         }
         schema = new SchemaImpl();
@@ -51,9 +56,10 @@ public class SchemaBuilderJSON implements SchemaBuilder {
     public SchemaBuilderJSON(File file) throws SchemaConfigurationError {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            LOGGER.debug("parsing schema " + file.getAbsoluteFile());
             root = (ObjectNode) objectMapper.readTree(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getLocalizedMessage());
             throw new SchemaConfigurationError("Could not parse schema JSON from file " + file.getAbsoluteFile());
         }
         schema = new SchemaImpl();
