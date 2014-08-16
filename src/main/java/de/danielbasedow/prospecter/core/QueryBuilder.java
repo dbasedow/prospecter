@@ -10,6 +10,8 @@ import de.danielbasedow.prospecter.core.index.DateTimeIndex;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import java.util.List;
  * Makes Query instances from JSON query definitions
  */
 public class QueryBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
+
     private Schema schema;
 
     public QueryBuilder(Schema schema) {
@@ -58,6 +62,10 @@ public class QueryBuilder {
     protected List<Condition> handleCondition(ObjectNode node) throws MalformedQueryException {
         String fieldName = node.get("field").asText();
         FieldIndex fieldIndex = schema.getFieldIndex(fieldName);
+        if (fieldIndex == null) {
+            LOGGER.error("field '" + fieldName + "' not in schema");
+            throw new MalformedQueryException("Field '" + fieldName + "' not in schema.");
+        }
         switch (fieldIndex.getFieldType()) {
             case FULL_TEXT:
                 try {

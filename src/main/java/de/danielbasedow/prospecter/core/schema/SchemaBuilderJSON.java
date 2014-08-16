@@ -92,6 +92,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
         FieldIndex index = null;
         String type = node.get("type").asText();
 
+        LOGGER.debug("building field '" + fieldName + "' with type: '" + type + "'");
         if ("FullText".equals(type)) {
             Analyzer analyzer = null;
             try {
@@ -114,8 +115,10 @@ public class SchemaBuilderJSON implements SchemaBuilder {
             JsonNode format = node.get("format");
             DateFormat df;
             if (format != null) {
+                LOGGER.debug("using custom date format '" + format.asText() + "'");
                 df = new SimpleDateFormat(format.asText());
             } else {
+                LOGGER.debug("using default date format iso 8601");
                 df = new ISO8601DateFormat();
             }
             index = new DateTimeIndex(fieldName, df);
@@ -132,6 +135,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
                 analyzerName = analyzerNode.asText();
             }
         }
+        LOGGER.info("using analyzer " + analyzerName);
         Class class_ = Class.forName(analyzerName);
         Method factory = class_.getMethod("make", JsonNode.class);
         return (Analyzer) factory.invoke(null, options);
