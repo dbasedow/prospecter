@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.index.*;
+import de.danielbasedow.prospecter.core.persistence.DummyQueryStorage;
 import de.danielbasedow.prospecter.core.persistence.MapDBStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,11 +76,15 @@ public class SchemaBuilderJSON implements SchemaBuilder {
                 schema.addFieldIndex(index.getName(), index);
             }
             JsonNode persistence = root.get("persistence");
+            //as a default set DummyQueryStorage. Only if persistence options are provided overwrite it
+            schema.setQueryStorage(new DummyQueryStorage());
             if (persistence != null && persistence.getNodeType() == JsonNodeType.OBJECT) {
                 //if persistence key doesn't exist there is no persistence
                 JsonNode file = persistence.get("file");
                 if (file != null && file.getNodeType() == JsonNodeType.STRING) {
                     schema.setQueryStorage(new MapDBStore(new File(file.asText())));
+                } else {
+                    LOGGER.error("unable to get file name for query storage. Continuing with no persistence!");
                 }
             }
         } catch (Exception e) {
