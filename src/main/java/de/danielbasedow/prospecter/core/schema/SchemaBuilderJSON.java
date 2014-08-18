@@ -29,6 +29,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
 
     private Schema schema;
     private ObjectNode root;
+    private String schemaDirectory;
 
     /**
      * Build Schema from JSON String
@@ -37,6 +38,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
      * @throws SchemaConfigurationError
      */
     public SchemaBuilderJSON(String json) throws SchemaConfigurationError {
+        schemaDirectory = "";
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             LOGGER.debug("parsing json");
@@ -55,6 +57,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
      * @throws SchemaConfigurationError
      */
     public SchemaBuilderJSON(File file) throws SchemaConfigurationError {
+        schemaDirectory = file.getParent();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             LOGGER.debug("parsing schema " + file.getAbsoluteFile());
@@ -82,7 +85,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
                 //if persistence key doesn't exist there is no persistence
                 JsonNode file = persistence.get("file");
                 if (file != null && file.getNodeType() == JsonNodeType.STRING) {
-                    schema.setQueryStorage(new MapDBStore(new File(file.asText())));
+                    schema.setQueryStorage(new MapDBStore(new File(schemaDirectory, file.asText())));
                 } else {
                     LOGGER.error("unable to get file name for query storage. Continuing with no persistence!");
                 }

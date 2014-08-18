@@ -1,0 +1,14 @@
+{
+    "fields": {
+        "textField": {
+            "type": "FullText",
+            "options": {
+                "analyzer": "de.danielbasedow.prospecter.core.analysis.LuceneStandardAnalyzer",
+                "stopwords": "predefined"
+            }
+        }
+    },
+    "persistence": {
+        "file": "queries.mapdb"
+    }
+}
