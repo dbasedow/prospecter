@@ -24,6 +24,8 @@ import java.util.*;
  * Build Document instances from JSON representations
  */
 public class DocumentBuilder {
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     protected Schema schema;
 
     /**
@@ -41,7 +43,6 @@ public class DocumentBuilder {
      * @throws MalformedDocumentException
      */
     public Document build(String json) throws MalformedDocumentException {
-        ObjectMapper mapper = new ObjectMapper();
         Document doc = new Document();
         try {
             ObjectNode root = (ObjectNode) mapper.readTree(json);

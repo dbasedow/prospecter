@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class QueryBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private Schema schema;
 
@@ -39,7 +40,6 @@ public class QueryBuilder {
      */
     public Query buildFromJSON(String json) throws MalformedQueryException {
         List<Condition> conditions = new ArrayList<Condition>();
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             ObjectNode root = (ObjectNode) objectMapper.readTree(json);
             Long queryId = root.get("id").asLong();
