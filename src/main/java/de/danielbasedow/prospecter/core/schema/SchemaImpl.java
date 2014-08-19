@@ -138,4 +138,10 @@ public class SchemaImpl implements Schema {
         }
         writeNewQueries = true;
     }
+
+    @Override
+    public void deleteQuery(Long queryId) {
+        queryManager.deleteQuery(queryId);
+        queryStorage.deleteQuery(queryId);
+    }
 }

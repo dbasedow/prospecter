@@ -63,6 +63,10 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
         if (request.getMethod() == HttpMethod.PUT && schemaName != null) {
             return addQuery(instance.getSchema(schemaName));
         }
+        if (request.getMethod() == HttpMethod.DELETE && schemaName != null) {
+            String queryId = uriParts[1];
+            return deleteQuery(instance.getSchema(schemaName), queryId);
+        }
         return null;
     }
 
@@ -84,6 +88,7 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
         ObjectNode node = mapper.getNodeFactory().objectNode();
 
         if (content.isReadable()) {
+            LOGGER.info("start matching");
             Document doc = schema.getDocumentBuilder().build(content.toString(CharsetUtil.UTF_8));
             Matcher matcher = schema.matchDocument(doc);
             ArrayNode results = node.putArray("matches");
@@ -92,12 +97,29 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
                 ObjectNode queryNode = results.addObject();
                 queryNode.put("id", query.getQueryId());
             }
+            LOGGER.info("finished matching");
         }
         node.put("count", matchCount);
         return new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,
                 Unpooled.copiedBuffer(mapper.writeValueAsString(node), CharsetUtil.UTF_8)
+        );
+    }
+
+    protected DefaultFullHttpResponse deleteQuery(Schema schema, String queryId) throws MalformedQueryException, UndefinedIndexFieldException {
+        if (queryId == null || "".equals(queryId)) {
+            LOGGER.warn("No query id supplied in DELETE request.");
+            return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Long qid = Long.parseLong(queryId, 10);
+
+        schema.deleteQuery(qid);
+        return new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1,
+                HttpResponseStatus.OK,
+                Unpooled.copiedBuffer("", CharsetUtil.UTF_8)
         );
     }
 }

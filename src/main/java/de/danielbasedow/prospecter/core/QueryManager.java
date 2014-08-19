@@ -17,4 +17,7 @@ public class QueryManager {
         return queries.get(queryId);
     }
 
+    public void deleteQuery(Long queryId) {
+        queries.remove(queryId);
+    }
 }

@@ -90,4 +90,6 @@ public interface Schema {
      * execute any code that should run after the SchemaBuilder is finished. For example loading queries from disk
      */
     public void init();
+
+    public void deleteQuery(Long queryId);
 }
