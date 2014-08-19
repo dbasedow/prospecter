@@ -6,7 +6,6 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -53,7 +52,7 @@ public abstract class LuceneAnalyzer implements Analyzer {
     }
 
     public static Analyzer make(JsonNode options) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
@@ -19,7 +18,6 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 
 public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -107,7 +105,7 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
         );
     }
 
-    protected DefaultFullHttpResponse deleteQuery(Schema schema, String queryId) throws MalformedQueryException, UndefinedIndexFieldException {
+    protected DefaultFullHttpResponse deleteQuery(Schema schema, String queryId) {
         if (queryId == null || "".equals(queryId)) {
             LOGGER.warn("No query id supplied in DELETE request.");
             return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);

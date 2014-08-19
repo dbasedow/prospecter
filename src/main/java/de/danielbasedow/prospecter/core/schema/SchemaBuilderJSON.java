@@ -102,7 +102,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
 
         LOGGER.debug("building field '" + fieldName + "' with type: '" + type + "'");
         if ("FullText".equals(type)) {
-            Analyzer analyzer = null;
+            Analyzer analyzer;
             try {
                 analyzer = getAnalyzer(node.get("options"));
             } catch (Exception e) {

@@ -13,7 +13,6 @@ import de.danielbasedow.prospecter.core.index.DateTimeIndex;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -92,7 +91,7 @@ public class DocumentBuilder {
             case LONG:
                 return handleLongField(fieldName, node);
             default:
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException();
         }
     }
 

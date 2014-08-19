@@ -1,7 +1,5 @@
 package de.danielbasedow.prospecter.core;
 
-import de.danielbasedow.prospecter.core.index.FullTextIndex;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ public class Matcher {
         List<Query> results = new ArrayList<Query>();
         for (Long queryId : hits.keySet()) {
             Query query = queryManager.getQuery(queryId);
-            if (query.testBits(hits.get(queryId))) {
+            if (query != null && query.testBits(hits.get(queryId))) {
                 results.add(query);
             }
         }

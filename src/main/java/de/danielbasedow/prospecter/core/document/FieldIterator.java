@@ -1,7 +1,5 @@
 package de.danielbasedow.prospecter.core.document;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -36,6 +34,6 @@ public class FieldIterator implements Iterator<Field> {
 
     @Override
     public void remove() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 }

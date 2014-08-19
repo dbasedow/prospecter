@@ -22,7 +22,7 @@ public class Instance {
 
     public Instance(String homeDirectory) {
         this.homeDirectory = homeDirectory;
-        schemas = new HashMap<>();
+        schemas = new HashMap<String, Schema>();
     }
 
     public void initialize() throws SchemaConfigurationError {

@@ -2,19 +2,13 @@ package de.danielbasedow.prospecter.benchmark;
 
 import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
-import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
-import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
-import de.danielbasedow.prospecter.core.geo.LatLng;
-import de.danielbasedow.prospecter.core.index.GeoDistanceIndex;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilder;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilderJSON;
 import de.danielbasedow.prospecter.core.schema.SchemaConfigurationError;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class GeoDistanceIndexTest {
     protected static final String schemaJSON = "{\n" +

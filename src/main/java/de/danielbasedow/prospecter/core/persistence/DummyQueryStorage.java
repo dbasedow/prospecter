@@ -11,7 +11,7 @@ public class DummyQueryStorage implements QueryStorage {
 
     @Override
     public Set<Map.Entry<Long, String>> getAllQueries() {
-        return new HashSet<>();
+        return new HashSet<Map.Entry<Long, String>>();
     }
 
     @Override

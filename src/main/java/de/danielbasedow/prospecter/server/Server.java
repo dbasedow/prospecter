@@ -29,7 +29,9 @@ public class Server {
             Channel channel = bootstrap.bind(8888).sync().channel();
 
             channel.closeFuture().sync();
-        } catch (InterruptedException | SchemaConfigurationError e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (SchemaConfigurationError e) {
             e.printStackTrace();
         } finally {
             boss.shutdownGracefully();

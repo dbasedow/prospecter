@@ -10,9 +10,7 @@ import de.danielbasedow.prospecter.core.schema.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class Application {
@@ -64,18 +62,13 @@ public class Application {
                 queryStr = queryStr + " " + line;
             }
             //Document testDocument = buildDoc(schema.getDocumentBuilder(), queryStr);
-
-
-            QueryBuilder queryBuilder = schema.getQueryBuilder();
-
             BufferedReader br = new BufferedReader(new FileReader(new File(args[1])));
             long i = 0;
             while ((line = br.readLine()) != null) {
                 String[] columns = line.trim().split("\\t");
                 i++;
                 if (columns.length == 3) {
-                    Query q = queryBuilder.buildFromJSON(buildJsonQuery(columns[2].trim(), i));
-                    schema.addQuery(q);
+                    schema.addQuery(buildJsonQuery(columns[2].trim(), i));
                 }
                 if (i % 10000 == 0) {
                     System.out.print(i);
@@ -88,6 +81,7 @@ public class Application {
                 }
             }
             br.close();
+
             /*
             //Insert some tweets here
             System.out.println("run tweets");
@@ -97,6 +91,8 @@ public class Application {
             runMatching(schema, "");
             */
             runMatching(schema, queryStr);
+            runMatching(schema, queryStr);
+            schema.close();
             printVMStats();
         } catch (Exception e) {
             e.printStackTrace();
