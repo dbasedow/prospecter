@@ -144,6 +144,7 @@ public class SchemaImpl implements Schema {
             }
             LOGGER.info("done loading " + String.valueOf(loadedQueries) + " queries");
         }
+        trim();
         writeNewQueries = true;
     }
 
@@ -151,5 +152,12 @@ public class SchemaImpl implements Schema {
     public void deleteQuery(Integer queryId) {
         queryManager.deleteQuery(queryId);
         queryStorage.deleteQuery(queryId);
+    }
+
+    @Override
+    public void trim() {
+        for (FieldIndex field : indices.values()) {
+            field.trim();
+        }
     }
 }

@@ -35,4 +35,6 @@ public interface FieldIndex {
      * @return type of this field
      */
     public FieldType getFieldType();
+
+    public void trim();
 }

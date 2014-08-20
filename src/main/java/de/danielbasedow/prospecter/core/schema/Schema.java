@@ -92,4 +92,9 @@ public interface Schema {
     public void init();
 
     public void deleteQuery(Integer queryId);
+
+    /**
+     * optimize storage requirements
+     */
+    public void trim();
 }

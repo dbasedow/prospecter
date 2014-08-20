@@ -16,4 +16,8 @@ public abstract class AbstractFieldIndex implements FieldIndex {
     public String getName() {
         return name;
     }
+
+    @Override
+    public void trim() {
+    }
 }

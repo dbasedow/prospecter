@@ -9,6 +9,7 @@ import de.danielbasedow.prospecter.core.document.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Index enabling full text search
@@ -62,5 +63,13 @@ public class FullTextIndex extends AbstractFieldIndex {
 
     public Analyzer getAnalyzer() {
         return analyzer;
+    }
+
+    public void trim() {
+        for (List list : index.values()) {
+            if (list instanceof ArrayList) {
+                ((ArrayList) list).trimToSize();
+            }
+        }
     }
 }
