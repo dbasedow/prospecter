@@ -48,7 +48,7 @@ public class QueryBuilder {
             }
             return new Query(queryId, conditions);
         } catch (Exception e) {
-            throw new MalformedQueryException("Error parsing query");
+            throw new MalformedQueryException("Error parsing query", e);
         }
     }
 

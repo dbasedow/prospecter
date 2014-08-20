@@ -4,12 +4,16 @@ import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.*;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.persistence.QueryStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SchemaImpl implements Schema {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaImpl.class);
+
     protected ConcurrentHashMap<String, FieldIndex> indices;
     protected QueryBuilder queryBuilder;
     protected DocumentBuilder documentBuilder;
@@ -128,13 +132,17 @@ public class SchemaImpl implements Schema {
         //Disable persistence for new queries so we don't try updating every single query
         writeNewQueries = false;
         if (queryStorage != null) {
+            LOGGER.info("initializing schema with stored queries");
+            int loadedQueries = 0;
             try {
                 for (Map.Entry<Long, String> entry : queryStorage.getAllQueries()) {
                     addQuery(entry.getValue());
+                    loadedQueries++;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("problem loading stored queries", e);
             }
+            LOGGER.info("done loading " + String.valueOf(loadedQueries) + " queries");
         }
         writeNewQueries = true;
     }
