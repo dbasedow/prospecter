@@ -36,12 +36,14 @@ public class TokenMapperImpl implements TokenMapper {
 
     @Override
     public List<Token> getTermIds(List<String> tokens, boolean dontGenerateNewIds) {
-        ArrayList<Token> termIds = new ArrayList<Token>();
+        ArrayList<Token> termIds = new ArrayList<Token>(tokens.size());
         for (String token : tokens) {
             Integer termId = getTermId(token, dontGenerateNewIds);
-            Token<Integer> t = new Token<Integer>(termId, MatchCondition.EQUALS);
-            if (termId != null && !termIds.contains(t)) {
-                termIds.add(t);
+            if (termId != null) {
+                Token<Integer> t = new Token<Integer>(termId, MatchCondition.EQUALS);
+                if (!termIds.contains(t)) {
+                    termIds.add(t);
+                }
             }
         }
 

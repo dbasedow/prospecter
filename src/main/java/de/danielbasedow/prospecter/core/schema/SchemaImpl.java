@@ -135,7 +135,7 @@ public class SchemaImpl implements Schema {
             LOGGER.info("initializing schema with stored queries");
             int loadedQueries = 0;
             try {
-                for (Map.Entry<Long, String> entry : queryStorage.getAllQueries()) {
+                for (Map.Entry<Integer, String> entry : queryStorage.getAllQueries()) {
                     addQuery(entry.getValue());
                     loadedQueries++;
                 }
@@ -148,7 +148,7 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public void deleteQuery(Long queryId) {
+    public void deleteQuery(Integer queryId) {
         queryManager.deleteQuery(queryId);
         queryStorage.deleteQuery(queryId);
     }

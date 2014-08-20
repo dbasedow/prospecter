@@ -111,7 +111,7 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
             return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);
         }
 
-        Long qid = Long.parseLong(queryId, 10);
+        Integer qid = Integer.parseInt(queryId, 10);
 
         schema.deleteQuery(qid);
         return new DefaultFullHttpResponse(

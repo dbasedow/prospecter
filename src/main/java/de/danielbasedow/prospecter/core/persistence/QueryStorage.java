@@ -1,11 +1,11 @@
 package de.danielbasedow.prospecter.core.persistence;
 
 public interface QueryStorage {
-    public void addQuery(Long queryId, String json);
+    public void addQuery(Integer queryId, String json);
 
-    public java.util.Set<java.util.Map.Entry<Long, String>> getAllQueries();
+    public java.util.Set<java.util.Map.Entry<Integer, String>> getAllQueries();
 
-    public void deleteQuery(Long queryId);
+    public void deleteQuery(Integer queryId);
 
     public void close();
 }

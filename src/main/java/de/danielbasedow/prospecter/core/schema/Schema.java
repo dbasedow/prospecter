@@ -91,5 +91,5 @@ public interface Schema {
      */
     public void init();
 
-    public void deleteQuery(Long queryId);
+    public void deleteQuery(Integer queryId);
 }

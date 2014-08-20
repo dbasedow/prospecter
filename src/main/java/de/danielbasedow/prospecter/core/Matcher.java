@@ -9,12 +9,12 @@ import java.util.List;
  * Tracks hits across multiple index fields and applies the bit from the QueryPostings.
  */
 public class Matcher {
-    protected HashMap<Long, BitSet> hits;
+    protected HashMap<Integer, BitSet> hits;
     protected QueryManager queryManager;
 
     public Matcher(QueryManager qm) {
         queryManager = qm;
-        hits = new HashMap<Long, BitSet>();
+        hits = new HashMap<Integer, BitSet>();
     }
 
     public void addHits(List<QueryPosting> postings) {
@@ -36,7 +36,7 @@ public class Matcher {
 
     public List<Query> getMatchedQueries() {
         List<Query> results = new ArrayList<Query>();
-        for (Long queryId : hits.keySet()) {
+        for (Integer queryId : hits.keySet()) {
             Query query = queryManager.getQuery(queryId);
             if (query != null && query.testBits(hits.get(queryId))) {
                 results.add(query);

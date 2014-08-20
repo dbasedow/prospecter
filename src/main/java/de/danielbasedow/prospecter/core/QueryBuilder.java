@@ -42,7 +42,7 @@ public class QueryBuilder {
         List<Condition> conditions = new ArrayList<Condition>();
         try {
             ObjectNode root = (ObjectNode) objectMapper.readTree(json);
-            Long queryId = root.get("id").asLong();
+            Integer queryId = root.get("id").asInt();
             for (JsonNode node : root.get("query").get("conditions")) {
                 conditions.addAll(handleCondition((ObjectNode) node));
             }

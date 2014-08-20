@@ -3,21 +3,21 @@ package de.danielbasedow.prospecter.core;
 import java.util.HashMap;
 
 public class QueryManager {
-    protected HashMap<Long, Query> queries;
+    protected HashMap<Integer, Query> queries;
 
     public QueryManager() {
-        this.queries = new HashMap<Long, Query>();
+        this.queries = new HashMap<Integer, Query>();
     }
 
     public void addQuery(Query query) {
         queries.put(query.getQueryId(), query);
     }
 
-    public Query getQuery(Long queryId) {
+    public Query getQuery(Integer queryId) {
         return queries.get(queryId);
     }
 
-    public void deleteQuery(Long queryId) {
+    public void deleteQuery(Integer queryId) {
         queries.remove(queryId);
     }
 }

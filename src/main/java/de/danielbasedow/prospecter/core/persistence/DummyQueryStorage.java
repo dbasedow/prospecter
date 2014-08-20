@@ -6,16 +6,16 @@ import java.util.Set;
 
 public class DummyQueryStorage implements QueryStorage {
     @Override
-    public void addQuery(Long queryId, String json) {
+    public void addQuery(Integer queryId, String json) {
     }
 
     @Override
-    public Set<Map.Entry<Long, String>> getAllQueries() {
-        return new HashSet<Map.Entry<Long, String>>();
+    public Set<Map.Entry<Integer, String>> getAllQueries() {
+        return new HashSet<Map.Entry<Integer, String>>();
     }
 
     @Override
-    public void deleteQuery(Long queryId) {
+    public void deleteQuery(Integer queryId) {
     }
 
     @Override

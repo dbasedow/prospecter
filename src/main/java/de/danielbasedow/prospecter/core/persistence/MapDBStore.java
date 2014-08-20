@@ -15,7 +15,7 @@ public class MapDBStore implements QueryStorage {
 
     private static final int DEFAULT_UNWRITTEN_CHANGES_LIMIT = 10000;
     private DB database;
-    private HTreeMap<Long, String> map;
+    private HTreeMap<Integer, String> map;
     private int unwrittenChangesCount;
     private int unwrittenChangesLimit;
     private final String name;
@@ -31,7 +31,7 @@ public class MapDBStore implements QueryStorage {
     }
 
     @Override
-    public void addQuery(Long queryId, String json) {
+    public void addQuery(Integer queryId, String json) {
         map.put(queryId, json);
         commitIfNecessary();
     }
@@ -45,13 +45,13 @@ public class MapDBStore implements QueryStorage {
         }
     }
 
-    public void deleteQuery(Long queryId) {
+    public void deleteQuery(Integer queryId) {
         map.remove(queryId);
         commitIfNecessary();
     }
 
     @Override
-    public Set<Map.Entry<Long, String>> getAllQueries() {
+    public Set<Map.Entry<Integer, String>> getAllQueries() {
         return map.entrySet();
     }
 
