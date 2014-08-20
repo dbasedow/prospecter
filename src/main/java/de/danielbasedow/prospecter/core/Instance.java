@@ -56,6 +56,15 @@ public class Instance {
         }
     }
 
+    public void shutDown() {
+        for (Map.Entry<String, Schema> entry : schemas.entrySet()) {
+            Schema schema = entry.getValue();
+            if (schema != null) {
+                schema.close();
+            }
+        }
+    }
+
     public Schema getSchema(String name) {
         return schemas.get(name);
     }
