@@ -1,14 +1,15 @@
 package de.danielbasedow.prospecter.benchmark;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import de.danielbasedow.prospecter.core.Matcher;
+import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilder;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilderJSON;
 import de.danielbasedow.prospecter.core.schema.SchemaConfigurationError;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.util.Date;
 
 public class TxtFileLoader {
 
@@ -33,10 +34,30 @@ public class TxtFileLoader {
                 "}";
     }
 
+    public static String getJsonDoc() {
+        String line;
+        try {
+            BufferedReader testDoc = null;
+            testDoc = new BufferedReader(new FileReader(new File("testdoc.txt")));
+            String queryStr = "";
+            while ((line = testDoc.readLine()) != null) {
+                queryStr = queryStr + " " + line;
+            }
+            JsonStringEncoder encoder = JsonStringEncoder.getInstance();
+            return "{\"textField\": \"" + new String(encoder.quoteAsString(queryStr)) + "\"}";
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException();
+    }
+
 
     public static void main(String[] args) {
         try {
             Schema schema = buildSchema(args[0]);
+            String doc = getJsonDoc();
 
             String line;
             BufferedReader br = new BufferedReader(new FileReader(new File(args[1])));
@@ -45,7 +66,7 @@ public class TxtFileLoader {
                 i++;
                 schema.addQuery(buildJsonQuery(line.trim(), i));
                 if (i % 10000 == 0) {
-                    System.out.println(i);
+                    measure(schema, doc, i);
                 }
             }
             br.close();
@@ -62,5 +83,24 @@ public class TxtFileLoader {
         System.out.println("used: " + (runtime.totalMemory() - runtime.freeMemory()));
         runtime.gc();
         System.out.println("used: " + (runtime.totalMemory() - runtime.freeMemory()));
+    }
+
+    public static void measure(Schema schema, String jsonDoc, long queryCount) {
+        long sumQueryTime = 0;
+        long sumMemoryUsage = 0;
+        Runtime runtime = Runtime.getRuntime();
+        for (int i = 0; i < 10; i++) {
+            runtime.gc();
+            Document doc = schema.getDocumentBuilder().build(jsonDoc);
+            long startTime = new Date().getTime();
+            Matcher m = schema.matchDocument(doc);
+            m.getMatchedQueries();
+            long endTime = new Date().getTime();
+            sumQueryTime += endTime - startTime;
+            sumMemoryUsage += runtime.totalMemory() - runtime.freeMemory();
+        }
+        double avgQueryTime = sumQueryTime / 10.0;
+        long avgMemory = sumMemoryUsage / 10;
+        System.out.println(String.valueOf(queryCount) + ";" + String.valueOf(avgQueryTime) + ";" + String.valueOf(avgMemory));
     }
 }
