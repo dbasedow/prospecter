@@ -5,6 +5,7 @@ import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.index.IntegerIndex;
+import gnu.trove.list.array.TLongArrayList;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +25,7 @@ public class IntegerIndexTest {
 
         System.out.print((new Date()).getTime());
         System.out.println(" start matching");
-        List<QueryPosting> postings = index.match(new Field("foo", tokens));
+        TLongArrayList postings = index.match(new Field("foo", tokens));
         System.out.print((new Date()).getTime());
         System.out.println(" done matching");
         System.out.println("Matched: " + Integer.toString(postings.size()));

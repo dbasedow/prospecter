@@ -5,34 +5,33 @@ import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Index enabling full text search
  */
 public class FullTextIndex extends AbstractFieldIndex {
-    protected HashMap<Integer, List<QueryPosting>> index;
+    protected TIntObjectHashMap<TLongArrayList> index;
     private Analyzer analyzer;
 
     public FullTextIndex(String name, Analyzer analyzer) {
         super(name);
-        index = new HashMap<Integer, List<QueryPosting>>();
+        index = new TIntObjectHashMap<TLongArrayList>();
         this.analyzer = analyzer;
     }
 
     public void addPosting(Token token, QueryPosting posting) {
-        List<QueryPosting> postingList;
+        TLongArrayList postingList;
         if (index.containsKey((Integer) token.getToken())) {
             postingList = index.get((Integer) token.getToken());
         } else {
-            postingList = new ArrayList<QueryPosting>();
+            postingList = new TLongArrayList();
             index.put((Integer) token.getToken(), postingList);
         }
-        postingList.add(posting);
+        postingList.add(posting.getPackedPosting());
     }
 
     @Override
@@ -40,7 +39,7 @@ public class FullTextIndex extends AbstractFieldIndex {
         return FieldType.FULL_TEXT;
     }
 
-    public List<QueryPosting> getQueryPostingsForTermId(Token token) {
+    public TLongArrayList getQueryPostingsForTermId(Token token) {
         Integer t = (Integer) token.getToken();
         if (index.containsKey(t)) {
             return index.get(t);
@@ -49,11 +48,11 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public List<QueryPosting> match(Field field) {
-        List<QueryPosting> postings = new ArrayList<QueryPosting>();
+    public TLongArrayList match(Field field) {
+        TLongArrayList postings = new TLongArrayList();
         for (Token token : field.getTokens()) {
             Integer t = (Integer) token.getToken();
-            List<QueryPosting> additionalPostings = index.get(t);
+            TLongArrayList additionalPostings = index.get(t);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }
@@ -66,7 +65,7 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     public void trim() {
-        for (List list : index.values()) {
+        for (Object list : index.values()) {
             if (list instanceof ArrayList) {
                 ((ArrayList) list).trimToSize();
             }

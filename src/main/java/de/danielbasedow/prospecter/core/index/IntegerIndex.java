@@ -3,8 +3,7 @@ package de.danielbasedow.prospecter.core.index;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
-
-import java.util.*;
+import gnu.trove.list.array.TLongArrayList;
 
 /**
  * This class represents an integer field index. Possible indexed conditions can be:
@@ -22,7 +21,7 @@ public class IntegerIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public List<QueryPosting> match(Field field) {
+    public TLongArrayList match(Field field) {
         return index.match(field);
     }
 

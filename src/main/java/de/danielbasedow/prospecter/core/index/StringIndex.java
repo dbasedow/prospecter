@@ -3,23 +3,23 @@ package de.danielbasedow.prospecter.core.index;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.array.TLongArrayList;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StringIndex extends AbstractFieldIndex {
-    protected Map<String, List<QueryPosting>> index;
+    protected Map<String, TLongArrayList> index;
 
     public StringIndex(String name) {
         super(name);
-        index = new ConcurrentHashMap<String, List<QueryPosting>>();
+        index = new ConcurrentHashMap<String, TLongArrayList>();
     }
 
     @Override
-    public List<QueryPosting> match(Field field) {
-        List<QueryPosting> postings = new ArrayList<QueryPosting>();
+    public TLongArrayList match(Field field) {
+        TLongArrayList postings = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             String strToken = (String) token.getToken();
@@ -38,10 +38,10 @@ public class StringIndex extends AbstractFieldIndex {
 
     public void addOrCreate(String token, QueryPosting posting) {
         if (index.containsKey(token)) {
-            index.get(token).add(posting);
+            index.get(token).add(posting.getPackedPosting());
         } else {
-            List<QueryPosting> postings = new ArrayList<QueryPosting>();
-            postings.add(posting);
+            TLongArrayList postings = new TLongArrayList();
+            postings.add(posting.getPackedPosting());
             index.put(token, postings);
         }
     }

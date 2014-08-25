@@ -6,6 +6,7 @@ import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.GeoUtil;
 import de.danielbasedow.prospecter.core.geo.LatLng;
+import gnu.trove.list.array.TLongArrayList;
 
 import java.util.*;
 
@@ -42,8 +43,8 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public List<QueryPosting> match(Field field) {
-        List<QueryPosting> postingsFound = new ArrayList<QueryPosting>();
+    public TLongArrayList match(Field field) {
+        TLongArrayList postingsFound = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             LatLng latLng = (LatLng) token.getToken();
@@ -190,11 +191,11 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
      * PostingAliasMap supplies an alias id that allows looking up the QueryPosting
      */
     private class PostingAliasMap {
-        private HashMap<Integer, QueryPosting> postings;
+        private HashMap<Integer, Long> postings;
         private int nextId;
 
         public PostingAliasMap() {
-            postings = new HashMap<Integer, QueryPosting>();
+            postings = new HashMap<Integer, Long>();
             nextId = 0;
         }
 
@@ -208,7 +209,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         public Integer aliasPosting(QueryPosting posting) {
             Integer id = nextId;
             nextId++;
-            postings.put(id, posting);
+            postings.put(id, posting.getPackedPosting());
             return id;
         }
 
@@ -218,7 +219,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
          * @param id alias id
          * @return aliased query posting
          */
-        public QueryPosting get(Integer id) {
+        public long get(Integer id) {
             return postings.get(id);
         }
     }

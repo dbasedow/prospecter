@@ -1,5 +1,7 @@
 package de.danielbasedow.prospecter.core;
 
+import gnu.trove.list.array.TLongArrayList;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -17,21 +19,23 @@ public class Matcher {
         hits = new HashMap<Integer, BitSet>();
     }
 
-    public void addHits(List<QueryPosting> postings) {
-        for (QueryPosting posting : postings) {
+    public void addHits(TLongArrayList postings) {
+        for (long posting : postings.toArray()) {
             addHit(posting);
         }
     }
 
-    private void addHit(QueryPosting posting) {
+    private void addHit(long posting) {
         BitSet bits;
-        if (hits.containsKey(posting.getQueryId())) {
-            bits = hits.get(posting.getQueryId());
+        int[] unpacked = QueryPosting.unpack(posting);
+
+        if (hits.containsKey(unpacked[QueryPosting.QUERY_ID_INDEX])) {
+            bits = hits.get(unpacked[QueryPosting.QUERY_ID_INDEX]);
         } else {
             bits = new BitSet();
-            hits.put(posting.getQueryId(), bits);
+            hits.put(unpacked[QueryPosting.QUERY_ID_INDEX], bits);
         }
-        bits.set(posting.getQueryBit());
+        bits.set(unpacked[QueryPosting.QUERY_BIT_INDEX]);
     }
 
     public List<Query> getMatchedQueries() {

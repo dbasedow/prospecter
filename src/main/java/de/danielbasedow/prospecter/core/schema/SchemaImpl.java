@@ -4,10 +4,10 @@ import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.*;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.persistence.QueryStorage;
+import gnu.trove.list.array.TLongArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,7 +37,7 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public List<QueryPosting> matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException {
+    public TLongArrayList matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException {
         if (!indices.containsKey(fieldIndexName)) {
             throw new UndefinedIndexFieldException("No field named '" + fieldIndexName + "'");
         }

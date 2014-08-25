@@ -3,6 +3,7 @@ package de.danielbasedow.prospecter.core.index;
 import de.danielbasedow.prospecter.core.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.array.TLongArrayList;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class StringIndexTest extends TestCase {
 
         index.addPosting(new Token("bar"), new QueryPosting(1, (short) 1));
 
-        List<QueryPosting> postings = index.match(field);
+        TLongArrayList postings = index.match(field);
         assertEquals(1, postings.size());
     }
 

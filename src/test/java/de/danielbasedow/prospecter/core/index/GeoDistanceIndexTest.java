@@ -5,6 +5,7 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.LatLng;
+import gnu.trove.list.array.TLongArrayList;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class GeoDistanceIndexTest extends TestCase {
         tokens.add(new Token<LatLng>(latLng));
         Field field = new Field("foo", tokens);
 
-        List<QueryPosting> postings = index.match(field);
+        TLongArrayList postings = index.match(field);
         assertEquals(1, postings.size());
     }
 
@@ -39,7 +40,7 @@ public class GeoDistanceIndexTest extends TestCase {
         tokens.add(new Token<LatLng>(latLng));
         Field field = new Field("foo", tokens);
 
-        List<QueryPosting> postings = index.match(field);
+        TLongArrayList postings = index.match(field);
         assertEquals(1, postings.size());
     }
 
@@ -55,7 +56,7 @@ public class GeoDistanceIndexTest extends TestCase {
         tokens.add(new Token<LatLng>(latLng));
         Field field = new Field("foo", tokens);
 
-        List<QueryPosting> postings = index.match(field);
+        TLongArrayList postings = index.match(field);
         assertEquals(1, postings.size());
     }
 }
