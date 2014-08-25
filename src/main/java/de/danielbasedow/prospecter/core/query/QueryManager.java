@@ -1,4 +1,6 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.query;
+
+import de.danielbasedow.prospecter.core.query.Query;
 
 import java.util.HashMap;
 

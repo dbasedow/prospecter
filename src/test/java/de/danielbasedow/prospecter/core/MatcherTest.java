@@ -2,6 +2,8 @@ package de.danielbasedow.prospecter.core;
 
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
+import de.danielbasedow.prospecter.core.query.QueryManager;
+import de.danielbasedow.prospecter.core.query.QueryPosting;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

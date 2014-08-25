@@ -3,7 +3,7 @@ package de.danielbasedow.prospecter.core.index;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import de.danielbasedow.prospecter.core.MalformedQueryException;
 import de.danielbasedow.prospecter.core.Matcher;
-import de.danielbasedow.prospecter.core.Query;
+import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.schema.Schema;

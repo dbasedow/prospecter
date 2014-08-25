@@ -1,4 +1,4 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.query;
 
 import java.util.BitSet;
 import java.util.HashMap;

@@ -1,5 +1,8 @@
 package de.danielbasedow.prospecter.core;
 
+import de.danielbasedow.prospecter.core.query.Query;
+import de.danielbasedow.prospecter.core.query.QueryManager;
+import de.danielbasedow.prospecter.core.query.QueryPosting;
 import gnu.trove.list.array.TLongArrayList;
 
 import java.util.ArrayList;

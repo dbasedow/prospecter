@@ -1,14 +1,18 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.query.build;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.analysis.TokenizerException;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.index.DateTimeIndex;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
+import de.danielbasedow.prospecter.core.query.Condition;
+import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +40,7 @@ public class QueryBuilder {
      *
      * @param json JSON string
      * @return query instance
-     * @throws MalformedQueryException
+     * @throws de.danielbasedow.prospecter.core.MalformedQueryException
      */
     public Query buildFromJSON(String json) throws MalformedQueryException {
         List<Condition> conditions = new ArrayList<Condition>();
@@ -74,7 +78,8 @@ public class QueryBuilder {
                     e.printStackTrace();
                 }
             case INTEGER:
-                return handleInteger(fieldName, node);
+                IntegerFieldHandler handler = new IntegerFieldHandler(node);
+                return handler.getConditions();
             case GEO_DISTANCE:
                 return handleGeoDistance(fieldName, node);
             case DATE_TIME:
@@ -90,6 +95,9 @@ public class QueryBuilder {
     }
 
     private List<Condition> handleString(String fieldName, ObjectNode node) {
+        if (node.get("value").getNodeType() == JsonNodeType.ARRAY) {
+
+        }
         String value = node.get("value").asText();
         Token<String> token = new Token<String>(value, MatchCondition.EQUALS);
         List<Condition> conditions = new ArrayList<Condition>();
@@ -131,16 +139,6 @@ public class QueryBuilder {
         } else {
             return MatchCondition.NONE;
         }
-    }
-
-    private List<Condition> handleInteger(String fieldName, ObjectNode node) {
-        Integer value = node.get("value").asInt();
-        String comparator = node.get("condition").asText();
-        MatchCondition matchCondition = getMatchCondition(comparator);
-        Token<Integer> token = new Token<Integer>(value, matchCondition);
-        List<Condition> conditions = new ArrayList<Condition>();
-        conditions.add(new Condition(fieldName, token));
-        return conditions;
     }
 
     private List<Condition> handleDateTime(String fieldName, ObjectNode node) throws MalformedQueryException {

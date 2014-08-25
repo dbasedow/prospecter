@@ -3,6 +3,8 @@ package de.danielbasedow.prospecter.benchmark;
 import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
+import de.danielbasedow.prospecter.core.query.Query;
+import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilder;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilderJSON;

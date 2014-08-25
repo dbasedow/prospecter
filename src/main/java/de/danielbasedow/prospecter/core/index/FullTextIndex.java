@@ -1,7 +1,7 @@
 package de.danielbasedow.prospecter.core.index;
 
 
-import de.danielbasedow.prospecter.core.QueryPosting;
+import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.document.Field;

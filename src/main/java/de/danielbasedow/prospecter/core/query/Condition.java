@@ -1,4 +1,6 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.query;
+
+import de.danielbasedow.prospecter.core.Token;
 
 /**
  * A Condition is represented by a field name and token combination.

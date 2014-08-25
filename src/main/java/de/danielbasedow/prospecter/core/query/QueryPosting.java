@@ -1,4 +1,4 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.query;
 
 /**
  * Immutable representation of query posting (queryId, bitToToggle)

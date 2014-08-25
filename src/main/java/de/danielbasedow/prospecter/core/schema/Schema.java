@@ -6,6 +6,9 @@ import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.persistence.QueryStorage;
+import de.danielbasedow.prospecter.core.query.Query;
+import de.danielbasedow.prospecter.core.query.QueryManager;
+import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
 import gnu.trove.list.array.TLongArrayList;
 
 /**

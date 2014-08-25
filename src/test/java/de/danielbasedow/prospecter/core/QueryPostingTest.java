@@ -1,5 +1,6 @@
 package de.danielbasedow.prospecter.core;
 
+import de.danielbasedow.prospecter.core.query.QueryPosting;
 import junit.framework.TestCase;
 
 public class QueryPostingTest extends TestCase {
