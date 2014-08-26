@@ -78,7 +78,7 @@ public class QueryBuilder {
                     e.printStackTrace();
                 }
             case INTEGER:
-                IntegerFieldHandler handler = new IntegerFieldHandler(node);
+                IntegerFieldHandler handler = new IntegerFieldHandler(node, fieldName);
                 return handler.getConditions();
             case GEO_DISTANCE:
                 return handleGeoDistance(fieldName, node);

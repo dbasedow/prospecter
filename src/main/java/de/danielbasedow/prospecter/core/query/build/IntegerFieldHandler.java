@@ -6,30 +6,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.danielbasedow.prospecter.core.MatchCondition;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.query.Condition;
-import de.danielbasedow.prospecter.core.query.InvalidQueryException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IntegerFieldHandler extends AbstractFieldHandler {
-    private ObjectNode root;
 
-    public IntegerFieldHandler(ObjectNode node) {
-        root = node;
+    public IntegerFieldHandler(ObjectNode node, String fieldName) {
+        super(node, fieldName);
     }
 
     public List<Condition> getConditions() {
         List<Condition> conditions = new ArrayList<Condition>();
 
-        String fieldName = root.get("condition").asText();
-
         String comparator = root.get("condition").asText();
         MatchCondition matchCondition = getMatchCondition(comparator);
 
-        JsonNode valNode = root.get("value");
-        if (valNode == null) {
-            throw new InvalidQueryException("No value node found");
-        }
+        JsonNode valNode = getValue();
 
         if (valNode.getNodeType() == JsonNodeType.ARRAY) {
             for (JsonNode node : valNode) {
