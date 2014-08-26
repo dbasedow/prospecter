@@ -10,9 +10,9 @@ import de.danielbasedow.prospecter.core.query.Condition;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IntegerFieldHandler extends AbstractFieldHandler {
+public abstract class GenericFieldHandler extends AbstractFieldHandler {
 
-    public IntegerFieldHandler(ObjectNode node, String fieldName) {
+    public GenericFieldHandler(ObjectNode node, String fieldName) {
         super(node, fieldName);
     }
 
@@ -26,15 +26,13 @@ public class IntegerFieldHandler extends AbstractFieldHandler {
 
         if (valNode.getNodeType() == JsonNodeType.ARRAY) {
             for (JsonNode node : valNode) {
-                conditions.add(makeCondition(matchCondition, node.asInt(), fieldName));
+                conditions.add(new Condition(fieldName, getToken(node, matchCondition)));
             }
         } else {
-            conditions.add(makeCondition(matchCondition, valNode.asInt(), fieldName));
+            conditions.add(new Condition(fieldName, getToken(valNode, matchCondition)));
         }
         return conditions;
     }
 
-    private Condition makeCondition(MatchCondition matchCondition, Integer token, String fieldName) {
-        return new Condition(fieldName, new Token<Integer>(token, matchCondition));
-    }
+    protected abstract Token getToken(JsonNode node, MatchCondition matchCondition);
 }

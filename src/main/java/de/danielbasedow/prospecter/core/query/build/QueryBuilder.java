@@ -70,6 +70,7 @@ public class QueryBuilder {
             LOGGER.error("field '" + fieldName + "' not in schema");
             throw new MalformedQueryException("Field '" + fieldName + "' not in schema.");
         }
+        GenericFieldHandler handler;
         switch (fieldIndex.getFieldType()) {
             case FULL_TEXT:
                 try {
@@ -78,51 +79,43 @@ public class QueryBuilder {
                     e.printStackTrace();
                 }
             case INTEGER:
-                IntegerFieldHandler handler = new IntegerFieldHandler(node, fieldName);
+                handler = new GenericFieldHandler(node, fieldName) {
+                    @Override
+                    protected Token getToken(JsonNode node, MatchCondition matchCondition) {
+                        return new Token<Integer>(node.asInt(), matchCondition);
+                    }
+                };
                 return handler.getConditions();
             case GEO_DISTANCE:
                 return handleGeoDistance(fieldName, node);
             case DATE_TIME:
                 return handleDateTime(fieldName, node);
             case LONG:
-                return handleLong(fieldName, node);
+                handler = new GenericFieldHandler(node, fieldName) {
+                    @Override
+                    protected Token getToken(JsonNode node, MatchCondition matchCondition) {
+                        return new Token<Long>(node.asLong(), matchCondition);
+                    }
+                };
+                return handler.getConditions();
             case DOUBLE:
-                return handleDouble(fieldName, node);
+                handler = new GenericFieldHandler(node, fieldName) {
+                    @Override
+                    protected Token getToken(JsonNode node, MatchCondition matchCondition) {
+                        return new Token<Double>(node.asDouble(), matchCondition);
+                    }
+                };
+                return handler.getConditions();
             case STRING:
-                return handleString(fieldName, node);
+                handler = new GenericFieldHandler(node, fieldName) {
+                    @Override
+                    protected Token getToken(JsonNode node, MatchCondition matchCondition) {
+                        return new Token<String>(node.asText(), matchCondition);
+                    }
+                };
+                return handler.getConditions();
         }
         throw new MalformedQueryException("Field '" + fieldName + "' does not seem to be supported.");
-    }
-
-    private List<Condition> handleString(String fieldName, ObjectNode node) {
-        if (node.get("value").getNodeType() == JsonNodeType.ARRAY) {
-
-        }
-        String value = node.get("value").asText();
-        Token<String> token = new Token<String>(value, MatchCondition.EQUALS);
-        List<Condition> conditions = new ArrayList<Condition>();
-        conditions.add(new Condition(fieldName, token));
-        return conditions;
-    }
-
-    private List<Condition> handleLong(String fieldName, ObjectNode node) {
-        Long value = node.get("value").asLong();
-        String comparator = node.get("condition").asText();
-        MatchCondition matchCondition = getMatchCondition(comparator);
-        Token<Long> token = new Token<Long>(value, matchCondition);
-        List<Condition> conditions = new ArrayList<Condition>();
-        conditions.add(new Condition(fieldName, token));
-        return conditions;
-    }
-
-    private List<Condition> handleDouble(String fieldName, ObjectNode node) {
-        Double value = node.get("value").asDouble();
-        String comparator = node.get("condition").asText();
-        MatchCondition matchCondition = getMatchCondition(comparator);
-        Token<Double> token = new Token<Double>(value, matchCondition);
-        List<Condition> conditions = new ArrayList<Condition>();
-        conditions.add(new Condition(fieldName, token));
-        return conditions;
     }
 
     private MatchCondition getMatchCondition(String comparator) {
