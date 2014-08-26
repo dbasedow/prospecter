@@ -19,7 +19,7 @@ public class LongIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, QueryPosting posting) {
+    public void addPosting(Token token, Long posting) {
         index.addPosting(token, posting);
     }
 

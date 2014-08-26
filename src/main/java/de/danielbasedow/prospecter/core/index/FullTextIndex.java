@@ -23,7 +23,7 @@ public class FullTextIndex extends AbstractFieldIndex {
         this.analyzer = analyzer;
     }
 
-    public void addPosting(Token token, QueryPosting posting) {
+    public void addPosting(Token token, Long posting) {
         TLongArrayList postingList;
         if (index.containsKey((Integer) token.getToken())) {
             postingList = index.get((Integer) token.getToken());
@@ -31,7 +31,7 @@ public class FullTextIndex extends AbstractFieldIndex {
             postingList = new TLongArrayList();
             index.put((Integer) token.getToken(), postingList);
         }
-        postingList.add(posting.getPackedPosting());
+        postingList.add(posting);
     }
 
     @Override

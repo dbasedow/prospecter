@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
@@ -64,7 +63,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, QueryPosting posting) {
+    public void addPosting(Token token, Long posting) {
         Integer aliasId = postings.aliasPosting(posting);
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
         if (perimeter.getDistance() > maxDistanceInIndex) {
@@ -206,10 +205,10 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
          * @param posting posting to alias
          * @return alias id
          */
-        public Integer aliasPosting(QueryPosting posting) {
+        public Integer aliasPosting(Long posting) {
             Integer id = nextId;
             nextId++;
-            postings.put(id, posting.getPackedPosting());
+            postings.put(id, posting);
             return id;
         }
 

@@ -26,7 +26,7 @@ public interface FieldIndex {
      * @param token   Token to match on later on
      * @param posting query posting
      */
-    public void addPosting(Token token, QueryPosting posting);
+    public void addPosting(Token token, Long posting);
 
     /**
      * Get FieldType of this FieldIndex

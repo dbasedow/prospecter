@@ -31,17 +31,17 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, QueryPosting posting) {
+    public void addPosting(Token token, Long posting) {
         String tokenStr = (String) token.getToken();
         addOrCreate(tokenStr, posting);
     }
 
-    public void addOrCreate(String token, QueryPosting posting) {
+    public void addOrCreate(String token, Long posting) {
         if (index.containsKey(token)) {
-            index.get(token).add(posting.getPackedPosting());
+            index.get(token).add(posting);
         } else {
             TLongArrayList postings = new TLongArrayList();
-            postings.add(posting.getPackedPosting());
+            postings.add(posting);
             index.put(token, postings);
         }
     }

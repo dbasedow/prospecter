@@ -35,7 +35,7 @@ public class IntegerIndexTest {
         for (int i = 0; i < count; i++) {
             int randInt = (int) (Math.random() * max);
             Token<Integer> token = new Token<Integer>(randInt, condition);
-            index.addPosting(token, new QueryPosting(1, (short) 1));
+            index.addPosting(token, QueryPosting.pack(1, 1));
         }
     }
 

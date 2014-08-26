@@ -30,11 +30,11 @@ public class Query {
      *
      * @return map of Condition -> QueryPosting
      */
-    public Map<Condition, QueryPosting> getPostings() {
-        Map<Condition, QueryPosting> postings = new HashMap<Condition, QueryPosting>();
+    public Map<Condition, Long> getPostings() {
+        Map<Condition, Long> postings = new HashMap<Condition, Long>();
         short bit = 0;
         for (Condition condition : conditions) {
-            postings.put(condition, new QueryPosting(queryId, bit));
+            postings.put(condition, QueryPosting.pack(queryId, bit));
             bit++;
         }
         return postings;

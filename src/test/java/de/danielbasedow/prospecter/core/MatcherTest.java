@@ -12,8 +12,7 @@ public class MatcherTest extends TestCase {
 
     public void test() {
         FullTextIndex ft = new FullTextIndex("_all", null);
-        QueryPosting posting = new QueryPosting(1, (short) 1);
-        ft.addPosting(new Token<Integer>(1, MatchCondition.EQUALS), posting);
+        ft.addPosting(new Token<Integer>(1, MatchCondition.EQUALS), QueryPosting.pack(1, 1));
         Matcher m = new Matcher(new QueryManager());
         ArrayList<Token> tokens = new ArrayList<Token>();
         tokens.add(new Token<Integer>(1, MatchCondition.EQUALS));

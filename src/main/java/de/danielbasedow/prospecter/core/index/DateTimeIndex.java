@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.array.TLongArrayList;
@@ -27,7 +26,7 @@ public class DateTimeIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, QueryPosting posting) {
+    public void addPosting(Token token, Long posting) {
         index.addPosting(token, posting);
     }
 

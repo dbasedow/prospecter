@@ -17,7 +17,7 @@ public class StringIndexTest extends TestCase {
         tokens.add(token);
         Field field = new Field("foo", tokens);
 
-        index.addPosting(new Token("bar"), new QueryPosting(1, (short) 1));
+        index.addPosting(new Token("bar"), QueryPosting.pack(1, 1));
 
         TLongArrayList postings = index.match(field);
         assertEquals(1, postings.size());

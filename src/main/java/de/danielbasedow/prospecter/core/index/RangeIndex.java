@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.array.TLongArrayList;
@@ -67,25 +66,25 @@ public class RangeIndex<T> {
         }
     }
 
-    public void addPosting(Token token, QueryPosting posting) {
+    public void addPosting(Token token, Long posting) {
         T intToken = (T) token.getToken();
         switch (token.getCondition()) {
             case EQUALS:
-                getOrCreate(indexEquals, intToken).add(posting.getPackedPosting());
+                getOrCreate(indexEquals, intToken).add(posting);
                 break;
             case GREATER_THAN:
-                getOrCreate(indexGreaterThan, intToken).add(posting.getPackedPosting());
+                getOrCreate(indexGreaterThan, intToken).add(posting);
                 break;
             case GREATER_THAN_EQUALS:
-                getOrCreate(indexGreaterThan, intToken).add(posting.getPackedPosting());
-                getOrCreate(indexEquals, intToken).add(posting.getPackedPosting());
+                getOrCreate(indexGreaterThan, intToken).add(posting);
+                getOrCreate(indexEquals, intToken).add(posting);
                 break;
             case LESS_THAN:
-                getOrCreate(indexLessThan, intToken).add(posting.getPackedPosting());
+                getOrCreate(indexLessThan, intToken).add(posting);
                 break;
             case LESS_THAN_EQUALS:
-                getOrCreate(indexLessThan, intToken).add(posting.getPackedPosting());
-                getOrCreate(indexEquals, intToken).add(posting.getPackedPosting());
+                getOrCreate(indexLessThan, intToken).add(posting);
+                getOrCreate(indexEquals, intToken).add(posting);
                 break;
         }
     }

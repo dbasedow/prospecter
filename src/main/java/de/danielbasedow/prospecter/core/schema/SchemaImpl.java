@@ -50,10 +50,10 @@ public class SchemaImpl implements Schema {
     }
 
     public void addQuery(Query query) throws UndefinedIndexFieldException {
-        Map<Condition, QueryPosting> postings = query.getPostings();
-        for (Map.Entry<Condition, QueryPosting> entry : postings.entrySet()) {
+        Map<Condition, Long> postings = query.getPostings();
+        for (Map.Entry<Condition, Long> entry : postings.entrySet()) {
             Condition condition = entry.getKey();
-            QueryPosting posting = entry.getValue();
+            Long posting = entry.getValue();
 
             if (!indices.containsKey(condition.getFieldName())) {
                 throw new UndefinedIndexFieldException("No field named '" + condition.getFieldName() + "'");
