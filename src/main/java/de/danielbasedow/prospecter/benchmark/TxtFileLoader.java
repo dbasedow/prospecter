@@ -87,20 +87,17 @@ public class TxtFileLoader {
 
     public static void measure(Schema schema, String jsonDoc, long queryCount) {
         long sumQueryTime = 0;
-        long sumMemoryUsage = 0;
         Runtime runtime = Runtime.getRuntime();
         for (int i = 0; i < 10; i++) {
-            runtime.gc();
             Document doc = schema.getDocumentBuilder().build(jsonDoc);
             long startTime = new Date().getTime();
             Matcher m = schema.matchDocument(doc);
             m.getMatchedQueries();
             long endTime = new Date().getTime();
             sumQueryTime += endTime - startTime;
-            sumMemoryUsage += runtime.totalMemory() - runtime.freeMemory();
         }
+        runtime.gc();
         double avgQueryTime = sumQueryTime / 10.0;
-        long avgMemory = sumMemoryUsage / 10;
-        System.out.println(String.valueOf(queryCount) + ";" + String.valueOf(avgQueryTime) + ";" + String.valueOf(avgMemory));
+        System.out.println(String.valueOf(queryCount) + ";" + String.valueOf(avgQueryTime) + ";" + String.valueOf(runtime.totalMemory() - runtime.freeMemory()));
     }
 }

@@ -91,10 +91,10 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
             Document doc = schema.getDocumentBuilder().build(content.toString(CharsetUtil.UTF_8));
             Matcher matcher = schema.matchDocument(doc);
             ArrayNode results = node.putArray("matches");
-            for (Query query : matcher.getMatchedQueries()) {
+            for (Integer queryId : matcher.getMatchedQueries()) {
                 matchCount++;
                 ObjectNode queryNode = results.addObject();
-                queryNode.put("id", query.getQueryId());
+                queryNode.put("id", queryId);
             }
             LOGGER.info("finished matching");
         }

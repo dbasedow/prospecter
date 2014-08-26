@@ -1,25 +1,24 @@
 package de.danielbasedow.prospecter.core.query;
 
-import de.danielbasedow.prospecter.core.query.Query;
-
+import java.util.BitSet;
 import java.util.HashMap;
 
 public class QueryManager {
-    protected HashMap<Integer, Query> queries;
+    protected HashMap<Integer, BitSet> masks;
 
     public QueryManager() {
-        this.queries = new HashMap<Integer, Query>();
+        this.masks = new HashMap<Integer, BitSet>();
     }
 
     public void addQuery(Query query) {
-        queries.put(query.getQueryId(), query);
+        masks.put(query.getQueryId(), query.getMask());
     }
 
-    public Query getQuery(Integer queryId) {
-        return queries.get(queryId);
+    public BitSet getMask(Integer queryId) {
+        return masks.get(queryId);
     }
 
     public void deleteQuery(Integer queryId) {
-        queries.remove(queryId);
+        masks.remove(queryId);
     }
 }

@@ -62,4 +62,7 @@ public class Query {
         return conditions;
     }
 
+    public BitSet getMask() {
+        return mask;
+    }
 }

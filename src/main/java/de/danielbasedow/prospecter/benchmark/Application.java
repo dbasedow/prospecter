@@ -105,7 +105,7 @@ public class Application {
         long start = (new Date()).getTime();
         Document document = buildDoc(schema.getDocumentBuilder(), doc);
         Matcher matcher = schema.matchDocument(document);
-        List<Query> queries = matcher.getMatchedQueries();
+        List queries = matcher.getMatchedQueries();
         long end = (new Date()).getTime();
         //System.out.print(queries.size());
         //System.out.print(" ");
@@ -120,7 +120,7 @@ public class Application {
         System.out.println("matching done " + (new Date()).getTime());
 
         System.out.println("start testing " + (new Date()).getTime());
-        List<Query> queries = matcher.getMatchedQueries();
+        List queries = matcher.getMatchedQueries();
         System.out.println("testing done " + (new Date()).getTime());
 
         System.out.println("Queries returned: " + Integer.toString(queries.size()));

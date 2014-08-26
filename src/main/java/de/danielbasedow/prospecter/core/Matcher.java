@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core;
 
-import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
 import gnu.trove.list.array.TLongArrayList;
@@ -41,12 +40,12 @@ public class Matcher {
         bits.set(unpacked[QueryPosting.QUERY_BIT_INDEX]);
     }
 
-    public List<Query> getMatchedQueries() {
-        List<Query> results = new ArrayList<Query>();
+    public List<Integer> getMatchedQueries() {
+        List<Integer> results = new ArrayList<Integer>();
         for (Integer queryId : hits.keySet()) {
-            Query query = queryManager.getQuery(queryId);
-            if (query != null && query.testBits(hits.get(queryId))) {
-                results.add(query);
+            BitSet mask = queryManager.getMask(queryId);
+            if (mask != null && mask.equals(hits.get(queryId))) {
+                results.add(queryId);
             }
         }
         return results;
