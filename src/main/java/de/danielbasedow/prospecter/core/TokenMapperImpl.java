@@ -1,16 +1,18 @@
 package de.danielbasedow.prospecter.core;
 
+import gnu.trove.map.hash.TObjectIntHashMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class TokenMapperImpl implements TokenMapper {
     protected int termIdSequence;
-    protected HashMap<String, Integer> termMap;
+    protected TObjectIntHashMap<String> termMap;
 
     public TokenMapperImpl() {
         termIdSequence = 0;
-        termMap = new HashMap<String, Integer>();
+        termMap = new TObjectIntHashMap<String>();
     }
 
     @Override

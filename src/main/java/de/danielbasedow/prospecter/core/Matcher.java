@@ -3,22 +3,23 @@ package de.danielbasedow.prospecter.core;
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
 import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.procedure.TIntObjectProcedure;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Tracks hits across multiple index fields and applies the bit from the QueryPostings.
  */
 public class Matcher {
-    protected HashMap<Integer, BitSet> hits;
+    protected TIntObjectHashMap<BitSet> hits;
     protected QueryManager queryManager;
 
     public Matcher(QueryManager qm) {
         queryManager = qm;
-        hits = new HashMap<Integer, BitSet>();
+        hits = new TIntObjectHashMap<BitSet>();
     }
 
     public void addHits(TLongArrayList postings) {
@@ -41,13 +42,17 @@ public class Matcher {
     }
 
     public List<Integer> getMatchedQueries() {
-        List<Integer> results = new ArrayList<Integer>();
-        for (Integer queryId : hits.keySet()) {
-            BitSet mask = queryManager.getMask(queryId);
-            if (mask != null && mask.equals(hits.get(queryId))) {
-                results.add(queryId);
+        final List<Integer> results = new ArrayList<Integer>();
+        hits.forEachEntry(new TIntObjectProcedure<BitSet>() {
+            @Override
+            public boolean execute(int queryId, BitSet bitSet) {
+                BitSet mask = queryManager.getMask(queryId);
+                if (mask != null && mask.equals(hits.get(queryId))) {
+                    results.add(queryId);
+                }
+                return true;
             }
-        }
+        });
         return results;
     }
 }
