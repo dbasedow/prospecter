@@ -1,5 +1,8 @@
 package de.danielbasedow.prospecter.core.query;
 
+import de.danielbasedow.prospecter.core.MatchCondition;
+import de.danielbasedow.prospecter.core.Token;
+
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +37,18 @@ public class Query {
         Map<Condition, Long> postings = new HashMap<Condition, Long>();
         short bit = 0;
         for (Condition condition : conditions) {
-            postings.put(condition, QueryPosting.pack(queryId, bit));
+            if (condition.getToken().getCondition() == MatchCondition.IN) {
+                //If this is an IN query we're dealing with a Token containing a List<Token>
+                Object t = condition.getToken().getToken();
+                if (t instanceof List) {
+                    for (Token token : (List<Token>) t) {
+                        Condition tmpCondition = new Condition(condition.getFieldName(), token);
+                        postings.put(tmpCondition, QueryPosting.pack(queryId, bit));
+                    }
+                }
+            } else {
+                postings.put(condition, QueryPosting.pack(queryId, bit));
+            }
             bit++;
         }
         return postings;

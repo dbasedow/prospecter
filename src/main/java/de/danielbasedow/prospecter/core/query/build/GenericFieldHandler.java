@@ -25,9 +25,11 @@ public abstract class GenericFieldHandler extends AbstractFieldHandler {
         JsonNode valNode = getValue();
 
         if (valNode.getNodeType() == JsonNodeType.ARRAY) {
+            List<Token> tokens = new ArrayList<Token>();
             for (JsonNode node : valNode) {
-                conditions.add(new Condition(fieldName, getToken(node, matchCondition)));
+                tokens.add(getToken(node, matchCondition));
             }
+            conditions.add(new Condition(fieldName, new Token<List<Token>>(tokens, MatchCondition.IN)));
         } else {
             conditions.add(new Condition(fieldName, getToken(valNode, matchCondition)));
         }
