@@ -1,13 +1,14 @@
 package de.danielbasedow.prospecter.core.query;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 import java.util.BitSet;
-import java.util.HashMap;
 
 public class QueryManager {
-    protected HashMap<Integer, BitSet> masks;
+    protected TIntObjectHashMap<BitSet> masks;
 
     public QueryManager() {
-        this.masks = new HashMap<Integer, BitSet>();
+        this.masks = new TIntObjectHashMap<BitSet>();
     }
 
     public void addQuery(Query query) {
