@@ -2,7 +2,7 @@
 title: Prospecter
 email: your-email@domain.com
 description: "Personal website of Daniel Basedow, mostly about software development."
-baseurl: ""
+baseurl: "/prospecter/"
 url: "http://dbasedow.github.io/prospecter"
 github_username:  dbasedow
 twitter_username: d_basedow
