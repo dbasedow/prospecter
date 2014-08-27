@@ -1,9 +1,6 @@
 package de.danielbasedow.prospecter.core;
 
-import de.danielbasedow.prospecter.core.schema.Schema;
-import de.danielbasedow.prospecter.core.schema.SchemaBuilder;
-import de.danielbasedow.prospecter.core.schema.SchemaBuilderJSON;
-import de.danielbasedow.prospecter.core.schema.SchemaConfigurationError;
+import de.danielbasedow.prospecter.core.schema.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +63,10 @@ public class Instance {
     }
 
     public Schema getSchema(String name) {
-        return schemas.get(name);
+        Schema schema = schemas.get(name);
+        if (schema == null) {
+            throw new SchemaNotFoundException("Schema '" + name + "' unknown.");
+        }
+        return schema;
     }
 }

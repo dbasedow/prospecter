@@ -40,7 +40,17 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
         } else {
             throw new Exception();
         }
-        FullHttpResponse response = dispatch();
+        FullHttpResponse response;
+        try {
+            response = dispatch();
+        } catch (Exception e) {
+            LOGGER.warn(e.getLocalizedMessage(), e);
+            response = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.INTERNAL_SERVER_ERROR,
+                    Unpooled.copiedBuffer(e.getLocalizedMessage(), CharsetUtil.UTF_8)
+            );
+        }
 
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
@@ -87,7 +97,7 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
         ObjectNode node = mapper.getNodeFactory().objectNode();
 
         if (content.isReadable()) {
-            LOGGER.info("start matching");
+            LOGGER.debug("start matching");
             Document doc = schema.getDocumentBuilder().build(content.toString(CharsetUtil.UTF_8));
             Matcher matcher = schema.matchDocument(doc);
             ArrayNode results = node.putArray("matches");
@@ -96,7 +106,7 @@ public class HttpApiRequestHandler extends SimpleChannelInboundHandler<Object> {
                 ObjectNode queryNode = results.addObject();
                 queryNode.put("id", queryId);
             }
-            LOGGER.info("finished matching");
+            LOGGER.debug("finished matching");
         }
         node.put("count", matchCount);
         return new DefaultFullHttpResponse(
