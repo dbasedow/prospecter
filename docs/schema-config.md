@@ -58,6 +58,12 @@ following settings are available for *stopwords*:
 
 If you implement your own Analyzer your make() method will receive the option object during startup.
 
+**format**
+
+For DateTime fields you can specify in what format dates will be represented. The default is ISO8601 but you can specify
+any string that can be interpreted by Java's SimpleDateFormat.
+
+
 Persistence
 -----------
 The persistence settings tell Prospecter where to store your queries. At the moment there is only MapDB available as a
@@ -65,6 +71,7 @@ backend. The alternative is to use no backend. Queries will not be available aft
 be what you're looking for. To disable persistence leave out the whole *persistence* section from your configuration.
 
 **file**
+
 Filename in for backend to store queries in. Note that MapDB creates three files on disk, *file* is used as a prefix.
 
 Example
