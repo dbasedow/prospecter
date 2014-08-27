@@ -56,7 +56,7 @@ Performance
 -----------
 Performance is looking very good already. The diagram shows the average matching time in ms.
 
-![full-text matching performance](/images/avg-match-time.png)
+![full-text matching performance]({{ '/images/avg-match-time.png' | prepend: site.baseurl }})
 
 The measurements were done on a MacBook Pro 13 with an i5 2.6 GHz and 8GB RAM. Only the matching time was measured, not
 including any networking overhead. The indexed queries were from the AOL search query logs and the document was a news
