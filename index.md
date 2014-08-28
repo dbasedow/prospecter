@@ -55,7 +55,7 @@ skipping all networking. This can be useful for very high throughput or indexing
 Performance
 -----------
 Performance is looking very good already. The diagram shows the average matching time in ms for the same document with
-increasing indexed queries. In this case matching was done on a single text field.
+increasing indexed queries. In this case, matching was done on a single text field.
 
 ![full-text matching performance]({{ '/images/avg-match-time.png' | prepend: site.baseurl }})
 
