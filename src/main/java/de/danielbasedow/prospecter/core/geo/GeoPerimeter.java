@@ -6,18 +6,19 @@ package de.danielbasedow.prospecter.core.geo;
  * specified distance (worst case if match is in one of the corners NW, NE, SE, SW).
  */
 public class GeoPerimeter {
-    /**
-     * Earth's radius in meters
-     */
-    public static final double EARTH_RADIUS = 6371009.0;
-    /**
-     * distance between degrees latitude.
-     */
-    public static final double LATITUDE_DEGREE_TO_METERS = 111195.0;
+
+    public static final double EQUATORIAL_RADIUS = 6378137;
+
+    public static final double POLAR_RADIUS = 6356752.3;
 
     private final double latitude;
     private final double longitude;
     private final int distance;
+
+    private final double north;
+    private final double south;
+    private final double east;
+    private final double west;
 
     /**
      * @param latitude  latitude of center
@@ -25,9 +26,16 @@ public class GeoPerimeter {
      * @param distance  in meters
      */
     public GeoPerimeter(double latitude, double longitude, int distance) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = Math.toRadians(latitude);
+        this.longitude = Math.toRadians(longitude);
         this.distance = distance;
+
+        double r = getRadiusAtLatitude(this.latitude);
+        double pr = r * Math.cos(this.latitude);
+        south = Math.toDegrees(this.latitude - distance / r);
+        north = Math.toDegrees(this.latitude + distance / r);
+        west = Math.toDegrees(this.longitude - distance / pr);
+        east = Math.toDegrees(this.longitude + distance / pr);
     }
 
     /**
@@ -36,7 +44,7 @@ public class GeoPerimeter {
      * @return northern limit converted to integer
      */
     public int getNorth() {
-        return GeoUtil.latitudeToInt(latitude + (distance / LATITUDE_DEGREE_TO_METERS));
+        return GeoUtil.latitudeToInt(north);
     }
 
     /**
@@ -45,7 +53,7 @@ public class GeoPerimeter {
      * @return southern limit converted to integer
      */
     public int getSouth() {
-        return GeoUtil.latitudeToInt(latitude - (distance / LATITUDE_DEGREE_TO_METERS));
+        return GeoUtil.latitudeToInt(south);
     }
 
     /**
@@ -54,7 +62,7 @@ public class GeoPerimeter {
      * @return eastern limit converted to integer
      */
     public int getEast() {
-        return GeoUtil.longitudeToInt(longitude + getLongitudeDegreeOffset());
+        return GeoUtil.longitudeToInt(east);
     }
 
     /**
@@ -63,20 +71,7 @@ public class GeoPerimeter {
      * @return western limit converted to integer
      */
     public int getWest() {
-        return GeoUtil.longitudeToInt(longitude - getLongitudeDegreeOffset());
-    }
-
-    /**
-     * calculates longitudial offset (in degrees) that represent the distance at the current latitude
-     *
-     * @return longitudial offset in degrees at the current latitude
-     */
-    public double getLongitudeDegreeOffset() {
-        return Math.abs(
-                distance / (
-                        (2 * Math.PI * EARTH_RADIUS * Math.cos(latitude)) / 360
-                )
-        );
+        return GeoUtil.longitudeToInt(west);
     }
 
     public int getDistance() {
@@ -104,9 +99,18 @@ public class GeoPerimeter {
      */
     public GeoPerimeter mirrorInFakeSpace() {
         if (longitude > 0) {
-            return new GeoPerimeter(latitude, longitude - 360, distance);
+            return new GeoPerimeter(Math.toDegrees(latitude), Math.toDegrees(longitude) - 360, distance);
         } else {
-            return new GeoPerimeter(latitude, longitude + 360, distance);
+            return new GeoPerimeter(Math.toDegrees(latitude), Math.toDegrees(longitude) + 360, distance);
         }
+    }
+
+    private double getRadiusAtLatitude(double latitude) {
+        double a = EQUATORIAL_RADIUS * EQUATORIAL_RADIUS * Math.cos(latitude);
+        double b = POLAR_RADIUS * POLAR_RADIUS * Math.sin(latitude);
+        double c = EQUATORIAL_RADIUS * Math.cos(latitude);
+        double d = POLAR_RADIUS * Math.sin(latitude);
+
+        return Math.sqrt((a * a + b * b) / (c * c + d * d));
     }
 }
