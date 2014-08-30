@@ -20,7 +20,7 @@ You then end up with a stand-alone JAR file in the target directory.
 Configuration
 -------------
 Create a directory somewhere where you will place configuration files and data. In that directory place a file called
-"server-config.json" with the following content:
+**server-config.json** with the following content:
 
     {
         "port": 8888,
@@ -37,7 +37,7 @@ Create a new subdirectory in your homeDir. The directory name becomes the schema
 lower-case letters, numbers and dashes.
 
 A schema tells Prospecter what fields can be searched in documents and what type they are. So we have to create a
-schema configuration file: put a file called "schema.json" in your schema directory with the following content.
+schema configuration file: put a file called **schema.json** in your schema directory with the following content.
 
     {
         "fields": {
@@ -58,7 +58,7 @@ memory.
 
 That's it! You can now use prospecter by typing
 
-    java -jar target/prospecter-x.x.x-SNAPSHOT-jar-with-dependencies.jar /path/to/your/directory/server-config.json
+    java -jar prospecter-x.x.x-SNAPSHOT-jar-with-dependencies.jar /path/to/your/directory/server-config.json
 
 You should see some logging output. Prospecter is now waiting for connections. To stop Prospecter hit Ctrl + C or send a
 "kill -HUP".
