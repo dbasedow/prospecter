@@ -5,6 +5,7 @@ import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.GeoUtil;
 import de.danielbasedow.prospecter.core.geo.LatLng;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.list.array.TLongArrayList;
 
 import java.util.*;
@@ -25,19 +26,19 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
      */
     private int maxDistanceInIndex;
-    private SortedMap<Integer, List<Integer>> limitsWest;
-    private SortedMap<Integer, List<Integer>> limitsEast;
-    private SortedMap<Integer, List<Integer>> limitsNorth;
-    private SortedMap<Integer, List<Integer>> limitsSouth;
+    private SortedMap<Integer, TIntArrayList> limitsWest;
+    private SortedMap<Integer, TIntArrayList> limitsEast;
+    private SortedMap<Integer, TIntArrayList> limitsNorth;
+    private SortedMap<Integer, TIntArrayList> limitsSouth;
     private PostingAliasMap postings;
 
     public GeoDistanceIndex(String name) {
         super(name);
         maxDistanceInIndex = 0;
-        limitsWest = new TreeMap<Integer, List<Integer>>();
-        limitsEast = new TreeMap<Integer, List<Integer>>();
-        limitsNorth = new TreeMap<Integer, List<Integer>>();
-        limitsSouth = new TreeMap<Integer, List<Integer>>();
+        limitsWest = new TreeMap<Integer, TIntArrayList>();
+        limitsEast = new TreeMap<Integer, TIntArrayList>();
+        limitsNorth = new TreeMap<Integer, TIntArrayList>();
+        limitsSouth = new TreeMap<Integer, TIntArrayList>();
         postings = new PostingAliasMap();
     }
 
@@ -89,12 +90,12 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         return FieldType.GEO_DISTANCE;
     }
 
-    private void addOrCreatePostings(SortedMap<Integer, List<Integer>> index, Integer key, Integer aliasId) {
-        List<Integer> postings;
+    private void addOrCreatePostings(SortedMap<Integer, TIntArrayList> index, Integer key, Integer aliasId) {
+        TIntArrayList postings;
         if (index.containsKey(key)) {
             postings = index.get(key);
         } else {
-            postings = new ArrayList<Integer>();
+            postings = new TIntArrayList();
             index.put(key, postings);
         }
         postings.add(aliasId);
@@ -128,17 +129,17 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
          * @param coordinate document fields longitude or latitude
          * @param limit      eastern, western, northern or southern limit
          */
-        public void matchIndex(SortedMap<Integer, List<Integer>> index, Integer coordinate, Integer limit) {
+        public void matchIndex(SortedMap<Integer, TIntArrayList> index, Integer coordinate, Integer limit) {
             roundCount++;
-            SortedMap<Integer, List<Integer>> navigableMap;
+            SortedMap<Integer, TIntArrayList> navigableMap;
             if (limit > coordinate) {
                 navigableMap = index.subMap(coordinate, limit);
             } else {
                 navigableMap = index.subMap(limit, coordinate);
             }
             if (navigableMap.size() > 0) {
-                for (Map.Entry<Integer, List<Integer>> entry : navigableMap.entrySet()) {
-                    for (Integer aliasId : entry.getValue()) {
+                for (Map.Entry<Integer, TIntArrayList> entry : navigableMap.entrySet()) {
+                    for (Integer aliasId : entry.getValue().toArray()) {
                         recordMatch(aliasId);
                     }
                 }
