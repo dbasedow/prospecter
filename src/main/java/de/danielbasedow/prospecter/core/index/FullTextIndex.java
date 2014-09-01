@@ -7,6 +7,8 @@ import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,8 @@ import java.util.ArrayList;
  * Index enabling full text search
  */
 public class FullTextIndex extends AbstractFieldIndex {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FullTextIndex.class);
+
     protected TIntObjectHashMap<TLongArrayList> index;
     private Analyzer analyzer;
 
@@ -32,6 +36,15 @@ public class FullTextIndex extends AbstractFieldIndex {
             index.put((Integer) token.getToken(), postingList);
         }
         postingList.add(posting);
+    }
+
+    @Override
+    public void removePosting(Token token, Long posting) {
+        TLongArrayList postingList = index.get((Integer) token.getToken());
+        if (postingList != null && postingList.contains(posting)) {
+            LOGGER.debug("removing posting: " + String.valueOf(posting));
+            postingList.remove(posting);
+        }
     }
 
     @Override

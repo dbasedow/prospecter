@@ -34,4 +34,9 @@ public class IntegerIndex extends AbstractFieldIndex {
     public FieldType getFieldType() {
         return FieldType.INTEGER;
     }
+
+    @Override
+    public void removePosting(Token token, Long posting) {
+        index.removePosting(token, posting);
+    }
 }

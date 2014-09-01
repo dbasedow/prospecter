@@ -9,7 +9,14 @@ public class FullTextIndexTest extends TestCase {
     public void test() {
         FullTextIndex ft = new FullTextIndex("_all", null);
         assertEquals(0, ft.index.size());
-        ft.addPosting(new Token<Integer>(1, MatchCondition.EQUALS), QueryPosting.pack(1, 1));
+        Token token = new Token<Integer>(1, MatchCondition.EQUALS);
+        ft.addPosting(token, QueryPosting.pack(1, 1));
         assertEquals(1, ft.index.size());
+
+        ft.removePosting(token, QueryPosting.pack(1, 2));
+        assertEquals(1, ft.index.get((Integer) token.getToken()).size());
+
+        ft.removePosting(token, QueryPosting.pack(1, 1));
+        assertEquals(0, ft.index.get((Integer) token.getToken()).size());
     }
 }

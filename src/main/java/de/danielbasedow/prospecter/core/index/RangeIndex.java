@@ -89,6 +89,29 @@ public class RangeIndex<T> {
         }
     }
 
+    public void removePosting(Token token, Long posting) {
+        T intToken = (T) token.getToken();
+        switch (token.getCondition()) {
+            case EQUALS:
+                getOrCreate(indexEquals, intToken).remove(posting);
+                break;
+            case GREATER_THAN:
+                getOrCreate(indexGreaterThan, intToken).remove(posting);
+                break;
+            case GREATER_THAN_EQUALS:
+                getOrCreate(indexGreaterThan, intToken).remove(posting);
+                getOrCreate(indexEquals, intToken).remove(posting);
+                break;
+            case LESS_THAN:
+                getOrCreate(indexLessThan, intToken).remove(posting);
+                break;
+            case LESS_THAN_EQUALS:
+                getOrCreate(indexLessThan, intToken).remove(posting);
+                getOrCreate(indexEquals, intToken).remove(posting);
+                break;
+        }
+    }
+
     private TLongArrayList getOrCreate(Map<T, TLongArrayList> map, T key) {
         TLongArrayList postings;
         if (map.containsKey(key)) {

@@ -36,6 +36,15 @@ public class StringIndex extends AbstractFieldIndex {
         addOrCreate(tokenStr, posting);
     }
 
+    @Override
+    public void removePosting(Token token, Long posting) {
+        String tokenStr = (String) token.getToken();
+        TLongArrayList postings = index.get(tokenStr);
+        if (postings != null) {
+            postings.remove(posting);
+        }
+    }
+
     public void addOrCreate(String token, Long posting) {
         if (index.containsKey(token)) {
             index.get(token).add(posting);

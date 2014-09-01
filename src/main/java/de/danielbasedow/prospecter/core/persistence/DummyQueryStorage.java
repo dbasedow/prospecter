@@ -21,4 +21,9 @@ public class DummyQueryStorage implements QueryStorage {
     @Override
     public void close() {
     }
+
+    @Override
+    public String getRawQuery(Integer queryId) {
+        return null;
+    }
 }

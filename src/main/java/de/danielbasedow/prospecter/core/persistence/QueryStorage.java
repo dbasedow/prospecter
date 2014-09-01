@@ -8,4 +8,6 @@ public interface QueryStorage {
     public void deleteQuery(Integer queryId);
 
     public void close();
+
+    public String getRawQuery(Integer queryId);
 }

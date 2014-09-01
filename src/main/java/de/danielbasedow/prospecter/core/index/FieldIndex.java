@@ -29,6 +29,14 @@ public interface FieldIndex {
     public void addPosting(Token token, Long posting);
 
     /**
+     * Delete a QueryPosting from index
+     *
+     * @param token   Token to delete
+     * @param posting query posting
+     */
+    public void removePosting(Token token, Long posting);
+
+    /**
      * Get FieldType of this FieldIndex
      *
      * @return type of this field

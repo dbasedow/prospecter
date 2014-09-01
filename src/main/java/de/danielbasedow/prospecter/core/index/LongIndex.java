@@ -27,4 +27,9 @@ public class LongIndex extends AbstractFieldIndex {
     public FieldType getFieldType() {
         return FieldType.LONG;
     }
+
+    @Override
+    public void removePosting(Token token, Long posting) {
+        index.removePosting(token, posting);
+    }
 }

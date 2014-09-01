@@ -34,4 +34,9 @@ public class DateTimeIndex extends AbstractFieldIndex {
     public FieldType getFieldType() {
         return FieldType.DATE_TIME;
     }
+
+    @Override
+    public void removePosting(Token token, Long posting) {
+        index.removePosting(token, posting);
+    }
 }

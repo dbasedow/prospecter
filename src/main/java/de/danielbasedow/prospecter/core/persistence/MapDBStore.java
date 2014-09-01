@@ -61,4 +61,9 @@ public class MapDBStore implements QueryStorage {
         database.commit();
         database.close();
     }
+
+    @Override
+    public String getRawQuery(Integer queryId) {
+        return map.get(queryId);
+    }
 }

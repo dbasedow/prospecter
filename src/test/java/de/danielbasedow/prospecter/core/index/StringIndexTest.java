@@ -21,6 +21,10 @@ public class StringIndexTest extends TestCase {
 
         TLongArrayList postings = index.match(field);
         assertEquals(1, postings.size());
+
+        index.removePosting(new Token("bar"), QueryPosting.pack(1, 1));
+        postings = index.match(field);
+        assertEquals(0, postings.size());
     }
 
 }

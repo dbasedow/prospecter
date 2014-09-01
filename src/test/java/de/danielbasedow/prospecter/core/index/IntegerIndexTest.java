@@ -61,6 +61,12 @@ public class IntegerIndexTest extends TestCase {
         f = makeField(int_high);
         postings = index.match(f);
         assertEquals(4, postings.size());
+
+        //deletion
+        index.removePosting(t3, QueryPosting.pack(1, 1));
+        f = makeField(int_high);
+        postings = index.match(f);
+        assertEquals(3, postings.size());
     }
 
     public void testGreaterEqual() {

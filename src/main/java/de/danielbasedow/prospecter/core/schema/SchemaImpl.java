@@ -155,8 +155,27 @@ public class SchemaImpl implements Schema {
 
     @Override
     public void deleteQuery(Integer queryId) {
+        String rawQuery = queryStorage.getRawQuery(queryId);
+        if (rawQuery != null) {
+            try {
+                Query query = queryBuilder.buildFromJSON(rawQuery);
+            } catch (MalformedQueryException e) {
+                LOGGER.warn("Error parsing query", e);
+            }
+        }
         queryManager.deleteQuery(queryId);
         queryStorage.deleteQuery(queryId);
+    }
+
+    private void removePostings(Query query) {
+        Map<Condition, Long> postings = query.getPostings();
+        for (Map.Entry<Condition, Long> entry : postings.entrySet()) {
+            Condition condition = entry.getKey();
+            Long posting = entry.getValue();
+
+            indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
+        }
+        queryManager.addQuery(query);
     }
 
     @Override
