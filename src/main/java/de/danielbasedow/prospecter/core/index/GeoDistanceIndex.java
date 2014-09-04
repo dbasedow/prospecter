@@ -7,6 +7,10 @@ import de.danielbasedow.prospecter.core.geo.GeoUtil;
 import de.danielbasedow.prospecter.core.geo.LatLng;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.procedure.TIntProcedure;
+import net.sf.jsi.Rectangle;
+import net.sf.jsi.SpatialIndex;
+import net.sf.jsi.rtree.RTree;
 
 import java.util.*;
 
@@ -25,20 +29,13 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     /**
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
      */
-    private int maxDistanceInIndex;
-    private SortedMap<Integer, TIntArrayList> limitsWest;
-    private SortedMap<Integer, TIntArrayList> limitsEast;
-    private SortedMap<Integer, TIntArrayList> limitsNorth;
-    private SortedMap<Integer, TIntArrayList> limitsSouth;
+    private SpatialIndex index;
     private PostingAliasMap postings;
 
     public GeoDistanceIndex(String name) {
         super(name);
-        maxDistanceInIndex = 0;
-        limitsWest = new TreeMap<Integer, TIntArrayList>();
-        limitsEast = new TreeMap<Integer, TIntArrayList>();
-        limitsNorth = new TreeMap<Integer, TIntArrayList>();
-        limitsSouth = new TreeMap<Integer, TIntArrayList>();
+        index = new RTree();
+        index.init(null);
         postings = new PostingAliasMap();
     }
 
@@ -48,15 +45,16 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             LatLng latLng = (LatLng) token.getToken();
-            GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), maxDistanceInIndex * 2);
-            GeoMatcher matcher = new GeoMatcher();
-            Integer intLongitude = GeoUtil.longitudeToInt(latLng.getLongitude());
-            Integer intLatitude = GeoUtil.latitudeToInt(latLng.getLatitude());
-            matcher.matchIndex(limitsEast, intLongitude, perimeter.getEast());
-            matcher.matchIndex(limitsWest, intLongitude, perimeter.getWest());
-            matcher.matchIndex(limitsNorth, intLatitude, perimeter.getNorth());
-            matcher.matchIndex(limitsSouth, intLatitude, perimeter.getSouth());
-            for (Integer aliasId : matcher.getMatches()) {
+            GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), 0);
+            MatchCollectionProcedure procedure = new MatchCollectionProcedure();
+            index.intersects(new Rectangle(
+                    (float) perimeter.getWestDouble(),
+                    (float) perimeter.getSouthDouble(),
+                    (float) perimeter.getEastDouble(),
+                    (float) perimeter.getNorthDouble()
+            ), procedure);
+
+            for (Integer aliasId : procedure.getHits().toArray()) {
                 postingsFound.add(postings.get(aliasId));
             }
         }
@@ -67,22 +65,24 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     public void addPosting(Token token, Long posting) {
         Integer aliasId = postings.aliasPosting(posting);
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
-        if (perimeter.getDistance() > maxDistanceInIndex) {
-            maxDistanceInIndex = perimeter.getDistance();
-        }
-        writeToIndex(perimeter, aliasId);
+        index.add(new Rectangle(
+                (float) perimeter.getWestDouble(),
+                (float) perimeter.getSouthDouble(),
+                (float) perimeter.getEastDouble(),
+                (float) perimeter.getNorthDouble()
+        ), aliasId);
         if (perimeter.spans180Longitude()) {
+            //Move this to the matching phase to save memory and make aliases unnecessary
             //if it spans 180° add fake posting on other side of earth
             aliasId = postings.aliasPosting(posting);
-            writeToIndex(perimeter.mirrorInFakeSpace(), aliasId);
+            GeoPerimeter bizarroPerimeter = perimeter.mirrorInFakeSpace();
+            index.add(new Rectangle(
+                    (float) bizarroPerimeter.getWestDouble(),
+                    (float) bizarroPerimeter.getSouthDouble(),
+                    (float) bizarroPerimeter.getEastDouble(),
+                    (float) bizarroPerimeter.getNorthDouble()
+            ), aliasId);
         }
-    }
-
-    private void writeToIndex(GeoPerimeter perimeter, Integer aliasId) {
-        addOrCreatePostings(limitsWest, perimeter.getWest(), aliasId);
-        addOrCreatePostings(limitsEast, perimeter.getEast(), aliasId);
-        addOrCreatePostings(limitsNorth, perimeter.getNorth(), aliasId);
-        addOrCreatePostings(limitsSouth, perimeter.getSouth(), aliasId);
     }
 
     @Override
@@ -90,101 +90,6 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         return FieldType.GEO_DISTANCE;
     }
 
-    private void addOrCreatePostings(SortedMap<Integer, TIntArrayList> index, Integer key, Integer aliasId) {
-        TIntArrayList postings;
-        if (index.containsKey(key)) {
-            postings = index.get(key);
-        } else {
-            postings = new TIntArrayList();
-            index.put(key, postings);
-        }
-        postings.add(aliasId);
-    }
-
-    /**
-     * Special matcher used to find all postings that have ALL FOUR limits around the coordinate in the document field.
-     * All four maps HAVE TO match to match the query posting.
-     */
-    protected class GeoMatcher {
-        /**
-         * Maps aliasId to counter
-         */
-        private Map<Integer, Byte> matches;
-
-        /**
-         * We have to match four times: east, west, north and south. Not necessarily in that order.
-         * When discovering a match in a round greater one, we can ignore it if not already in matches table
-         */
-        private byte roundCount;
-
-        public GeoMatcher() {
-            matches = new HashMap<Integer, Byte>();
-            roundCount = 0;
-        }
-
-        /**
-         * Check SortedMap for entries between coordinate and limit.
-         *
-         * @param index      map to search
-         * @param coordinate document fields longitude or latitude
-         * @param limit      eastern, western, northern or southern limit
-         */
-        public void matchIndex(SortedMap<Integer, TIntArrayList> index, Integer coordinate, Integer limit) {
-            roundCount++;
-            SortedMap<Integer, TIntArrayList> navigableMap;
-            if (limit > coordinate) {
-                navigableMap = index.subMap(coordinate, limit);
-            } else {
-                navigableMap = index.subMap(limit, coordinate);
-            }
-            if (navigableMap.size() > 0) {
-                for (Map.Entry<Integer, TIntArrayList> entry : navigableMap.entrySet()) {
-                    for (Integer aliasId : entry.getValue().toArray()) {
-                        recordMatch(aliasId);
-                    }
-                }
-            }
-        }
-
-        /**
-         * Record match to keep track of how often a posting alias was encountered.
-         *
-         * @param aliasId matched alias id
-         */
-        private void recordMatch(Integer aliasId) {
-            Byte matchCount;
-            if (matches.containsKey(aliasId)) {
-                matchCount = matches.get(aliasId);
-                matchCount++;
-            } else {
-                //Only create new entries in first round
-                if (roundCount == 1) {
-                    matchCount = (byte) 1;
-                } else {
-                    return;
-                }
-            }
-            matches.put(aliasId, matchCount);
-        }
-
-        /**
-         * Get all aliases that have been matched exactly 4 times.
-         *
-         * @return matching aliases
-         */
-        public List<Integer> getMatches() {
-            if (roundCount < 4) {
-                throw new IllegalStateException("It looks like the matching phase has not completed");
-            }
-            List<Integer> aliases = new ArrayList<Integer>();
-            for (Map.Entry<Integer, Byte> entry : matches.entrySet()) {
-                if (entry.getValue() == roundCount) {
-                    aliases.add(entry.getKey());
-                }
-            }
-            return aliases;
-        }
-    }
 
     /**
      * A single QueryPosting can result in two index entries if it spans from hemispheres at 180/-180
@@ -221,6 +126,24 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
          */
         public long get(Integer id) {
             return postings.get(id);
+        }
+    }
+
+    private class MatchCollectionProcedure implements TIntProcedure {
+        private TIntArrayList hits;
+
+        public MatchCollectionProcedure() {
+            hits = new TIntArrayList();
+        }
+
+        @Override
+        public boolean execute(int i) {
+            hits.add(i);
+            return true;
+        }
+
+        public TIntArrayList getHits() {
+            return hits;
         }
     }
 }

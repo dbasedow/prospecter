@@ -78,6 +78,22 @@ public class GeoPerimeter {
         return distance;
     }
 
+    public double getNorthDouble() {
+        return north;
+    }
+
+    public double getSouthDouble() {
+        return south;
+    }
+
+    public double getEastDouble() {
+        return east;
+    }
+
+    public double getWestDouble() {
+        return west;
+    }
+
     /**
      * tests whether the box spans the 180° longitude.
      *

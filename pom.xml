@@ -7,7 +7,13 @@
     <groupId>de.danielbasedow.prospecter</groupId>
     <artifactId>prospecter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>Sonatype repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
     <build>
         <pluginManagement>
             <plugins>
@@ -89,6 +95,11 @@
             <groupId>net.sf.trove4j</groupId>
             <artifactId>trove4j</artifactId>
             <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jsi</groupId>
+            <artifactId>jsi</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
