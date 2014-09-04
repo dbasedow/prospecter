@@ -46,12 +46,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             LatLng latLng = (LatLng) token.getToken();
             GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), 0);
             MatchCollectionProcedure procedure = new MatchCollectionProcedure();
-            index.intersects(new Rectangle(
-                    perimeter.getWest(),
-                    perimeter.getSouth(),
-                    perimeter.getEast(),
-                    perimeter.getNorth()
-            ), procedure);
+            index.intersects(perimeter.getRectangle(), procedure);
 
             for (Integer aliasId : procedure.getHits().toArray()) {
                 postingsFound.add(postings.get(aliasId));
@@ -64,23 +59,13 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     public void addPosting(Token token, Long posting) {
         Integer aliasId = postings.aliasPosting(posting);
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
-        index.add(new Rectangle(
-                perimeter.getWest(),
-                perimeter.getSouth(),
-                perimeter.getEast(),
-                perimeter.getNorth()
-        ), aliasId);
+        index.add(perimeter.getRectangle(), aliasId);
         if (perimeter.spans180Longitude()) {
             //Move this to the matching phase to save memory and make aliases unnecessary
             //if it spans 180° add fake posting on other side of earth
             aliasId = postings.aliasPosting(posting);
             GeoPerimeter bizarroPerimeter = perimeter.mirrorInFakeSpace();
-            index.add(new Rectangle(
-                    bizarroPerimeter.getWest(),
-                    bizarroPerimeter.getSouth(),
-                    bizarroPerimeter.getEast(),
-                    bizarroPerimeter.getNorth()
-            ), aliasId);
+            index.add(bizarroPerimeter.getRectangle(), aliasId);
         }
     }
 

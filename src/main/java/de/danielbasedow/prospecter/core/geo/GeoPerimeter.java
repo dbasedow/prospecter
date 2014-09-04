@@ -1,5 +1,7 @@
 package de.danielbasedow.prospecter.core.geo;
 
+import net.sf.jsi.Rectangle;
+
 /**
  * Represents an area on earth centered at a coordinate and extending distance meters to the north, south, west and
  * east. It is not a circle but more of a square. This means matched results can be up to 40% further away than the
@@ -108,5 +110,9 @@ public class GeoPerimeter {
         double d = POLAR_RADIUS * Math.sin(latitude);
 
         return Math.sqrt((a * a + b * b) / (c * c + d * d));
+    }
+
+    public Rectangle getRectangle() {
+        return new Rectangle(getWest(), getSouth(), getEast(), getNorth());
     }
 }
