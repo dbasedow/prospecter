@@ -3,7 +3,6 @@ package de.danielbasedow.prospecter.core.index;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
-import de.danielbasedow.prospecter.core.geo.GeoUtil;
 import de.danielbasedow.prospecter.core.geo.LatLng;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.list.array.TLongArrayList;
@@ -48,10 +47,10 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), 0);
             MatchCollectionProcedure procedure = new MatchCollectionProcedure();
             index.intersects(new Rectangle(
-                    (float) perimeter.getWestDouble(),
-                    (float) perimeter.getSouthDouble(),
-                    (float) perimeter.getEastDouble(),
-                    (float) perimeter.getNorthDouble()
+                    perimeter.getWest(),
+                    perimeter.getSouth(),
+                    perimeter.getEast(),
+                    perimeter.getNorth()
             ), procedure);
 
             for (Integer aliasId : procedure.getHits().toArray()) {
@@ -66,10 +65,10 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         Integer aliasId = postings.aliasPosting(posting);
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
         index.add(new Rectangle(
-                (float) perimeter.getWestDouble(),
-                (float) perimeter.getSouthDouble(),
-                (float) perimeter.getEastDouble(),
-                (float) perimeter.getNorthDouble()
+                perimeter.getWest(),
+                perimeter.getSouth(),
+                perimeter.getEast(),
+                perimeter.getNorth()
         ), aliasId);
         if (perimeter.spans180Longitude()) {
             //Move this to the matching phase to save memory and make aliases unnecessary
@@ -77,10 +76,10 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
             aliasId = postings.aliasPosting(posting);
             GeoPerimeter bizarroPerimeter = perimeter.mirrorInFakeSpace();
             index.add(new Rectangle(
-                    (float) bizarroPerimeter.getWestDouble(),
-                    (float) bizarroPerimeter.getSouthDouble(),
-                    (float) bizarroPerimeter.getEastDouble(),
-                    (float) bizarroPerimeter.getNorthDouble()
+                    bizarroPerimeter.getWest(),
+                    bizarroPerimeter.getSouth(),
+                    bizarroPerimeter.getEast(),
+                    bizarroPerimeter.getNorth()
             ), aliasId);
         }
     }

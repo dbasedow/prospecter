@@ -43,8 +43,8 @@ public class GeoPerimeter {
      *
      * @return northern limit converted to integer
      */
-    public int getNorth() {
-        return GeoUtil.latitudeToInt(north);
+    public float getNorth() {
+        return (float) north;
     }
 
     /**
@@ -52,46 +52,26 @@ public class GeoPerimeter {
      *
      * @return southern limit converted to integer
      */
-    public int getSouth() {
-        return GeoUtil.latitudeToInt(south);
+    public float getSouth() {
+        return (float) south;
     }
 
     /**
      * Get the the eastern limit based on center longitude and distance
      *
-     * @return eastern limit converted to integer
+     * @return eastern limit
      */
-    public int getEast() {
-        return GeoUtil.longitudeToInt(east);
+    public float getEast() {
+        return (float) east;
     }
 
     /**
      * Get the the western limit based on center longitude and distance
      *
-     * @return western limit converted to integer
+     * @return western limit
      */
-    public int getWest() {
-        return GeoUtil.longitudeToInt(west);
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public double getNorthDouble() {
-        return north;
-    }
-
-    public double getSouthDouble() {
-        return south;
-    }
-
-    public double getEastDouble() {
-        return east;
-    }
-
-    public double getWestDouble() {
-        return west;
+    public float getWest() {
+        return (float) west;
     }
 
     /**
@@ -100,9 +80,9 @@ public class GeoPerimeter {
      * @return true if eastern limit lies in western hemisphere and western limit in eastern hemisphere
      */
     public boolean spans180Longitude() {
-        if (getEast() > GeoUtil.longitudeToInt(180)) {
+        if (getEast() > 180) {
             return true;
-        } else if (getWest() < GeoUtil.longitudeToInt(-180)) {
+        } else if (getWest() < -180) {
             return true;
         }
         return false;
