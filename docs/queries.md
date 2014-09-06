@@ -57,6 +57,11 @@ The document field will be matched against this value. Depending on field type, 
 
 Latitude, longitude and radius in Meters.
 
+**not**
+
+Let's you invert a condition. If *not* is set to true on a condition only documents that do **not** match this condition
+will be matched.
+
 Example
 -------
     {
