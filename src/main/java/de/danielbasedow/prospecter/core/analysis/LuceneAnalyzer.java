@@ -1,11 +1,14 @@
 package de.danielbasedow.prospecter.core.analysis;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.google.inject.Inject;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.TokenMapper;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.util.Version;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -55,4 +58,19 @@ public abstract class LuceneAnalyzer implements Analyzer {
         throw new UnsupportedOperationException();
     }
 
+    protected static CharArraySet getStopWords(JsonNode stopWords, CharArraySet defaultStopWords) {
+        CharArraySet stopWordSet = new CharArraySet(Version.LUCENE_4_9, 5, true);
+        if (stopWords != null) {
+            if (stopWords.getNodeType() == JsonNodeType.ARRAY) {
+                for (JsonNode node : stopWords) {
+                    if (node != null && node.getNodeType() == JsonNodeType.STRING) {
+                        stopWordSet.add(node.asText());
+                    }
+                }
+            } else if (stopWords.getNodeType() == JsonNodeType.STRING && "predefined".equals(stopWords.asText())) {
+                stopWordSet = defaultStopWords;
+            }
+        }
+        return stopWordSet;
+    }
 }

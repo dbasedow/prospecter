@@ -54,7 +54,6 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
         index.add(perimeter.getRectangle(), posting);
         if (perimeter.spans180Longitude()) {
-            //Move this to the matching phase to save memory and make aliases unnecessary
             //if it spans 180° add fake posting on other side of earth
             GeoPerimeter bizarroPerimeter = perimeter.mirrorInFakeSpace();
             index.add(bizarroPerimeter.getRectangle(), posting);
