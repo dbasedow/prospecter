@@ -9,9 +9,21 @@ public class Condition {
     private final String fieldName;
     private final Token token;
 
+    /**
+     * if not is set the query bitmask will be set to zero at this position
+     */
+    private final boolean not;
+
     public Condition(String fieldName, Token token) {
         this.fieldName = fieldName;
         this.token = token;
+        this.not = false;
+    }
+
+    public Condition(String fieldName, Token token, boolean not) {
+        this.fieldName = fieldName;
+        this.token = token;
+        this.not = not;
     }
 
     public String getFieldName() {
@@ -20,5 +32,9 @@ public class Condition {
 
     public Token getToken() {
         return token;
+    }
+
+    public boolean isNot() {
+        return not;
     }
 }

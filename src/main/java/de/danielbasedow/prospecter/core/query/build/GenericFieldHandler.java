@@ -22,6 +22,11 @@ public abstract class GenericFieldHandler extends AbstractFieldHandler {
         String comparator = root.get("condition").asText();
         MatchCondition matchCondition = getMatchCondition(comparator);
 
+        boolean not = false;
+        if (root.get("not") != null) {
+            not = root.get("not").asBoolean(false);
+        }
+
         JsonNode valNode = getValue();
 
         if (valNode.getNodeType() == JsonNodeType.ARRAY) {
@@ -29,9 +34,9 @@ public abstract class GenericFieldHandler extends AbstractFieldHandler {
             for (JsonNode node : valNode) {
                 tokens.add(getToken(node, matchCondition));
             }
-            conditions.add(new Condition(fieldName, new Token<List<Token>>(tokens, MatchCondition.IN)));
+            conditions.add(new Condition(fieldName, new Token<List<Token>>(tokens, MatchCondition.IN), not));
         } else {
-            conditions.add(new Condition(fieldName, getToken(valNode, matchCondition)));
+            conditions.add(new Condition(fieldName, getToken(valNode, matchCondition), not));
         }
         return conditions;
     }

@@ -25,7 +25,12 @@ public class Query {
         this.queryId = queryId;
 
         mask = new BitSet(conditions.size());
-        mask.set(0, conditions.size(), true); //all bits set to 1
+
+        int i = 0;
+        for (Condition condition : conditions) {
+            mask.set(i, !condition.isNot()); //build bit mask: 0 for NOT, 1 TRUE
+            i++;
+        }
     }
 
     /**
