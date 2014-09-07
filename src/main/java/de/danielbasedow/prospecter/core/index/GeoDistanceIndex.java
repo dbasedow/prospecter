@@ -4,11 +4,8 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.LatLng;
-import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.list.array.TLongArrayList;
-import gnu.trove.procedure.TIntProcedure;
 import gnu.trove.procedure.TLongProcedure;
-import net.sf.jsi.Rectangle;
 import net.sf.jsi.SpatialIndex;
 import net.sf.jsi.rtree.RTree;
 
@@ -29,7 +26,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     /**
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
      */
-    private SpatialIndex index;
+    private final SpatialIndex index;
 
     public GeoDistanceIndex(String name) {
         super(name);
@@ -66,7 +63,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     private class MatchCollectionProcedure implements TLongProcedure {
-        private TLongArrayList hits;
+        private final TLongArrayList hits;
 
         public MatchCollectionProcedure(TLongArrayList hitList) {
             hits = hitList;

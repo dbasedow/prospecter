@@ -37,8 +37,7 @@ public class TxtFileLoader {
     public static String getJsonDoc() {
         String line;
         try {
-            BufferedReader testDoc = null;
-            testDoc = new BufferedReader(new FileReader(new File("testdoc.txt")));
+            BufferedReader testDoc = new BufferedReader(new FileReader(new File("testdoc.txt")));
             String queryStr = "";
             while ((line = testDoc.readLine()) != null) {
                 queryStr = queryStr + " " + line;

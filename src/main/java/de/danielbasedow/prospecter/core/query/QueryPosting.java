@@ -7,8 +7,8 @@ public class QueryPosting {
     public static final int QUERY_ID_INDEX = 0;
     public static final int QUERY_BIT_INDEX = 1;
 
-    private int queryId;
-    private short queryBit;
+    private final int queryId;
+    private final short queryBit;
 
     public QueryPosting(int queryId, short queryBit) {
         this.queryId = queryId;

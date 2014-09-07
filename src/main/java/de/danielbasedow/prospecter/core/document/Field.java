@@ -9,8 +9,8 @@ import java.util.List;
  * Represents a field of a document.
  */
 public class Field {
-    protected String name;
-    protected List<Token> tokens;
+    protected final String name;
+    protected final List<Token> tokens;
 
     /**
      * @param name   name of the field

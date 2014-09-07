@@ -2,7 +2,6 @@ package de.danielbasedow.prospecter.core.query.build;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
@@ -29,7 +28,7 @@ public class QueryBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private Schema schema;
+    private final Schema schema;
 
     public QueryBuilder(Schema schema) {
         this.schema = schema;

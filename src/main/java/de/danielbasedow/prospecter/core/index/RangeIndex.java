@@ -10,9 +10,9 @@ import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class RangeIndex<T> {
-    SortedMap<T, TLongArrayList> indexEquals;
-    SortedMap<T, TLongArrayList> indexLessThan;
-    SortedMap<T, TLongArrayList> indexGreaterThan;
+    final SortedMap<T, TLongArrayList> indexEquals;
+    final SortedMap<T, TLongArrayList> indexLessThan;
+    final SortedMap<T, TLongArrayList> indexGreaterThan;
 
     public RangeIndex() {
         indexEquals = new ConcurrentSkipListMap<T, TLongArrayList>();

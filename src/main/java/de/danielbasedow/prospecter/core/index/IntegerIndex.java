@@ -12,7 +12,7 @@ import gnu.trove.list.array.TLongArrayList;
  */
 public class IntegerIndex extends AbstractFieldIndex {
 
-    protected RangeIndex<Integer> index;
+    protected final RangeIndex<Integer> index;
 
     public IntegerIndex(String name) {
         super(name);

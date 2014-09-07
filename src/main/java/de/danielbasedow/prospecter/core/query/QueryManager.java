@@ -5,7 +5,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.BitSet;
 
 public class QueryManager {
-    protected TIntObjectHashMap<BitSet> masks;
+    protected final TIntObjectHashMap<BitSet> masks;
 
     public QueryManager() {
         this.masks = new TIntObjectHashMap<BitSet>();

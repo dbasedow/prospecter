@@ -7,7 +7,6 @@ import de.danielbasedow.prospecter.core.persistence.QueryStorage;
 import de.danielbasedow.prospecter.core.query.Condition;
 import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
-import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
 import gnu.trove.list.array.TLongArrayList;
 import org.slf4j.Logger;
@@ -19,10 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SchemaImpl implements Schema {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaImpl.class);
 
-    protected ConcurrentHashMap<String, FieldIndex> indices;
-    protected QueryBuilder queryBuilder;
-    protected DocumentBuilder documentBuilder;
-    protected QueryManager queryManager;
+    protected final ConcurrentHashMap<String, FieldIndex> indices;
+    protected final QueryBuilder queryBuilder;
+    protected final DocumentBuilder documentBuilder;
+    protected final QueryManager queryManager;
     protected QueryStorage queryStorage;
     private boolean writeNewQueries;
 
@@ -159,6 +158,7 @@ public class SchemaImpl implements Schema {
         if (rawQuery != null) {
             try {
                 Query query = queryBuilder.buildFromJSON(rawQuery);
+                removePostings(query);
             } catch (MalformedQueryException e) {
                 LOGGER.warn("Error parsing query", e);
             }
@@ -173,7 +173,7 @@ public class SchemaImpl implements Schema {
             Condition condition = entry.getKey();
             Long posting = entry.getValue();
 
-            indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
+            indices.get(condition.getFieldName()).removePosting(condition.getToken(), posting);
         }
         queryManager.addQuery(query);
     }

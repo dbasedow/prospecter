@@ -25,7 +25,7 @@ import java.util.*;
 public class DocumentBuilder {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    protected Schema schema;
+    protected final Schema schema;
 
     /**
      * @param schema Schema to use

@@ -64,7 +64,7 @@ public class NotQueryTest extends TestCase {
             "    \"true\": 1\n" +
             "}";
 
-    public void testInQuery() {
+    public void testNotQuery() {
         try {
             SchemaBuilder schemaBuilder = new SchemaBuilderJSON(schemaJSON);
             Schema schema = schemaBuilder.getSchema();

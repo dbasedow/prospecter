@@ -7,8 +7,8 @@ import gnu.trove.list.array.TLongArrayList;
 import java.text.DateFormat;
 
 public class DateTimeIndex extends AbstractFieldIndex {
-    private RangeIndex<Long> index;
-    private DateFormat dateFormat;
+    private final RangeIndex<Long> index;
+    private final DateFormat dateFormat;
 
     public DateTimeIndex(String name, DateFormat df) {
         super(name);

@@ -1,8 +1,8 @@
 package de.danielbasedow.prospecter.core;
 
 public class Token<T> {
-    T token;
-    MatchCondition condition;
+    final T token;
+    final MatchCondition condition;
 
     public Token(T token){
         this(token, MatchCondition.NONE);

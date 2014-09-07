@@ -5,7 +5,7 @@ import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.array.TLongArrayList;
 
 public class DoubleIndex extends AbstractFieldIndex {
-    RangeIndex<Double> index;
+    final RangeIndex<Double> index;
 
     public DoubleIndex(String name) {
         super(name);

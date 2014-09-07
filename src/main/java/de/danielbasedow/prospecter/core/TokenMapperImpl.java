@@ -3,12 +3,11 @@ package de.danielbasedow.prospecter.core;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class TokenMapperImpl implements TokenMapper {
     protected int termIdSequence;
-    protected TObjectIntHashMap<String> termMap;
+    protected final TObjectIntHashMap<String> termMap;
 
     public TokenMapperImpl() {
         termIdSequence = 0;

@@ -8,9 +8,9 @@ import java.util.Set;
  * Iterator implementation to iterate over the fields of a document.
  */
 public class FieldIterator implements Iterator<Field> {
-    private HashMap<String, Field> fields;
+    private final HashMap<String, Field> fields;
     private int index;
-    private String[] keys;
+    private final String[] keys;
 
     /**
      * @param fields HashMap of all the fields in the document

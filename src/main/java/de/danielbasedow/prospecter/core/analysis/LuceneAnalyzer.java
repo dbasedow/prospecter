@@ -19,7 +19,7 @@ import java.util.List;
  * Thin wrapper around Lucene's org.apache.lucene.analysis.Analyzer
  */
 public abstract class LuceneAnalyzer implements Analyzer {
-    protected TokenMapper tokenMapper;
+    protected final TokenMapper tokenMapper;
     protected org.apache.lucene.analysis.Analyzer luceneAnalyzer;
 
     @Inject

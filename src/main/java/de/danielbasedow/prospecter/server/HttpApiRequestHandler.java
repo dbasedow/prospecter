@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
-import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

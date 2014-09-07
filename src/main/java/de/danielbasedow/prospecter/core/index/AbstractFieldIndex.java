@@ -8,7 +8,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public abstract class AbstractFieldIndex implements FieldIndex {
 
-    protected String name;
+    protected final String name;
 
     @SuppressWarnings("WeakerAccess")
     public AbstractFieldIndex(String name) {

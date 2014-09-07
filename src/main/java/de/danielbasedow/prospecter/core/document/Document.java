@@ -10,7 +10,7 @@ import java.util.HashMap;
  * Documents are usually created by a DocumentBuilder instance.
  */
 public class Document {
-    protected HashMap<String, Field> fields;
+    protected final HashMap<String, Field> fields;
 
     public Document() {
         fields = new HashMap<String, Field>();

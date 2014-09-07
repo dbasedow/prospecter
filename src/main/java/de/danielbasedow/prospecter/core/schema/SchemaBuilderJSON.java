@@ -29,7 +29,7 @@ public class SchemaBuilderJSON implements SchemaBuilder {
 
     private Schema schema;
     private ObjectNode root;
-    private String schemaDirectory;
+    private final String schemaDirectory;
 
     /**
      * Build Schema from JSON String

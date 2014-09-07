@@ -10,7 +10,7 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
 
 public class HttpApiServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    private Instance instance;
+    private final Instance instance;
 
     public HttpApiServerInitializer(Instance instance) {
         this.instance = instance;

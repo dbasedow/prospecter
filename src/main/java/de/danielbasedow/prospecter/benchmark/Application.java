@@ -5,7 +5,6 @@ import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
-import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.schema.*;
 
 import java.io.BufferedReader;

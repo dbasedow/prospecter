@@ -12,9 +12,9 @@ import java.util.Map;
  * represents a Query (a tuple of queryId, bitmask and a list of conditions)
  */
 public class Query {
-    protected Integer queryId;
-    protected BitSet mask;
-    protected List<Condition> conditions;
+    protected final Integer queryId;
+    protected final BitSet mask;
+    protected final List<Condition> conditions;
 
     public Integer getQueryId() {
         return queryId;

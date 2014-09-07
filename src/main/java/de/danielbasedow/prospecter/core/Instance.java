@@ -15,7 +15,7 @@ import java.util.Map;
 public class Instance {
     private final String homeDirectory;
     private static final Logger LOGGER = LoggerFactory.getLogger(Instance.class);
-    private Map<String, Schema> schemas;
+    private final Map<String, Schema> schemas;
 
     public Instance(String homeDirectory) {
         this.homeDirectory = homeDirectory;

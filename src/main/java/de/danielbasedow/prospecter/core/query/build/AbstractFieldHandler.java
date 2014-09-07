@@ -6,8 +6,8 @@ import de.danielbasedow.prospecter.core.MatchCondition;
 import de.danielbasedow.prospecter.core.query.InvalidQueryException;
 
 public class AbstractFieldHandler implements FieldHandler {
-    protected ObjectNode root;
-    protected String fieldName;
+    protected final ObjectNode root;
+    protected final String fieldName;
 
     public AbstractFieldHandler(ObjectNode node, String fieldName) {
         root = node;

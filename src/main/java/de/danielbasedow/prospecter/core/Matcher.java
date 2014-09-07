@@ -14,8 +14,8 @@ import java.util.List;
  * Tracks hits across multiple index fields and applies the bit from the QueryPostings.
  */
 public class Matcher {
-    protected TIntObjectHashMap<BitSet> hits;
-    protected QueryManager queryManager;
+    protected final TIntObjectHashMap<BitSet> hits;
+    protected final QueryManager queryManager;
 
     public Matcher(QueryManager qm) {
         queryManager = qm;

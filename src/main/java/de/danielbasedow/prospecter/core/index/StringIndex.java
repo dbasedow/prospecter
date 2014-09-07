@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.array.TLongArrayList;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StringIndex extends AbstractFieldIndex {
-    protected Map<String, TLongArrayList> index;
+    protected final Map<String, TLongArrayList> index;
 
     public StringIndex(String name) {
         super(name);
@@ -39,20 +38,27 @@ public class StringIndex extends AbstractFieldIndex {
     @Override
     public void removePosting(Token token, Long posting) {
         String tokenStr = (String) token.getToken();
-        TLongArrayList postings = index.get(tokenStr);
-        if (postings != null) {
-            postings.remove(posting);
+
+        TLongArrayList postingList = getOrCreatePostingList(tokenStr);
+        synchronized (postingList) {
+            postingList.remove(posting);
         }
     }
 
     public void addOrCreate(String token, Long posting) {
-        if (index.containsKey(token)) {
-            index.get(token).add(posting);
-        } else {
-            TLongArrayList postings = new TLongArrayList();
-            postings.add(posting);
-            index.put(token, postings);
+        TLongArrayList postingList = getOrCreatePostingList(token);
+        synchronized (postingList) {
+            postingList.add(posting);
         }
+    }
+
+    public synchronized TLongArrayList getOrCreatePostingList(String token) {
+        TLongArrayList postingList = index.get(token);
+        if (postingList == null) {
+            postingList = new TLongArrayList();
+            index.put(token, postingList);
+        }
+        return postingList;
     }
 
     @Override

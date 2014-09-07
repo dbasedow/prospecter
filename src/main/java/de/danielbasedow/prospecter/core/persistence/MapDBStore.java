@@ -14,10 +14,10 @@ public class MapDBStore implements QueryStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(MapDBStore.class);
 
     private static final int DEFAULT_UNWRITTEN_CHANGES_LIMIT = 10000;
-    private DB database;
-    private HTreeMap<Integer, String> map;
+    private final DB database;
+    private final HTreeMap<Integer, String> map;
     private int unwrittenChangesCount;
-    private int unwrittenChangesLimit;
+    private final int unwrittenChangesLimit;
     private final String name;
 
     public MapDBStore(File file) {
