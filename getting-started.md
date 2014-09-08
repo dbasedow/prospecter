@@ -58,7 +58,7 @@ memory.
 
 That's it! You can now use prospecter by typing
 
-    java -jar prospecter-x.x.x-SNAPSHOT-jar-with-dependencies.jar /path/to/your/directory/server-config.json
+    java -server -jar prospecter-x.x.x-SNAPSHOT-jar-with-dependencies.jar /path/to/your/directory/server-config.json
 
 You should see some logging output. Prospecter is now waiting for connections. To stop Prospecter hit Ctrl + C or send a
 "kill -HUP".
