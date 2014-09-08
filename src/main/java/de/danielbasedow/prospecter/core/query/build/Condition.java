@@ -1,7 +1,7 @@
 package de.danielbasedow.prospecter.core.query.build;
 
 
-public class Condition<T> {
+public class Condition<T> implements ClauseNode {
     private final String fieldName;
     private final String matchCondition;
     private final Value<T> value;
@@ -22,5 +22,10 @@ public class Condition<T> {
 
     public Value<T> getValue() {
         return value;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return true;
     }
 }

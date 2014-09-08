@@ -2,7 +2,8 @@ package de.danielbasedow.prospecter.core.query.build;
 
 import java.util.List;
 
-public class Clause {
+public class Clause implements ClauseNode {
+
     public static enum ClauseType {
         AND,
         OR,
@@ -10,15 +11,20 @@ public class Clause {
     }
 
     private final ClauseType type;
-    private final List<Condition> conditions;
+    private final List<ClauseNode> subClauses;
 
-    public Clause(ClauseType type, List<Condition> conditions) {
+    public Clause(ClauseType type, List<ClauseNode> clauses) {
         this.type = type;
-        this.conditions = conditions;
+        this.subClauses = clauses;
     }
 
-    public List<Condition> getConditions() {
-        return conditions;
+    @Override
+    public boolean isLeaf() {
+        return false;
+    }
+
+    public List<ClauseNode> getSubClauses() {
+        return subClauses;
     }
 
     public ClauseType getType() {
