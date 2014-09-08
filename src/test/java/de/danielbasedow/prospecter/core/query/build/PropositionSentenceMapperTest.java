@@ -1,4 +1,4 @@
-package de.danielbasedow.prospecter.core;
+package de.danielbasedow.prospecter.core.query.build;
 
 import aima.core.logic.propositional.parsing.ast.Connective;
 import aima.core.logic.propositional.parsing.ast.Sentence;
