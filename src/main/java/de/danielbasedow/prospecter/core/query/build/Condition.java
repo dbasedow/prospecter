@@ -11,4 +11,16 @@ public class Condition<T> {
         this.matchCondition = matchCondition;
         this.value = value;
     }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public String getMatchCondition() {
+        return matchCondition;
+    }
+
+    public Value<T> getValue() {
+        return value;
+    }
 }

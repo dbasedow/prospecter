@@ -16,4 +16,12 @@ public class Clause {
         this.type = type;
         this.conditions = conditions;
     }
+
+    public List<Condition> getConditions() {
+        return conditions;
+    }
+
+    public ClauseType getType() {
+        return type;
+    }
 }
