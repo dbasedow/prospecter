@@ -2,7 +2,7 @@ package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
-import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.list.TLongList;
 
 public class DoubleIndex extends AbstractFieldIndex {
     final RangeIndex<Double> index;
@@ -13,7 +13,7 @@ public class DoubleIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongArrayList match(Field field) {
+    public TLongList match(Field field) {
         return index.match(field);
     }
 

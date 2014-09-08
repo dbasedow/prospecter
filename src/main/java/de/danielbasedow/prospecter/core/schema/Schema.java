@@ -1,6 +1,8 @@
 package de.danielbasedow.prospecter.core.schema;
 
-import de.danielbasedow.prospecter.core.*;
+import de.danielbasedow.prospecter.core.MalformedQueryException;
+import de.danielbasedow.prospecter.core.Matcher;
+import de.danielbasedow.prospecter.core.UndefinedIndexFieldException;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.Field;
@@ -9,7 +11,7 @@ import de.danielbasedow.prospecter.core.persistence.QueryStorage;
 import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
-import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.list.TLongList;
 
 /**
  * A schema represents a schema describing the available fields of a document. These fields are backed by indices that
@@ -33,7 +35,7 @@ public interface Schema {
      * @return matching query postings
      * @throws UndefinedIndexFieldException
      */
-    public TLongArrayList matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException;
+    public TLongList matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException;
 
     /**
      * Add query to index. The postings will be added to the corresponding field indices.

@@ -4,6 +4,7 @@ package de.danielbasedow.prospecter.core.index;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.slf4j.Logger;
@@ -17,17 +18,17 @@ import java.util.ArrayList;
 public class FullTextIndex extends AbstractFieldIndex {
     private static final Logger LOGGER = LoggerFactory.getLogger(FullTextIndex.class);
 
-    protected final TIntObjectHashMap<TLongArrayList> index;
+    protected final TIntObjectHashMap<TLongList> index;
     private final Analyzer analyzer;
 
     public FullTextIndex(String name, Analyzer analyzer) {
         super(name);
-        index = new TIntObjectHashMap<TLongArrayList>();
+        index = new TIntObjectHashMap<TLongList>();
         this.analyzer = analyzer;
     }
 
     public void addPosting(Token token, Long posting) {
-        TLongArrayList postingList;
+        TLongList postingList;
         if (index.containsKey((Integer) token.getToken())) {
             postingList = index.get((Integer) token.getToken());
         } else {
@@ -39,7 +40,7 @@ public class FullTextIndex extends AbstractFieldIndex {
 
     @Override
     public void removePosting(Token token, Long posting) {
-        TLongArrayList postingList = index.get((Integer) token.getToken());
+        TLongList postingList = index.get((Integer) token.getToken());
         if (postingList != null && postingList.contains(posting)) {
             LOGGER.debug("removing posting: " + String.valueOf(posting));
             postingList.remove(posting);
@@ -51,7 +52,7 @@ public class FullTextIndex extends AbstractFieldIndex {
         return FieldType.FULL_TEXT;
     }
 
-    public TLongArrayList getQueryPostingsForTermId(Token token) {
+    public TLongList getQueryPostingsForTermId(Token token) {
         Integer t = (Integer) token.getToken();
         if (index.containsKey(t)) {
             return index.get(t);
@@ -60,11 +61,11 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongArrayList match(Field field) {
-        TLongArrayList postings = new TLongArrayList();
+    public TLongList match(Field field) {
+        TLongList postings = new TLongArrayList();
         for (Token token : field.getTokens()) {
             Integer t = (Integer) token.getToken();
-            TLongArrayList additionalPostings = index.get(t);
+            TLongList additionalPostings = index.get(t);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }

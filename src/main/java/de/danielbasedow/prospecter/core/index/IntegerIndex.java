@@ -2,6 +2,7 @@ package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 
 /**
@@ -20,7 +21,7 @@ public class IntegerIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongArrayList match(Field field) {
+    public TLongList match(Field field) {
         return index.match(field);
     }
 

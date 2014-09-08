@@ -19,9 +19,11 @@ public class TokenMapperImpl implements TokenMapper {
         if (termMap.containsKey(str)) {
             return termMap.get(str);
         } else if (!dontGenerateNewIds) {
-            Integer termId = getNewTermId();
-            termMap.put(str, termId);
-            return termId;
+            synchronized (this) {
+                Integer termId = getNewTermId();
+                termMap.put(str, termId);
+                return termId;
+            }
         }
         return null;
     }

@@ -2,6 +2,7 @@ package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 
 import java.util.List;
@@ -17,8 +18,8 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongArrayList match(Field field) {
-        TLongArrayList postings = new TLongArrayList();
+    public TLongList match(Field field) {
+        TLongList postings = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             String strToken = (String) token.getToken();

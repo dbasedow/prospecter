@@ -2,7 +2,7 @@ package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
-import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.list.TLongList;
 
 /**
  * Interface representing an index for a field encountered in queries and documents. The data types and methods for
@@ -17,7 +17,7 @@ public interface FieldIndex {
      * @param field Field instance from Document to match against
      * @return query postings matching field
      */
-    public TLongArrayList match(Field field);
+    public TLongList match(Field field);
 
     /**
      * Add a single QueryPosting that will be matched if token is present in the field in match()

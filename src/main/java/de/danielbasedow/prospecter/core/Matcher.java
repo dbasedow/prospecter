@@ -2,7 +2,7 @@ package de.danielbasedow.prospecter.core;
 
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
-import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.list.TLongList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.procedure.TIntObjectProcedure;
 
@@ -22,7 +22,7 @@ public class Matcher {
         hits = new TIntObjectHashMap<BitSet>();
     }
 
-    public void addHits(TLongArrayList postings) {
+    public void addHits(TLongList postings) {
         for (long posting : postings.toArray()) {
             addHit(posting);
         }

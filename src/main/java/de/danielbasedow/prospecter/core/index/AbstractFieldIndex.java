@@ -10,7 +10,6 @@ public abstract class AbstractFieldIndex implements FieldIndex {
 
     protected final String name;
 
-    @SuppressWarnings("WeakerAccess")
     public AbstractFieldIndex(String name) {
         this.name = name;
     }

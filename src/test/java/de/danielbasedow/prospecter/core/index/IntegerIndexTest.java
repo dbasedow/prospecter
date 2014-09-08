@@ -1,9 +1,10 @@
 package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.MatchCondition;
-import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
+import de.danielbasedow.prospecter.core.query.QueryPosting;
+import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import junit.framework.TestCase;
 
@@ -30,7 +31,7 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(0, index.index.indexLessThan.size());
         int[] int_single = {2};
         Field f = makeField(int_single);
-        TLongArrayList postings = index.match(f);
+        TLongList postings = index.match(f);
         assertEquals(1, postings.size());
         //multiple values in one field:
         int[] ints_multi = {1, 2};
@@ -54,7 +55,7 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(0, index.index.indexLessThan.size());
         int[] int_single = {2};
         Field f = makeField(int_single);
-        TLongArrayList postings = index.match(f);
+        TLongList postings = index.match(f);
         assertEquals(2, postings.size());
 
         int[] int_high = {101};
@@ -86,7 +87,7 @@ public class IntegerIndexTest extends TestCase {
 
         int[] int_single = {2};
         Field f = makeField(int_single);
-        TLongArrayList postings = index.match(f);
+        TLongList postings = index.match(f);
         assertEquals(2, postings.size());
 
         int[] int_high = {100};
@@ -105,7 +106,7 @@ public class IntegerIndexTest extends TestCase {
 
         int[] int_single = {0};
         Field f = makeField(int_single);
-        TLongArrayList postings = index.match(f);
+        TLongList postings = index.match(f);
         assertEquals(1, postings.size());
     }
 

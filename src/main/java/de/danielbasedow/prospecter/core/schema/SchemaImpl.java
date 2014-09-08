@@ -8,6 +8,7 @@ import de.danielbasedow.prospecter.core.query.Condition;
 import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
+import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public TLongArrayList matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException {
+    public TLongList matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException {
         if (!indices.containsKey(fieldIndexName)) {
             throw new UndefinedIndexFieldException("No field named '" + fieldIndexName + "'");
         }
