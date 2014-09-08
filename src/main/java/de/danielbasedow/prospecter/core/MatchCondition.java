@@ -7,5 +7,6 @@ public enum MatchCondition {
     LESS_THAN_EQUALS,
     GREATER_THAN_EQUALS,
     NONE,
-    IN
+    IN,
+    RADIUS
 }
