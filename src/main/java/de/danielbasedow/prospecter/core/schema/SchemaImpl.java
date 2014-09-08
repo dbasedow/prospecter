@@ -9,15 +9,21 @@ import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
 import gnu.trove.list.TLongList;
-import gnu.trove.list.array.TLongArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SchemaImpl implements Schema {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaImpl.class);
+
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final Lock readLock = rwLock.readLock();
+    private final Lock writeLock = rwLock.writeLock();
 
     protected final ConcurrentHashMap<String, FieldIndex> indices;
     protected final QueryBuilder queryBuilder;
@@ -50,18 +56,23 @@ public class SchemaImpl implements Schema {
     }
 
     public void addQuery(Query query) throws UndefinedIndexFieldException {
-        Map<Condition, Long> postings = query.getPostings();
-        for (Map.Entry<Condition, Long> entry : postings.entrySet()) {
-            Condition condition = entry.getKey();
-            Long posting = entry.getValue();
+        writeLock.lock();
+        try {
+            Map<Condition, Long> postings = query.getPostings();
+            for (Map.Entry<Condition, Long> entry : postings.entrySet()) {
+                Condition condition = entry.getKey();
+                Long posting = entry.getValue();
 
-            if (!indices.containsKey(condition.getFieldName())) {
-                throw new UndefinedIndexFieldException("No field named '" + condition.getFieldName() + "'");
+                if (!indices.containsKey(condition.getFieldName())) {
+                    throw new UndefinedIndexFieldException("No field named '" + condition.getFieldName() + "'");
+                }
+
+                indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
             }
-
-            indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
+            queryManager.addQuery(query);
+        } finally {
+            writeLock.unlock();
         }
-        queryManager.addQuery(query);
     }
 
     @Override
@@ -80,14 +91,19 @@ public class SchemaImpl implements Schema {
 
     @Override
     public Matcher matchDocument(Document doc, Matcher matcher) {
-        FieldIterator fields = doc.getFields();
-        while (fields.hasNext()) {
-            Field field = fields.next();
-            try {
-                matcher.addHits(matchField(field.getName(), field));
-            } catch (UndefinedIndexFieldException e) {
-                e.printStackTrace();
+        readLock.lock();
+        try {
+            FieldIterator fields = doc.getFields();
+            while (fields.hasNext()) {
+                Field field = fields.next();
+                try {
+                    matcher.addHits(matchField(field.getName(), field));
+                } catch (UndefinedIndexFieldException e) {
+                    e.printStackTrace();
+                }
             }
+        } finally {
+            readLock.unlock();
         }
         return matcher;
     }
@@ -155,17 +171,22 @@ public class SchemaImpl implements Schema {
 
     @Override
     public void deleteQuery(Integer queryId) {
-        String rawQuery = queryStorage.getRawQuery(queryId);
-        if (rawQuery != null) {
-            try {
-                Query query = queryBuilder.buildFromJSON(rawQuery);
-                removePostings(query);
-            } catch (MalformedQueryException e) {
-                LOGGER.warn("Error parsing query", e);
+        writeLock.lock();
+        try {
+            String rawQuery = queryStorage.getRawQuery(queryId);
+            if (rawQuery != null) {
+                try {
+                    Query query = queryBuilder.buildFromJSON(rawQuery);
+                    removePostings(query);
+                } catch (MalformedQueryException e) {
+                    LOGGER.warn("Error parsing query", e);
+                }
             }
+            queryManager.deleteQuery(queryId);
+            queryStorage.deleteQuery(queryId);
+        } finally {
+            writeLock.unlock();
         }
-        queryManager.deleteQuery(queryId);
-        queryStorage.deleteQuery(queryId);
     }
 
     private void removePostings(Query query) {
@@ -181,8 +202,13 @@ public class SchemaImpl implements Schema {
 
     @Override
     public void trim() {
-        for (FieldIndex field : indices.values()) {
-            field.trim();
+        writeLock.lock();
+        try {
+            for (FieldIndex field : indices.values()) {
+                field.trim();
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 }

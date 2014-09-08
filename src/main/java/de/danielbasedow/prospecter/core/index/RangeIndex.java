@@ -2,7 +2,6 @@ package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
-import gnu.trove.TCollections;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 
@@ -12,9 +11,10 @@ import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class RangeIndex<T> {
-    final SortedMap<T, TLongList> indexEquals;
-    final SortedMap<T, TLongList> indexLessThan;
-    final SortedMap<T, TLongList> indexGreaterThan;
+
+    protected final SortedMap<T, TLongList> indexEquals;
+    protected final SortedMap<T, TLongList> indexLessThan;
+    protected final SortedMap<T, TLongList> indexGreaterThan;
 
     public RangeIndex() {
         indexEquals = new ConcurrentSkipListMap<T, TLongList>();
@@ -23,7 +23,7 @@ public class RangeIndex<T> {
     }
 
     public TLongList match(Field field) {
-        TLongList postings = TCollections.synchronizedList(new TLongArrayList());
+        TLongList postings = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             T tToken = (T) token.getToken();

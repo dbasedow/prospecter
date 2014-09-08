@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StringIndex extends AbstractFieldIndex {
-    protected final Map<String, TLongArrayList> index;
+    protected final Map<String, TLongList> index;
 
     public StringIndex(String name) {
         super(name);
-        index = new ConcurrentHashMap<String, TLongArrayList>();
+        index = new ConcurrentHashMap<String, TLongList>();
     }
 
     @Override
@@ -40,21 +40,17 @@ public class StringIndex extends AbstractFieldIndex {
     public void removePosting(Token token, Long posting) {
         String tokenStr = (String) token.getToken();
 
-        TLongArrayList postingList = getOrCreatePostingList(tokenStr);
-        synchronized (postingList) {
-            postingList.remove(posting);
-        }
+        TLongList postingList = getOrCreatePostingList(tokenStr);
+        postingList.remove(posting);
     }
 
     public void addOrCreate(String token, Long posting) {
-        TLongArrayList postingList = getOrCreatePostingList(token);
-        synchronized (postingList) {
-            postingList.add(posting);
-        }
+        TLongList postingList = getOrCreatePostingList(token);
+        postingList.add(posting);
     }
 
-    public synchronized TLongArrayList getOrCreatePostingList(String token) {
-        TLongArrayList postingList = index.get(token);
+    public TLongList getOrCreatePostingList(String token) {
+        TLongList postingList = index.get(token);
         if (postingList == null) {
             postingList = new TLongArrayList();
             index.put(token, postingList);
