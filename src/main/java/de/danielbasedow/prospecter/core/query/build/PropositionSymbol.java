@@ -1,6 +1,8 @@
 package de.danielbasedow.prospecter.core.query.build;
 
-public class PropositionSymbol extends aima.core.logic.propositional.parsing.ast.PropositionSymbol {
+import de.danielbasedow.prospecter.core.query.Condition;
+
+public class PropositionSymbol extends AbstractPropositionalSymbol {
     private final Condition condition;
 
     public PropositionSymbol(String symbol, Condition condition) {
