@@ -16,8 +16,8 @@ public abstract class GenericFieldHandler extends AbstractFieldHandler {
         super(node, fieldName);
     }
 
-    public List<Condition> getConditions() {
-        List<Condition> conditions = new ArrayList<Condition>();
+    public List<ClauseNode> getConditions() {
+        List<ClauseNode> conditions = new ArrayList<ClauseNode>();
 
         String comparator = root.get("condition").asText();
         MatchCondition matchCondition = getMatchCondition(comparator);

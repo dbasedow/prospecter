@@ -4,6 +4,7 @@ package de.danielbasedow.prospecter.core.query.build;
 import aima.core.logic.propositional.parsing.ast.ComplexSentence;
 import aima.core.logic.propositional.parsing.ast.Connective;
 import aima.core.logic.propositional.parsing.ast.Sentence;
+import de.danielbasedow.prospecter.core.query.Condition;
 
 import java.util.ArrayList;
 
@@ -17,8 +18,7 @@ public class PropositionalSentenceMapper {
     }
 
     private static Sentence mapAsAtomicSentence(Condition clause) {
-        String symbolName = clause.getFieldName() + clause.getMatchCondition() + clause.getValue().getValue();
-        return new PropositionSymbol(symbolName, clause);
+        return new PropositionSymbol(clause.getSymbolName(), clause);
     }
 
     private static Sentence mapAsComplexSentence(Clause clause) {

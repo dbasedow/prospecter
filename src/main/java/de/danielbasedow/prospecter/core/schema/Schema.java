@@ -10,13 +10,13 @@ import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.persistence.QueryStorage;
 import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
-import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
+import de.danielbasedow.prospecter.core.query.build.AdvancedQueryBuilder;
 import gnu.trove.list.TLongList;
 
 /**
  * A schema represents a schema describing the available fields of a document. These fields are backed by indices that
  * are used to store queries on these fields. Schemas are the main component by which to use prospecter. They supply
- * everything else like DocumentBuilder and QueryBuilder.
+ * everything else like DocumentBuilder and AdvancedQueryBuilder.
  */
 public interface Schema {
     /**
@@ -75,7 +75,7 @@ public interface Schema {
 
     public FieldIndex getFieldIndex(String name);
 
-    public QueryBuilder getQueryBuilder();
+    public AdvancedQueryBuilder getQueryBuilder();
 
     public DocumentBuilder getDocumentBuilder();
 

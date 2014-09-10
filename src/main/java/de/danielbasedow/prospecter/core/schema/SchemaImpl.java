@@ -7,7 +7,7 @@ import de.danielbasedow.prospecter.core.persistence.QueryStorage;
 import de.danielbasedow.prospecter.core.query.Condition;
 import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
-import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
+import de.danielbasedow.prospecter.core.query.build.AdvancedQueryBuilder;
 import gnu.trove.list.TLongList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class SchemaImpl implements Schema {
     private final Lock writeLock = rwLock.writeLock();
 
     protected final ConcurrentHashMap<String, FieldIndex> indices;
-    protected final QueryBuilder queryBuilder;
+    protected final AdvancedQueryBuilder queryBuilder;
     protected final DocumentBuilder documentBuilder;
     protected final QueryManager queryManager;
     protected QueryStorage queryStorage;
@@ -34,7 +34,7 @@ public class SchemaImpl implements Schema {
 
     public SchemaImpl() {
         indices = new ConcurrentHashMap<String, FieldIndex>();
-        queryBuilder = new QueryBuilder(this);
+        queryBuilder = new AdvancedQueryBuilder(this);
         documentBuilder = new DocumentBuilder(this);
         queryManager = new QueryManager();
     }
@@ -119,7 +119,7 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public QueryBuilder getQueryBuilder() {
+    public AdvancedQueryBuilder getQueryBuilder() {
         return queryBuilder;
     }
 

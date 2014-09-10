@@ -4,7 +4,7 @@ import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
 import de.danielbasedow.prospecter.core.query.Query;
-import de.danielbasedow.prospecter.core.query.build.QueryBuilder;
+import de.danielbasedow.prospecter.core.query.build.AdvancedQueryBuilder;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilder;
 import de.danielbasedow.prospecter.core.schema.SchemaBuilderJSON;
@@ -55,7 +55,7 @@ public class GeoDistanceIndexTest {
     }
 
     private static void fillIndex(Schema schema, int count, double west, double east, double north, double south, int maxDistance) {
-        QueryBuilder queryBuilder = schema.getQueryBuilder();
+        AdvancedQueryBuilder queryBuilder = schema.getQueryBuilder();
         for (int i = 0; i < count; i++) {
             String json = getRandomQuery(west, east, north, south, maxDistance, (long) i);
             try {
