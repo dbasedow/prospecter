@@ -18,7 +18,7 @@ public class PropositionalSentenceMapper {
     }
 
     private static Sentence mapAsAtomicSentence(Condition clause) {
-        return new PropositionSymbol(clause.getSymbolName(), clause);
+        return new PropositionSymbol(clause);
     }
 
     private static Sentence mapAsComplexSentence(Clause clause) {

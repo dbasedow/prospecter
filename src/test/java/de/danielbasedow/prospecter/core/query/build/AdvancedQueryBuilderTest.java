@@ -1,5 +1,6 @@
 package de.danielbasedow.prospecter.core.query.build;
 
+import aima.core.logic.propositional.parsing.ast.Sentence;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.danielbasedow.prospecter.core.MalformedQueryException;
@@ -77,6 +78,9 @@ public class AdvancedQueryBuilderTest extends TestCase {
             List<ClauseNode> subClauses = root.getSubClauses();
             assertEquals(false, subClauses.get(0).isLeaf());
             assertEquals(false, subClauses.get(1).isLeaf());
+
+            Sentence sentence = Query.getCNF(clauseNode);
+            assertTrue(sentence.getNumberSimplerSentences() > 1);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MalformedQueryException e) {
