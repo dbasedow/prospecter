@@ -50,7 +50,7 @@ public class AdvancedQueryBuilder {
 
             ClauseNode clauseNode = parseNode(root.get("query"));
 
-            return new Query(queryId, conditions);
+            return new Query(queryId, clauseNode);
         } catch (Exception e) {
             throw new MalformedQueryException("Error parsing query", e);
         }
@@ -116,7 +116,7 @@ public class AdvancedQueryBuilder {
         switch (fieldIndex.getFieldType()) {
             case FULL_TEXT:
                 try {
-                    return new Clause(Clause.ClauseType.AND, handleFullText(fieldName, node));
+                    return wrap(handleFullText(fieldName, node));
                 } catch (TokenizerException e) {
                     e.printStackTrace();
                 }
@@ -127,11 +127,11 @@ public class AdvancedQueryBuilder {
                         return new Token<Integer>(node.asInt(), matchCondition);
                     }
                 };
-                return new Clause(Clause.ClauseType.AND, handler.getConditions());
+                return wrap(handler.getConditions());
             case GEO_DISTANCE:
-                return new Clause(Clause.ClauseType.AND, handleGeoDistance(fieldName, node));
+                return wrap(handleGeoDistance(fieldName, node));
             case DATE_TIME:
-                return new Clause(Clause.ClauseType.AND, handleDateTime(fieldName, node));
+                return wrap(handleDateTime(fieldName, node));
             case LONG:
                 handler = new GenericFieldHandler(node, fieldName) {
                     @Override
@@ -139,7 +139,7 @@ public class AdvancedQueryBuilder {
                         return new Token<Long>(node.asLong(), matchCondition);
                     }
                 };
-                return new Clause(Clause.ClauseType.AND, handler.getConditions());
+                return wrap(handler.getConditions());
             case DOUBLE:
                 handler = new GenericFieldHandler(node, fieldName) {
                     @Override
@@ -147,7 +147,7 @@ public class AdvancedQueryBuilder {
                         return new Token<Double>(node.asDouble(), matchCondition);
                     }
                 };
-                return new Clause(Clause.ClauseType.AND, handler.getConditions());
+                return wrap(handler.getConditions());
             case STRING:
                 handler = new GenericFieldHandler(node, fieldName) {
                     @Override
@@ -155,7 +155,7 @@ public class AdvancedQueryBuilder {
                         return new Token<String>(node.asText(), matchCondition);
                     }
                 };
-                return new Clause(Clause.ClauseType.AND, handler.getConditions());
+                return wrap(handler.getConditions());
         }
         throw new MalformedQueryException("Field '" + fieldName + "' does not seem to be supported.");
     }
@@ -215,5 +215,13 @@ public class AdvancedQueryBuilder {
         conditions.add(new Condition(fieldName, new Token<GeoPerimeter>(geo)));
 
         return conditions;
+    }
+
+    private ClauseNode wrap(List<ClauseNode> conditions) {
+        if (conditions.size() == 1) {
+            return conditions.get(0);
+        } else {
+            return new Clause(Clause.ClauseType.AND, conditions);
+        }
     }
 }
