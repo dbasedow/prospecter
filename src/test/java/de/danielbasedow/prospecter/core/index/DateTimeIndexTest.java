@@ -22,7 +22,7 @@ public class DateTimeIndexTest extends TestCase {
     private static String jsonQuery = "{\n" +
             "    \"id\": 123456,\n" +
             "    \"query\": {\n" +
-            "        \"conditions\": [\n" +
+            "        \"and\": [\n" +
             "            {\n" +
             "                \"field\": \"dateTime\",\n" +
             "                \"condition\": \"gte\",\n" +
@@ -34,7 +34,7 @@ public class DateTimeIndexTest extends TestCase {
     private static String jsonQueryWrongDate = "{\n" +
             "    \"id\": 123456,\n" +
             "    \"query\": {\n" +
-            "        \"conditions\": [\n" +
+            "        \"and\": [\n" +
             "            {\n" +
             "                \"field\": \"dateTime\",\n" +
             "                \"condition\": \"gte\",\n" +

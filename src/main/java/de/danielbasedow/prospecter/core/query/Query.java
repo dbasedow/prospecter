@@ -3,6 +3,8 @@ package de.danielbasedow.prospecter.core.query;
 import aima.core.logic.propositional.parsing.ast.Connective;
 import aima.core.logic.propositional.parsing.ast.Sentence;
 import aima.core.logic.propositional.visitors.ConvertToCNF;
+import de.danielbasedow.prospecter.core.MatchCondition;
+import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.query.build.*;
 
 import java.util.*;
@@ -28,10 +30,22 @@ public class Query {
         mask = new BitSet(cnf.getNumberSimplerSentences());
 
         for (int bit = 0; bit < cnf.getNumberSimplerSentences(); bit++) {
+            mask.set(bit, true);
             Sentence disjunction = cnf.getSimplerSentence(bit);
             for (int p = 0; p < disjunction.getNumberSimplerSentences(); p++) {
                 Condition condition = ((PropositionSymbol) disjunction.getSimplerSentence(p)).getCondition();
-                postings.put(condition, QueryPosting.pack(queryId, bit));
+                if (condition.getToken().getCondition() == MatchCondition.IN) {
+                    //If this is an IN query we're dealing with a Token containing a List<Token>
+                    Object t = condition.getToken().getToken();
+                    if (t instanceof List) {
+                        for (Token token : (List<Token>) t) {
+                            Condition tmpCondition = new Condition(condition.getFieldName(), token);
+                            postings.put(tmpCondition, QueryPosting.pack(queryId, bit));
+                        }
+                    }
+                } else {
+                    postings.put(condition, QueryPosting.pack(queryId, bit));
+                }
             }
         }
     }

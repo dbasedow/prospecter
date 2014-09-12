@@ -12,7 +12,7 @@ public class NotQueryTest extends TestCase {
             "{\n" +
             "    \"id\": 123456,\n" +
             "    \"query\": {\n" +
-            "        \"conditions\": [\n" +
+            "        \"and\": [\n" +
             "            {\n" +
             "                \"field\": \"true\",\n" +
             "                \"condition\": \"eq\",\n" +

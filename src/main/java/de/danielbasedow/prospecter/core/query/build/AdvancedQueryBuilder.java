@@ -43,7 +43,6 @@ public class AdvancedQueryBuilder {
      * @throws de.danielbasedow.prospecter.core.MalformedQueryException
      */
     public Query buildFromJSON(String json) throws MalformedQueryException {
-        List<de.danielbasedow.prospecter.core.query.Condition> conditions = new ArrayList<Condition>();
         try {
             ObjectNode root = (ObjectNode) objectMapper.readTree(json);
             Integer queryId = root.get("id").asInt();

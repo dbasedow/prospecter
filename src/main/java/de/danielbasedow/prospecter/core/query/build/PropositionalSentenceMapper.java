@@ -27,6 +27,10 @@ public class PropositionalSentenceMapper {
             subSentences.add(map(clauseNode));
         }
 
+        if (subSentences.size() == 1) {
+            return subSentences.get(0);
+        }
+
         Connective connective;
         switch (clause.getType()) {
             case AND:

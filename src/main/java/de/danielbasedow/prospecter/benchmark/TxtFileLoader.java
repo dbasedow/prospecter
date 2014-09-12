@@ -23,7 +23,7 @@ public class TxtFileLoader {
         return "{" +
                 "\"id\": " + String.valueOf(id) + "," +
                 "\"query\": {" +
-                "\"conditions\": [" +
+                "\"and\": [" +
                 "{" +
                 "\"field\": \"textField\"," +
                 "\"condition\": \"match\"," +
