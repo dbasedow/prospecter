@@ -7,6 +7,7 @@ import aima.core.logic.propositional.parsing.ast.Sentence;
 import de.danielbasedow.prospecter.core.query.Condition;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PropositionalSentenceMapper {
     public static Sentence map(ClauseNode clause) {
@@ -46,7 +47,18 @@ public class PropositionalSentenceMapper {
                 connective = Connective.AND;
         }
 
-        Sentence[] sentenceArray = new Sentence[subSentences.size()];
-        return new ComplexSentence(connective, subSentences.toArray(sentenceArray));
+        return bracketIfNecessary(connective, subSentences);
+    }
+
+    private static Sentence bracketIfNecessary(Connective connective, List<Sentence> sentences) {
+        while (sentences.size() > 1) {
+            ComplexSentence newComplex = new ComplexSentence(
+                    connective,
+                    sentences.remove(sentences.size() - 1),
+                    sentences.remove(sentences.size() - 1)
+            );
+            sentences.add(newComplex);
+        }
+        return sentences.get(0);
     }
 }
