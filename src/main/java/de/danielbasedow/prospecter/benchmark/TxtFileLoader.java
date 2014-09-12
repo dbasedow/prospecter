@@ -1,6 +1,7 @@
 package de.danielbasedow.prospecter.benchmark;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import de.danielbasedow.prospecter.core.MalformedQueryException;
 import de.danielbasedow.prospecter.core.Matcher;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.schema.Schema;
@@ -63,7 +64,10 @@ public class TxtFileLoader {
             long i = 0;
             while ((line = br.readLine()) != null) {
                 i++;
-                schema.addQuery(buildJsonQuery(line.trim(), i));
+                try {
+                    schema.addQuery(buildJsonQuery(line.trim(), i));
+                } catch (MalformedQueryException mqe) {
+                }
                 if (i % 10000 == 0) {
                     measure(schema, doc, i);
                 }

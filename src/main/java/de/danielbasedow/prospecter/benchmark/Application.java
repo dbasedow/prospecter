@@ -5,7 +5,10 @@ import de.danielbasedow.prospecter.core.*;
 import de.danielbasedow.prospecter.core.document.Document;
 import de.danielbasedow.prospecter.core.document.DocumentBuilder;
 import de.danielbasedow.prospecter.core.document.MalformedDocumentException;
+import de.danielbasedow.prospecter.core.query.InvalidQueryException;
 import de.danielbasedow.prospecter.core.schema.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,9 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Application {
-    public Application() {
-
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static Schema buildSchema(String fileName) throws SchemaConfigurationError {
         SchemaBuilder schemaBuilder = new SchemaBuilderJSON(new File(fileName));
@@ -68,7 +69,11 @@ public class Application {
                 String[] columns = line.trim().split("\\t");
                 i++;
                 if (columns.length == 3) {
-                    schema.addQuery(buildJsonQuery(columns[2].trim(), i));
+                    try {
+                        schema.addQuery(buildJsonQuery(columns[2].trim(), i));
+                    } catch (MalformedQueryException mqe) {
+                        LOGGER.info("query could not be parsed.", mqe);
+                    }
                 }
                 if (i % 10000 == 0) {
                     System.out.print(i);

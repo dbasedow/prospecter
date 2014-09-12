@@ -75,7 +75,7 @@ public class GeoDistanceIndexTest {
         return "{\n" +
                 "\"id\": " + String.valueOf(queryId) + ",\n" +
                 "\"query\": {" +
-                "   \"conditions\": [\n" +
+                "   \"and\": [\n" +
                 "            {\n" +
                 "                \"field\": \"location\",\n" +
                 "                \"condition\": \"radius\",\n" +
