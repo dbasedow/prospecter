@@ -12,7 +12,7 @@ public class InQueryTest extends TestCase {
             "{\n" +
             "    \"id\": 123456,\n" +
             "    \"query\": {\n" +
-            "        \"conditions\": [\n" +
+            "        \"and\": [\n" +
             "            {\n" +
             "                \"field\": \"category\",\n" +
             "                \"condition\": \"eq\",\n" +
