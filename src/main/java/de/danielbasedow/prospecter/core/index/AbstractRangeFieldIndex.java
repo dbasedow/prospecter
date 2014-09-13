@@ -14,13 +14,11 @@ public abstract class AbstractRangeFieldIndex<T> extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field) {
+    public TLongList match(Field field, boolean negative) {
+        if (negative) {
+            return negativeIndex.match(field);
+        }
         return index.match(field);
-    }
-
-    @Override
-    public TLongList matchNegative(Field field) {
-        return negativeIndex.match(field);
     }
 
     @Override

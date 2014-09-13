@@ -14,10 +14,11 @@ public interface FieldIndex {
     /**
      * Finds all QueryPosting that match the given Field and returns them as a List
      *
-     * @param field Field instance from Document to match against
-     * @return query postings matching field
+     * @param field     Field instance from Document to match against
+     * @param negative  if true, the negative index is used (for NOT conditions)
+     * @return query    postings matching field
      */
-    public TLongList match(Field field);
+    public TLongList match(Field field, boolean negative);
 
     /**
      * Add a single QueryPosting that will be matched if token is present in the field in match()

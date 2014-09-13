@@ -38,13 +38,18 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongArrayList match(Field field) {
-        TLongArrayList postingsFound = new TLongArrayList();
+    public TLongList match(Field field, boolean negative) {
+        SpatialIndex indexToUse = index;
+        if (negative) {
+            indexToUse = negativeIndex;
+        }
+
+        TLongList postingsFound = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             LatLng latLng = (LatLng) token.getToken();
             GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), 0);
-            index.intersects(perimeter.getRectangle(), new MatchCollectionProcedure(postingsFound));
+            indexToUse.intersects(perimeter.getRectangle(), new MatchCollectionProcedure(postingsFound));
         }
         return postingsFound;
     }
@@ -71,9 +76,9 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     private class MatchCollectionProcedure implements TLongProcedure {
-        private final TLongArrayList hits;
+        private final TLongList hits;
 
-        public MatchCollectionProcedure(TLongArrayList hitList) {
+        public MatchCollectionProcedure(TLongList hitList) {
             hits = hitList;
         }
 

@@ -35,7 +35,7 @@ public interface Schema {
      * @return matching query postings
      * @throws UndefinedIndexFieldException
      */
-    public TLongList matchField(String fieldIndexName, Field field) throws UndefinedIndexFieldException;
+    public TLongList matchField(String fieldIndexName, Field field, boolean negative) throws UndefinedIndexFieldException;
 
     /**
      * Add query to index. The postings will be added to the corresponding field indices.

@@ -19,13 +19,18 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field) {
+    public TLongList match(Field field, boolean negative) {
+        Map<String, TLongList> indexToUse = index;
+        if (negative) {
+            indexToUse = negativeIndex;
+        }
+
         TLongList postings = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             String strToken = (String) token.getToken();
-            if (index.containsKey(strToken)) {
-                postings.addAll(index.get(strToken));
+            if (indexToUse.containsKey(strToken)) {
+                postings.addAll(indexToUse.get(strToken));
             }
         }
         return postings;

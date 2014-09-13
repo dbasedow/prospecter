@@ -31,7 +31,7 @@ public class FullTextIndex extends AbstractFieldIndex {
     @Override
     public void addPosting(Token token, Long posting, boolean not) {
         TIntObjectHashMap<TLongList> indexToUse = index;
-        if(not){
+        if (not) {
             indexToUse = negativeIndex;
         }
 
@@ -48,7 +48,7 @@ public class FullTextIndex extends AbstractFieldIndex {
     @Override
     public void removePosting(Token token, Long posting, boolean not) {
         TIntObjectHashMap<TLongList> indexToUse = index;
-        if(not){
+        if (not) {
             indexToUse = negativeIndex;
         }
 
@@ -73,11 +73,16 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field) {
+    public TLongList match(Field field, boolean negative) {
+        TIntObjectHashMap<TLongList> indexToUse = index;
+        if (negative) {
+            indexToUse = negativeIndex;
+        }
+
         TLongList postings = new TLongArrayList();
         for (Token token : field.getTokens()) {
             Integer t = (Integer) token.getToken();
-            TLongList additionalPostings = index.get(t);
+            TLongList additionalPostings = indexToUse.get(t);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }
