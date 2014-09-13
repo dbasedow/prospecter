@@ -11,9 +11,9 @@ public class Condition implements ClauseNode {
     private final Token token;
 
     /**
-     * if not is set the query bitmask will be set to zero at this position
+     * if "not" is set the condition will result in a posting in a "NOT-index"
      */
-    private final boolean not;
+    private boolean not;
 
     public Condition(String fieldName, Token token) {
         this.fieldName = fieldName;
@@ -37,6 +37,10 @@ public class Condition implements ClauseNode {
 
     public boolean isNot() {
         return not;
+    }
+
+    public void setNot(boolean not) {
+        this.not = not;
     }
 
     @Override

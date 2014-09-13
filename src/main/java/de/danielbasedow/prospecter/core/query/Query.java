@@ -33,17 +33,24 @@ public class Query {
             tmpBits++;
             Sentence disjunction = cnf.getSimplerSentence(bit);
             for (int p = 0; p < disjunction.getNumberSimplerSentences(); p++) {
-                Condition condition = ((PropositionSymbol) disjunction.getSimplerSentence(p)).getCondition();
+                Sentence sentence = disjunction.getSimplerSentence(p);
+                boolean isNegativeCondition = false;
+                if (sentence.isNotSentence()) {
+                    sentence = sentence.getSimplerSentence(0);
+                    isNegativeCondition = true;
+                }
+                Condition condition = ((PropositionSymbol) sentence).getCondition();
                 if (condition.getToken().getCondition() == MatchCondition.IN) {
                     //If this is an IN query we're dealing with a Token containing a List<Token>
                     Object t = condition.getToken().getToken();
                     if (t instanceof List) {
                         for (Token token : (List<Token>) t) {
-                            Condition tmpCondition = new Condition(condition.getFieldName(), token);
+                            Condition tmpCondition = new Condition(condition.getFieldName(), token, isNegativeCondition);
                             postings.put(tmpCondition, QueryPosting.pack(queryId, bit));
                         }
                     }
                 } else {
+                    condition.setNot(isNegativeCondition);
                     postings.put(condition, QueryPosting.pack(queryId, bit));
                 }
             }
