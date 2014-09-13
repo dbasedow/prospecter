@@ -67,7 +67,7 @@ public class SchemaImpl implements Schema {
                     throw new UndefinedIndexFieldException("No field named '" + condition.getFieldName() + "'");
                 }
 
-                indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting);
+                indices.get(condition.getFieldName()).addPosting(condition.getToken(), posting, condition.isNot());
             }
             queryManager.addQuery(query);
         } finally {
@@ -195,7 +195,7 @@ public class SchemaImpl implements Schema {
             Condition condition = entry.getKey();
             Long posting = entry.getValue();
 
-            indices.get(condition.getFieldName()).removePosting(condition.getToken(), posting);
+            indices.get(condition.getFieldName()).removePosting(condition.getToken(), posting, condition.isNot());
         }
         queryManager.addQuery(query);
     }

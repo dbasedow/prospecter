@@ -31,13 +31,13 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, Long posting) {
+    public void addPosting(Token token, Long posting, boolean not) {
         String tokenStr = (String) token.getToken();
         addOrCreate(tokenStr, posting);
     }
 
     @Override
-    public void removePosting(Token token, Long posting) {
+    public void removePosting(Token token, Long posting, boolean not) {
         String tokenStr = (String) token.getToken();
 
         TLongList postingList = getOrCreatePostingList(tokenStr);

@@ -1,10 +1,9 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.TLongList;
 
-public class LongIndex extends AbstractFieldIndex {
+public class LongIndex extends AbstractRangeFieldIndex<Long> {
     final RangeIndex<Long> index;
 
     public LongIndex(String name) {
@@ -18,17 +17,7 @@ public class LongIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, Long posting) {
-        index.addPosting(token, posting);
-    }
-
-    @Override
     public FieldType getFieldType() {
         return FieldType.LONG;
-    }
-
-    @Override
-    public void removePosting(Token token, Long posting) {
-        index.removePosting(token, posting);
     }
 }
