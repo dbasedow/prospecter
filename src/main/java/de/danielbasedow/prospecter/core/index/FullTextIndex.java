@@ -18,12 +18,11 @@ import java.util.ArrayList;
 public class FullTextIndex extends AbstractFieldIndex {
     private static final Logger LOGGER = LoggerFactory.getLogger(FullTextIndex.class);
 
-    protected final TIntObjectHashMap<TLongList> index;
+    protected final TIntObjectHashMap<TLongList> index = new TIntObjectHashMap<TLongList>();
     private final Analyzer analyzer;
 
     public FullTextIndex(String name, Analyzer analyzer) {
         super(name);
-        index = new TIntObjectHashMap<TLongList>();
         this.analyzer = analyzer;
     }
 

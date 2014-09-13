@@ -26,11 +26,10 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     /**
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
      */
-    private final SpatialIndex index;
+    private final SpatialIndex index = new RTree();
 
     public GeoDistanceIndex(String name) {
         super(name);
-        index = new RTree();
         index.init(null);
     }
 

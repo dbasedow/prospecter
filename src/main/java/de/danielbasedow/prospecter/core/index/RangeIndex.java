@@ -12,15 +12,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 public class RangeIndex<T> {
 
-    protected final SortedMap<T, TLongList> indexEquals;
-    protected final SortedMap<T, TLongList> indexLessThan;
-    protected final SortedMap<T, TLongList> indexGreaterThan;
-
-    public RangeIndex() {
-        indexEquals = new ConcurrentSkipListMap<T, TLongList>();
-        indexLessThan = new ConcurrentSkipListMap<T, TLongList>();
-        indexGreaterThan = new ConcurrentSkipListMap<T, TLongList>();
-    }
+    protected final SortedMap<T, TLongList> indexEquals = new ConcurrentSkipListMap<T, TLongList>();
+    protected final SortedMap<T, TLongList> indexLessThan = new ConcurrentSkipListMap<T, TLongList>();
+    protected final SortedMap<T, TLongList> indexGreaterThan = new ConcurrentSkipListMap<T, TLongList>();
 
     public TLongList match(Field field) {
         TLongList postings = new TLongArrayList();

@@ -10,11 +10,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StringIndex extends AbstractFieldIndex {
-    protected final Map<String, TLongList> index;
+    protected final Map<String, TLongList> index = new ConcurrentHashMap<String, TLongList>();
 
     public StringIndex(String name) {
         super(name);
-        index = new ConcurrentHashMap<String, TLongList>();
     }
 
     @Override
