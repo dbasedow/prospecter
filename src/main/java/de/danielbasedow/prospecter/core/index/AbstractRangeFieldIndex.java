@@ -2,6 +2,8 @@ package de.danielbasedow.prospecter.core.index;
 
 
 import de.danielbasedow.prospecter.core.Token;
+import de.danielbasedow.prospecter.core.document.Field;
+import gnu.trove.list.TLongList;
 
 public abstract class AbstractRangeFieldIndex<T> extends AbstractFieldIndex {
     protected final RangeIndex<T> index = new RangeIndex<T>();
@@ -9,6 +11,16 @@ public abstract class AbstractRangeFieldIndex<T> extends AbstractFieldIndex {
 
     public AbstractRangeFieldIndex(String name) {
         super(name);
+    }
+
+    @Override
+    public TLongList match(Field field) {
+        return index.match(field);
+    }
+
+    @Override
+    public TLongList matchNegative(Field field) {
+        return negativeIndex.match(field);
     }
 
     @Override

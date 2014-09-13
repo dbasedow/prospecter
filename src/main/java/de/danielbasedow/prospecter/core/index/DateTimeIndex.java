@@ -1,8 +1,5 @@
 package de.danielbasedow.prospecter.core.index;
 
-import de.danielbasedow.prospecter.core.document.Field;
-import gnu.trove.list.TLongList;
-
 import java.text.DateFormat;
 
 public class DateTimeIndex extends AbstractRangeFieldIndex<Long> {
@@ -15,11 +12,6 @@ public class DateTimeIndex extends AbstractRangeFieldIndex<Long> {
 
     public DateFormat getDateFormat() {
         return dateFormat;
-    }
-
-    @Override
-    public TLongList match(Field field) {
-        return index.match(field);
     }
 
     @Override
