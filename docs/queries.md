@@ -9,9 +9,48 @@ Queries are represented as JSON dictionaries.
 
 The query id. This has to be an integer (signed)
 
-**query.conditions**
+**query**
 
-An array of condition dictionaries.
+A dictionary of condition arrays. The dictionary may contain the keys **and**, **or** and **not**. These keys can be
+used to model complex logical relationships between conditions. The arrays can also contain additional objects with one
+of these keys to combine logical relationships.
+
+**Example**
+
+    ...
+    "query": {
+        "and": [
+            {
+                "or": [
+                    {
+                        "field": "category",
+                        "condition": "eq",
+                        "value": "bargain"
+                    },
+                    {
+                        "field": "price",
+                        "condition": "lt",
+                        "value": 500000
+                    }
+                ]
+            },
+            {
+                "field": "description",
+                "condition": "match",
+                "value": "haunted house"
+            }
+        ]
+    }
+    ...
+
+This example could also be written like this:
+
+    (category == "bargain" || price < 500000) && match(description, "haunted house")
+
+
+**Caution**
+
+Be careful using OR logic. This will usually impact performance negatively.
 
 Condition dictionary
 --------------------
@@ -67,7 +106,7 @@ Example
     {
         "id": 123456,
         "query": {
-            "conditions": [
+            "and": [
                 {
                     "field": "description",
                     "condition": "match",

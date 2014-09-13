@@ -72,7 +72,7 @@ To index a query you simply send an HTTP PUT request to Prospecter:
     {
         "id": 1,
         "query": {
-            "conditions": [
+            "and": [
                 {
                     "field': "description",
                     "condition": "match",
@@ -84,7 +84,7 @@ To index a query you simply send an HTTP PUT request to Prospecter:
 
 This can be done with cURL:
 
-    curl -X PUT --data "{\"id\":1,\"query\":{\"conditions\":[{\"field\":\"description\",\"condition\":\"match\",\"value\":\"hello world\"}]}}" http://127.0.0.1:8888/your-schema
+    curl -X PUT --data "{\"id\":1,\"query\":{\"and\":[{\"field\":\"description\",\"condition\":\"match\",\"value\":\"hello world\"}]}}" http://127.0.0.1:8888/your-schema
 
 Matching
 --------
