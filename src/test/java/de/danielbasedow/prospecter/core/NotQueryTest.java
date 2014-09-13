@@ -19,10 +19,13 @@ public class NotQueryTest extends TestCase {
             "                \"value\": 1\n" +
             "            },\n" +
             "            {\n" +
-            "                \"field\": \"category\",\n" +
-            "                \"condition\": \"eq\",\n" +
-            "                \"value\": 1,\n" +
-            "                \"not\": true\n" +
+            "               \"not\": [\n" +
+            "                   {\n" +
+            "                        \"field\": \"category\",\n" +
+            "                        \"condition\": \"eq\",\n" +
+            "                        \"value\": 1\n" +
+            "                   }\n" +
+            "               ]\n" +
             "            }\n" +
             "        ]\n" +
             "    }\n" +

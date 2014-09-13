@@ -28,10 +28,6 @@ public class PropositionalSentenceMapper {
             subSentences.add(map(clauseNode));
         }
 
-        if (subSentences.size() == 1) {
-            return subSentences.get(0);
-        }
-
         Connective connective;
         switch (clause.getType()) {
             case AND:
@@ -51,6 +47,9 @@ public class PropositionalSentenceMapper {
     }
 
     private static Sentence bracketIfNecessary(Connective connective, List<Sentence> sentences) {
+        if (connective == Connective.NOT && sentences.size() == 1) {
+            return new ComplexSentence(connective, sentences.get(0));
+        }
         while (sentences.size() > 1) {
             ComplexSentence newComplex = new ComplexSentence(
                     connective,
