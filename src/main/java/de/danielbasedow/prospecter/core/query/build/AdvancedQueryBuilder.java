@@ -45,7 +45,7 @@ public class AdvancedQueryBuilder {
     public Query buildFromJSON(String json) throws MalformedQueryException {
         try {
             ObjectNode root = (ObjectNode) objectMapper.readTree(json);
-            Integer queryId = root.get("id").asInt();
+            int queryId = root.get("id").asInt();
 
             ClauseNode clauseNode = parseNode(root.get("query"));
 

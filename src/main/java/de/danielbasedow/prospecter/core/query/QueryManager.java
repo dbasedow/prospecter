@@ -1,25 +1,23 @@
 package de.danielbasedow.prospecter.core.query;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.BitSet;
 
 public class QueryManager {
-    protected final TIntObjectHashMap<BitSet> masks;
-
-    public QueryManager() {
-        this.masks = new TIntObjectHashMap<BitSet>();
-    }
+    protected final TIntIntHashMap bitCounts = new TIntIntHashMap();
 
     public void addQuery(Query query) {
-        masks.put(query.getQueryId(), query.getMask());
+        bitCounts.put(query.getQueryId(), query.getBits());
     }
 
-    public BitSet getMask(Integer queryId) {
-        return masks.get(queryId);
+    public BitSet getMask(int queryId) {
+        BitSet set = new BitSet();
+        set.set(0, bitCounts.get(queryId), true);
+        return set;
     }
 
-    public void deleteQuery(Integer queryId) {
-        masks.remove(queryId);
+    public void deleteQuery(int queryId) {
+        bitCounts.remove(queryId);
     }
 }

@@ -61,7 +61,7 @@ public class AdvancedQueryBuilderTest extends TestCase {
     public void testExtractId() {
         try {
             Query query = builder.buildFromJSON(getJson());
-            assertEquals(123456, query.getQueryId().intValue());
+            assertEquals(123456, query.getQueryId());
         } catch (MalformedQueryException e) {
             e.printStackTrace();
         }

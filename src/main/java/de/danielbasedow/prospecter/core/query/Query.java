@@ -13,24 +13,24 @@ import java.util.*;
  * represents a Query (a tuple of queryId, bitmask and a list of conditions)
  */
 public class Query {
-    protected final Integer queryId;
-    protected final BitSet mask;
+    protected final int queryId;
+    protected final int bits;
     protected final ClauseNode clauseNode;
     protected final Map<Condition, Long> postings = new HashMap<Condition, Long>();
 
-    public Integer getQueryId() {
+    public int getQueryId() {
         return queryId;
     }
 
-    public Query(Integer queryId, ClauseNode clauseNode) {
+    public Query(int queryId, ClauseNode clauseNode) {
         this.clauseNode = clauseNode;
         this.queryId = queryId;
 
         Sentence cnf = getCNF(clauseNode);
-        mask = new BitSet(cnf.getNumberSimplerSentences());
 
+        int tmpBits = 0;
         for (int bit = 0; bit < cnf.getNumberSimplerSentences(); bit++) {
-            mask.set(bit, true);
+            tmpBits++;
             Sentence disjunction = cnf.getSimplerSentence(bit);
             for (int p = 0; p < disjunction.getNumberSimplerSentences(); p++) {
                 Condition condition = ((PropositionSymbol) disjunction.getSimplerSentence(p)).getCondition();
@@ -48,6 +48,7 @@ public class Query {
                 }
             }
         }
+        bits = tmpBits;
     }
 
     public static Sentence getCNF(Sentence sentence) {
@@ -91,15 +92,11 @@ public class Query {
         return postings;
     }
 
-    public boolean testBits(BitSet hits) {
-        return mask.equals(hits);
-    }
-
     public ClauseNode getClauses() {
         return clauseNode;
     }
 
-    public BitSet getMask() {
-        return mask;
+    public int getBits() {
+        return bits;
     }
 }
