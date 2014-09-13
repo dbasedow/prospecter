@@ -19,6 +19,8 @@ public class FullTextIndex extends AbstractFieldIndex {
     private static final Logger LOGGER = LoggerFactory.getLogger(FullTextIndex.class);
 
     protected final TIntObjectHashMap<TLongList> index = new TIntObjectHashMap<TLongList>();
+    protected final TIntObjectHashMap<TLongList> negativeIndex = new TIntObjectHashMap<TLongList>();
+
     private final Analyzer analyzer;
 
     public FullTextIndex(String name, Analyzer analyzer) {
@@ -28,19 +30,29 @@ public class FullTextIndex extends AbstractFieldIndex {
 
     @Override
     public void addPosting(Token token, Long posting, boolean not) {
+        TIntObjectHashMap<TLongList> indexToUse = index;
+        if(not){
+            indexToUse = negativeIndex;
+        }
+
         TLongList postingList;
-        if (index.containsKey((Integer) token.getToken())) {
-            postingList = index.get((Integer) token.getToken());
+        if (indexToUse.containsKey((Integer) token.getToken())) {
+            postingList = indexToUse.get((Integer) token.getToken());
         } else {
             postingList = new TLongArrayList();
-            index.put((Integer) token.getToken(), postingList);
+            indexToUse.put((Integer) token.getToken(), postingList);
         }
         postingList.add(posting);
     }
 
     @Override
     public void removePosting(Token token, Long posting, boolean not) {
-        TLongList postingList = index.get((Integer) token.getToken());
+        TIntObjectHashMap<TLongList> indexToUse = index;
+        if(not){
+            indexToUse = negativeIndex;
+        }
+
+        TLongList postingList = indexToUse.get((Integer) token.getToken());
         if (postingList != null && postingList.contains(posting)) {
             LOGGER.debug("removing posting: " + String.valueOf(posting));
             postingList.remove(posting);

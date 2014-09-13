@@ -4,7 +4,9 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.LatLng;
+import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.procedure.TLongProcedure;
 import net.sf.jsi.SpatialIndex;
 import net.sf.jsi.rtree.RTree;
@@ -27,10 +29,12 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
      */
     private final SpatialIndex index = new RTree();
+    private final SpatialIndex negativeIndex = new RTree();
 
     public GeoDistanceIndex(String name) {
         super(name);
         index.init(null);
+        negativeIndex.init(null);
     }
 
     @Override
@@ -47,12 +51,17 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
 
     @Override
     public void addPosting(Token token, Long posting, boolean not) {
+        SpatialIndex indexToUse = index;
+        if (not) {
+            indexToUse = negativeIndex;
+        }
+
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
-        index.add(perimeter.getRectangle(), posting);
+        indexToUse.add(perimeter.getRectangle(), posting);
         if (perimeter.spans180Longitude()) {
             //if it spans 180° add fake posting on other side of earth
             GeoPerimeter bizarroPerimeter = perimeter.mirrorInFakeSpace();
-            index.add(bizarroPerimeter.getRectangle(), posting);
+            indexToUse.add(bizarroPerimeter.getRectangle(), posting);
         }
     }
 
