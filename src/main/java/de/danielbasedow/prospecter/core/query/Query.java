@@ -51,7 +51,11 @@ public class Query {
                     }
                 } else {
                     condition.setNot(isNegativeCondition);
-                    postings.put(condition, QueryPosting.pack(queryId, bit));
+                    long posting = QueryPosting.pack(queryId, bit);
+                    if (isNegativeCondition && postings.containsValue(posting)) {
+                        throw new InvalidQueryException("The query is too complex. More than one negation in a disjunction!");
+                    }
+                    postings.put(condition, posting);
                 }
             }
         }
