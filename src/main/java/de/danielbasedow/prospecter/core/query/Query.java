@@ -15,6 +15,8 @@ import java.util.*;
 public class Query {
     protected final int queryId;
     protected final int bits;
+    protected final QueryNegativeCounter negativeMask = new QueryNegativeCounter();
+
     protected final ClauseNode clauseNode;
     protected final Map<Condition, Long> postings = new HashMap<Condition, Long>();
 
@@ -52,8 +54,8 @@ public class Query {
                 } else {
                     condition.setNot(isNegativeCondition);
                     long posting = QueryPosting.pack(queryId, bit);
-                    if (isNegativeCondition && postings.containsValue(posting)) {
-                        throw new InvalidQueryException("The query is too complex. More than one negation in a disjunction!");
+                    if (isNegativeCondition) {
+                        negativeMask.add(bit);
                     }
                     postings.put(condition, posting);
                 }
