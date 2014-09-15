@@ -1,13 +1,9 @@
 package de.danielbasedow.prospecter.core.query;
 
-import gnu.trove.list.TByteList;
 import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.TIntByteMap;
 import gnu.trove.map.hash.TIntByteHashMap;
-
-import java.util.List;
 
 /**
  * Keeps track of how many negated literals are in a disjunction (if the matched negatives at a bit are less than the

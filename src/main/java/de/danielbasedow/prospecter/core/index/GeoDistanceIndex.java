@@ -6,7 +6,6 @@ import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.LatLng;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.procedure.TLongProcedure;
 import net.sf.jsi.SpatialIndex;
 import net.sf.jsi.rtree.RTree;

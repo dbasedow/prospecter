@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FlatComplexSentence implements Sentence {
-    protected List<Sentence> subSentences = new ArrayList<Sentence>();
+    protected final List<Sentence> subSentences = new ArrayList<Sentence>();
 
     @Override
     public int getNumberSimplerSentences() {

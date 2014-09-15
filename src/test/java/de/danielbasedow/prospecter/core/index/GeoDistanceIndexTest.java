@@ -6,7 +6,6 @@ import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.geo.GeoPerimeter;
 import de.danielbasedow.prospecter.core.geo.LatLng;
 import gnu.trove.list.TLongList;
-import gnu.trove.list.array.TLongArrayList;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

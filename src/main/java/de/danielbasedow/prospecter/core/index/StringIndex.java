@@ -4,7 +4,6 @@ import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -61,10 +60,10 @@ public class StringIndex extends AbstractFieldIndex {
             indexToUse = negativeIndex;
         }
 
-        TLongList postingList = index.get(token);
+        TLongList postingList = indexToUse.get(token);
         if (postingList == null) {
             postingList = new TLongArrayList();
-            index.put(token, postingList);
+            indexToUse.put(token, postingList);
         }
         return postingList;
     }

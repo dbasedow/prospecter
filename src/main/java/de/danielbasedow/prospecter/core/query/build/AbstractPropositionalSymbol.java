@@ -2,8 +2,6 @@ package de.danielbasedow.prospecter.core.query.build;
 
 import aima.core.logic.propositional.parsing.ast.AtomicSentence;
 
-import javax.lang.model.SourceVersion;
-
 /**
  * Code copied from AIMA PropositionalSymbol. Only to change the isPropositionSymbol check.
  */

@@ -15,10 +15,10 @@ import de.danielbasedow.prospecter.core.index.DateTimeIndex;
 import de.danielbasedow.prospecter.core.index.FieldIndex;
 import de.danielbasedow.prospecter.core.index.FullTextIndex;
 import de.danielbasedow.prospecter.core.query.*;
-import de.danielbasedow.prospecter.core.query.Condition;
 import de.danielbasedow.prospecter.core.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import de.danielbasedow.prospecter.core.query.Condition;
 
 import java.text.ParseException;
 import java.util.ArrayList;

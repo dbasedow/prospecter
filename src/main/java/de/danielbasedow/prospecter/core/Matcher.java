@@ -1,6 +1,5 @@
 package de.danielbasedow.prospecter.core;
 
-import de.danielbasedow.prospecter.core.query.Query;
 import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryNegativeCounter;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
