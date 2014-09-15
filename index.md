@@ -74,6 +74,5 @@ Limitations
 -----------
 
 *  All index data has to fit into main memory
-*  At the moment you can't build OR queries except for simple ORs on the same field (field = val1 OR val2 OR valN)
 *  Currently there is no built-in mechanism to search for exact matches in text i.e. "foo bar" would match all documents
 containing those two words in any order.
