@@ -112,4 +112,12 @@ public class Query {
     public int getBits() {
         return bits;
     }
+
+    public QueryNegativeCounter getNegativeMask() {
+        return negativeMask;
+    }
+
+    public boolean hasNegatives() {
+        return negativeMask.size() > 0;
+    }
 }

@@ -98,6 +98,7 @@ public class SchemaImpl implements Schema {
                 Field field = fields.next();
                 try {
                     matcher.addHits(matchField(field.getName(), field, false));
+                    matcher.addNegativeHits(matchField(field.getName(), field, true));
                 } catch (UndefinedIndexFieldException e) {
                     e.printStackTrace();
                 }
