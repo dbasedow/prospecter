@@ -74,20 +74,20 @@ public class Matcher {
                         results.add(queryId);
                     } else {
                         QueryNegativeCounter countMask = queryManager.getQueryNegativeCounter(queryId);
-                        QueryNegativeCounter actualCount = negativeHits.get(queryId);
-                        if (actualCount == null) {
-                            actualCount = new QueryNegativeCounter();
-                        }
                         if (countMask != null) {
+                            QueryNegativeCounter actualCount = negativeHits.get(queryId);
+                            if (actualCount == null) {
+                                actualCount = new QueryNegativeCounter();
+                            }
                             int[] bitPositions = countMask.getBitPositionsToSet(actualCount);
                             if (bitPositions.length > 0) {
                                 for (int position : bitPositions) {
                                     bitSet.set(position, true);
                                 }
                             }
-                        }
-                        if (mask.equals(bitSet)) {
-                            results.add(queryId);
+                            if (mask.equals(bitSet)) {
+                                results.add(queryId);
+                            }
                         }
                     }
                 }
