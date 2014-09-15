@@ -50,7 +50,7 @@ This example could also be written like this:
 
 **Caution**
 
-Be careful using OR logic. This will usually impact performance negatively.
+Be careful using OR and NOT logic. This will usually impact performance negatively.
 
 Condition dictionary
 --------------------
