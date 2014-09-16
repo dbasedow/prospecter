@@ -20,7 +20,6 @@ public class FullTextIndex extends AbstractFieldIndex {
     private static final Logger LOGGER = LoggerFactory.getLogger(FullTextIndex.class);
 
     protected final TIntObjectHashMap<TLongList> index = new TIntObjectHashMap<TLongList>();
-    protected final TIntObjectHashMap<TLongList> negativeIndex = new TIntObjectHashMap<TLongList>();
 
     private final Analyzer analyzer;
 
@@ -31,29 +30,19 @@ public class FullTextIndex extends AbstractFieldIndex {
 
     @Override
     public void addPosting(Token token, Long posting, boolean not) {
-        TIntObjectHashMap<TLongList> indexToUse = index;
-        if (not) {
-            indexToUse = negativeIndex;
-        }
-
         TLongList postingList;
-        if (indexToUse.containsKey((Integer) token.getToken())) {
-            postingList = indexToUse.get((Integer) token.getToken());
+        if (index.containsKey((Integer) token.getToken())) {
+            postingList = index.get((Integer) token.getToken());
         } else {
             postingList = new TLongArrayList();
-            indexToUse.put((Integer) token.getToken(), postingList);
+            index.put((Integer) token.getToken(), postingList);
         }
         postingList.add(posting);
     }
 
     @Override
     public void removePosting(Token token, Long posting, boolean not) {
-        TIntObjectHashMap<TLongList> indexToUse = index;
-        if (not) {
-            indexToUse = negativeIndex;
-        }
-
-        TLongList postingList = indexToUse.get((Integer) token.getToken());
+        TLongList postingList = index.get((Integer) token.getToken());
         if (postingList != null && postingList.contains(posting)) {
             LOGGER.debug("removing posting: " + String.valueOf(posting));
             postingList.remove(posting);
@@ -74,16 +63,11 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher, boolean negative) {
-        TIntObjectHashMap<TLongList> indexToUse = index;
-        if (negative) {
-            indexToUse = negativeIndex;
-        }
-
+    public TLongList match(Field field, Matcher matcher) {
         TLongList postings = new TLongArrayList();
         for (Token token : field.getTokens()) {
             Integer t = (Integer) token.getToken();
-            TLongList additionalPostings = indexToUse.get(t);
+            TLongList additionalPostings = index.get(t);
             if (additionalPostings != null) {
                 postings.addAll(additionalPostings);
             }

@@ -29,44 +29,32 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
      * Tracks maximum distance seen during indexing. Allows reducing the area searched during matching
      */
     private final SpatialIndex index = new RTree();
-    private final SpatialIndex negativeIndex = new RTree();
 
     public GeoDistanceIndex(String name) {
         super(name);
         index.init(null);
-        negativeIndex.init(null);
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher, boolean negative) {
-        SpatialIndex indexToUse = index;
-        if (negative) {
-            indexToUse = negativeIndex;
-        }
-
+    public TLongList match(Field field, Matcher matcher) {
         TLongList postingsFound = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             LatLng latLng = (LatLng) token.getToken();
             GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), 0);
-            indexToUse.intersects(perimeter.getRectangle(), new MatchCollectionProcedure(postingsFound));
+            index.intersects(perimeter.getRectangle(), new MatchCollectionProcedure(postingsFound));
         }
         return postingsFound;
     }
 
     @Override
     public void addPosting(Token token, Long posting, boolean not) {
-        SpatialIndex indexToUse = index;
-        if (not) {
-            indexToUse = negativeIndex;
-        }
-
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
-        indexToUse.add(perimeter.getRectangle(), posting);
+        index.add(perimeter.getRectangle(), posting);
         if (perimeter.spans180Longitude()) {
             //if it spans 180° add fake posting on other side of earth
             GeoPerimeter bizarroPerimeter = perimeter.mirrorInFakeSpace();
-            indexToUse.add(bizarroPerimeter.getRectangle(), posting);
+            index.add(bizarroPerimeter.getRectangle(), posting);
         }
     }
 

@@ -12,25 +12,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StringIndex extends AbstractFieldIndex {
     protected final Map<String, TLongList> index = new ConcurrentHashMap<String, TLongList>();
-    protected final Map<String, TLongList> negativeIndex = new ConcurrentHashMap<String, TLongList>();
 
     public StringIndex(String name) {
         super(name);
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher, boolean negative) {
-        Map<String, TLongList> indexToUse = index;
-        if (negative) {
-            indexToUse = negativeIndex;
-        }
-
+    public TLongList match(Field field, Matcher matcher) {
         TLongList postings = new TLongArrayList();
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             String strToken = (String) token.getToken();
-            if (indexToUse.containsKey(strToken)) {
-                postings.addAll(indexToUse.get(strToken));
+            if (index.containsKey(strToken)) {
+                postings.addAll(index.get(strToken));
             }
         }
         return postings;
@@ -56,15 +50,10 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     public TLongList getOrCreatePostingList(String token, boolean not) {
-        Map<String, TLongList> indexToUse = index;
-        if (not) {
-            indexToUse = negativeIndex;
-        }
-
-        TLongList postingList = indexToUse.get(token);
+        TLongList postingList = index.get(token);
         if (postingList == null) {
             postingList = new TLongArrayList();
-            indexToUse.put(token, postingList);
+            index.put(token, postingList);
         }
         return postingList;
     }

@@ -48,11 +48,11 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public TLongList matchField(String fieldIndexName, Field field, Matcher matcher, boolean negative) throws UndefinedIndexFieldException {
+    public TLongList matchField(String fieldIndexName, Field field, Matcher matcher) throws UndefinedIndexFieldException {
         if (!indices.containsKey(fieldIndexName)) {
             throw new UndefinedIndexFieldException("No field named '" + fieldIndexName + "'");
         }
-        return indices.get(fieldIndexName).match(field, matcher, negative);
+        return indices.get(fieldIndexName).match(field, matcher);
     }
 
     public void addQuery(Query query) throws UndefinedIndexFieldException {
@@ -97,8 +97,7 @@ public class SchemaImpl implements Schema {
             while (fields.hasNext()) {
                 Field field = fields.next();
                 try {
-                    matcher.addHits(matchField(field.getName(), field, matcher, false));
-                    matcher.addNegativeHits(matchField(field.getName(), field, matcher, true));
+                    matcher.addHits(matchField(field.getName(), field, matcher));
                 } catch (UndefinedIndexFieldException e) {
                     e.printStackTrace();
                 }

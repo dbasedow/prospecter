@@ -30,36 +30,36 @@ public class Matcher {
         }
     }
 
-    public void addNegativeHits(TLongList postings) {
-        for (long posting : postings.toArray()) {
-            addNegativeHit(posting);
+    private void addHit(long posting) {
+        int[] unpacked = QueryPosting.unpack(posting);
+        boolean negativeHit = unpacked[QueryPosting.QUERY_NOT_INDEX] == 1;
+
+        if (negativeHit) {
+            addNegativeHit(unpacked[QueryPosting.QUERY_ID_INDEX], unpacked[QueryPosting.QUERY_BIT_INDEX]);
+        } else {
+            addPositiveHit(unpacked[QueryPosting.QUERY_ID_INDEX], unpacked[QueryPosting.QUERY_BIT_INDEX]);
         }
     }
 
-    private void addHit(long posting) {
+    private void addPositiveHit(int queryId, int bit){
         BitSet bits;
-        int[] unpacked = QueryPosting.unpack(posting);
-
-        if (hits.containsKey(unpacked[QueryPosting.QUERY_ID_INDEX])) {
-            bits = hits.get(unpacked[QueryPosting.QUERY_ID_INDEX]);
+        if (hits.containsKey(queryId)) {
+            bits = hits.get(queryId);
         } else {
             bits = new BitSet();
-            hits.put(unpacked[QueryPosting.QUERY_ID_INDEX], bits);
+            hits.put(queryId, bits);
         }
-        bits.set(unpacked[QueryPosting.QUERY_BIT_INDEX]);
+        bits.set(bit);
     }
-
-    private void addNegativeHit(long posting) {
+    private void addNegativeHit(int queryId, int bit) {
         QueryNegativeCounter counter;
-        int[] unpacked = QueryPosting.unpack(posting);
-
-        if (negativeHits.containsKey(unpacked[QueryPosting.QUERY_ID_INDEX])) {
-            counter = negativeHits.get(unpacked[QueryPosting.QUERY_ID_INDEX]);
+        if (negativeHits.containsKey(queryId)) {
+            counter = negativeHits.get(queryId);
         } else {
             counter = new QueryNegativeCounter();
-            negativeHits.put(unpacked[QueryPosting.QUERY_ID_INDEX], counter);
+            negativeHits.put(queryId, counter);
         }
-        counter.add(unpacked[QueryPosting.QUERY_BIT_INDEX]);
+        counter.add(bit);
     }
 
     public List<Integer> getMatchedQueries() {
