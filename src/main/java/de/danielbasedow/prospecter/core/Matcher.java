@@ -6,6 +6,7 @@ import de.danielbasedow.prospecter.core.query.QueryPosting;
 import gnu.trove.list.TLongList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.procedure.TIntObjectProcedure;
+import gnu.trove.procedure.TLongProcedure;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -25,42 +26,38 @@ public class Matcher {
     }
 
     public void addHits(TLongList postings) {
-        for (long posting : postings.toArray()) {
-            addHit(posting);
-        }
+        postings.forEach(new TLongProcedure() {
+            @Override
+            public boolean execute(long posting) {
+                addHit(posting);
+                return true;
+            }
+        });
     }
 
     public void addHit(long posting) {
         int[] unpacked = QueryPosting.unpack(posting);
-        boolean negativeHit = unpacked[QueryPosting.QUERY_NOT_INDEX] == 1;
+        int queryId = unpacked[QueryPosting.QUERY_ID_INDEX];
 
-        if (negativeHit) {
-            addNegativeHit(unpacked[QueryPosting.QUERY_ID_INDEX], unpacked[QueryPosting.QUERY_BIT_INDEX]);
+        if (unpacked[QueryPosting.QUERY_NOT_INDEX] == 1) {
+            QueryNegativeCounter counter;
+            if (negativeHits.containsKey(queryId)) {
+                counter = negativeHits.get(queryId);
+            } else {
+                counter = new QueryNegativeCounter();
+                negativeHits.put(queryId, counter);
+            }
+            counter.add(unpacked[QueryPosting.QUERY_BIT_INDEX]);
         } else {
-            addPositiveHit(unpacked[QueryPosting.QUERY_ID_INDEX], unpacked[QueryPosting.QUERY_BIT_INDEX]);
+            BitSet bits;
+            if (hits.containsKey(queryId)) {
+                bits = hits.get(queryId);
+            } else {
+                bits = new BitSet();
+                hits.put(queryId, bits);
+            }
+            bits.set(unpacked[QueryPosting.QUERY_BIT_INDEX]);
         }
-    }
-
-    private void addPositiveHit(int queryId, int bit) {
-        BitSet bits;
-        if (hits.containsKey(queryId)) {
-            bits = hits.get(queryId);
-        } else {
-            bits = new BitSet();
-            hits.put(queryId, bits);
-        }
-        bits.set(bit);
-    }
-
-    private void addNegativeHit(int queryId, int bit) {
-        QueryNegativeCounter counter;
-        if (negativeHits.containsKey(queryId)) {
-            counter = negativeHits.get(queryId);
-        } else {
-            counter = new QueryNegativeCounter();
-            negativeHits.put(queryId, counter);
-        }
-        counter.add(bit);
     }
 
     public int getPositiveMatchCount() {

@@ -28,7 +28,8 @@ public class RangeIndex<T> {
     }
 
     protected void collectEqualMatches(Matcher matcher, T token) {
-        if (indexEquals.containsKey(token)) {
+        TLongList postings = indexEquals.get(token);
+        if (postings != null) {
             matcher.addHits(indexEquals.get(token));
         }
     }
