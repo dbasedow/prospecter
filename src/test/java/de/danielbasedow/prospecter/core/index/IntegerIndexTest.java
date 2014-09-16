@@ -25,8 +25,8 @@ public class IntegerIndexTest extends TestCase {
         IntegerIndex index = new IntegerIndex("foo");
         Token<Integer> t1 = new Token<Integer>(1, MatchCondition.EQUALS);
         Token<Integer> t2 = new Token<Integer>(2, MatchCondition.EQUALS);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
-        index.addPosting(t2, QueryPosting.pack(2, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(2, 1, false));
         assertEquals(2, index.index.indexEquals.size());
         assertEquals(0, index.index.indexGreaterThan.size());
         assertEquals(0, index.index.indexLessThan.size());
@@ -49,10 +49,10 @@ public class IntegerIndexTest extends TestCase {
         Token<Integer> t2 = new Token<Integer>(10, MatchCondition.GREATER_THAN);
         Token<Integer> t3 = new Token<Integer>(100, MatchCondition.GREATER_THAN);
         Token<Integer> t4 = new Token<Integer>(-100, MatchCondition.GREATER_THAN);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
-        index.addPosting(t2, QueryPosting.pack(1, 1));
-        index.addPosting(t3, QueryPosting.pack(1, 1));
-        index.addPosting(t4, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(1, 1, false));
+        index.addPosting(t3, QueryPosting.pack(1, 1, false));
+        index.addPosting(t4, QueryPosting.pack(1, 1, false));
         assertEquals(0, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
         assertEquals(0, index.index.indexLessThan.size());
@@ -69,7 +69,7 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(4, postings.size());
 
         //deletion
-        index.removePosting(t3, QueryPosting.pack(1, 1));
+        index.removePosting(t3, QueryPosting.pack(1, 1, false));
         f = makeField(int_high);
         matcher = new Matcher(new QueryManager());
         postings = index.match(f, matcher);
@@ -82,10 +82,10 @@ public class IntegerIndexTest extends TestCase {
         Token<Integer> t2 = new Token<Integer>(10, MatchCondition.GREATER_THAN_EQUALS);
         Token<Integer> t3 = new Token<Integer>(100, MatchCondition.GREATER_THAN_EQUALS);
         Token<Integer> t4 = new Token<Integer>(-100, MatchCondition.GREATER_THAN_EQUALS);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
-        index.addPosting(t2, QueryPosting.pack(1, 1));
-        index.addPosting(t3, QueryPosting.pack(1, 1));
-        index.addPosting(t4, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(1, 1, false));
+        index.addPosting(t3, QueryPosting.pack(1, 1, false));
+        index.addPosting(t4, QueryPosting.pack(1, 1, false));
 
         assertEquals(4, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
@@ -107,7 +107,7 @@ public class IntegerIndexTest extends TestCase {
     public void testLess() {
         IntegerIndex index = new IntegerIndex("foo");
         Token<Integer> t1 = new Token<Integer>(1, MatchCondition.LESS_THAN);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
         assertEquals(0, index.index.indexEquals.size());
         assertEquals(0, index.index.indexGreaterThan.size());
         assertEquals(1, index.index.indexLessThan.size());
@@ -122,7 +122,7 @@ public class IntegerIndexTest extends TestCase {
     public void testLessEqual() {
         IntegerIndex index = new IntegerIndex("foo");
         Token<Integer> t1 = new Token<Integer>(1, MatchCondition.LESS_THAN_EQUALS);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
         assertEquals(1, index.index.indexEquals.size());
         assertEquals(0, index.index.indexGreaterThan.size());
         assertEquals(1, index.index.indexLessThan.size());

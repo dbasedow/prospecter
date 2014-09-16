@@ -48,12 +48,12 @@ public class Query {
                     if (t instanceof List) {
                         for (Token token : (List<Token>) t) {
                             Condition tmpCondition = new Condition(condition.getFieldName(), token, isNegativeCondition);
-                            postings.put(tmpCondition, QueryPosting.pack(queryId, bit));
+                            postings.put(tmpCondition, QueryPosting.pack(queryId, bit, isNegativeCondition));
                         }
                     }
                 } else {
                     condition.setNot(isNegativeCondition);
-                    long posting = QueryPosting.pack(queryId, bit);
+                    long posting = QueryPosting.pack(queryId, bit, isNegativeCondition);
                     if (isNegativeCondition) {
                         negativeMask.add(bit);
                     }

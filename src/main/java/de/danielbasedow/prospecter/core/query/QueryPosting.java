@@ -28,10 +28,6 @@ public class QueryPosting {
         return pack(queryId, queryBit, false);
     }
 
-    public static long pack(int queryId, int queryBit) {
-        return pack(queryId, queryBit, false);
-    }
-
     public static long pack(int queryId, int queryBit, boolean notFlag) {
         int not = notFlag ? 1 : 0;
 

@@ -8,7 +8,7 @@ public class QueryPostingTest extends TestCase {
     public void testPacking() {
         long l;
         int[] ab;
-        l = QueryPosting.pack(0, 0);
+        l = QueryPosting.pack(0, 0, false);
         ab = QueryPosting.unpack(l);
         assertEquals(0, ab[0]);
         assertEquals(0, ab[1]);

@@ -1,9 +1,11 @@
 package de.danielbasedow.prospecter.benchmark;
 
 import de.danielbasedow.prospecter.core.MatchCondition;
+import de.danielbasedow.prospecter.core.Matcher;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
 import de.danielbasedow.prospecter.core.index.IntegerIndex;
+import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
 import gnu.trove.list.TLongList;
 
@@ -25,7 +27,8 @@ public class IntegerIndexTest {
 
         System.out.print((new Date()).getTime());
         System.out.println(" start matching");
-        TLongList postings = index.match(new Field("foo", tokens));
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(new Field("foo", tokens), matcher);
         System.out.print((new Date()).getTime());
         System.out.println(" done matching");
         System.out.println("Matched: " + Integer.toString(postings.size()));
@@ -35,7 +38,7 @@ public class IntegerIndexTest {
         for (int i = 0; i < count; i++) {
             int randInt = (int) (Math.random() * max);
             Token<Integer> token = new Token<Integer>(randInt, condition);
-            index.addPosting(token, QueryPosting.pack(1, 1));
+            index.addPosting(token, QueryPosting.pack(1, 1, false));
         }
     }
 

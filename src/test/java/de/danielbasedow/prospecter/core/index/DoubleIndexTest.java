@@ -25,8 +25,8 @@ public class DoubleIndexTest extends TestCase {
         DoubleIndex index = new DoubleIndex("foo");
         Token<Double> t1 = new Token<Double>(1.0, MatchCondition.EQUALS);
         Token<Double> t2 = new Token<Double>(2.0, MatchCondition.EQUALS);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
-        index.addPosting(t2, QueryPosting.pack(2, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(2, 1, false));
         assertEquals(2, index.index.indexEquals.size());
         assertEquals(0, index.index.indexGreaterThan.size());
         assertEquals(0, index.index.indexLessThan.size());
@@ -49,10 +49,10 @@ public class DoubleIndexTest extends TestCase {
         Token<Double> t2 = new Token<Double>(10.0, MatchCondition.GREATER_THAN);
         Token<Double> t3 = new Token<Double>(100.0, MatchCondition.GREATER_THAN);
         Token<Double> t4 = new Token<Double>(-100.0, MatchCondition.GREATER_THAN);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
-        index.addPosting(t2, QueryPosting.pack(1, 1));
-        index.addPosting(t3, QueryPosting.pack(1, 1));
-        index.addPosting(t4, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(1, 1, false));
+        index.addPosting(t3, QueryPosting.pack(1, 1, false));
+        index.addPosting(t4, QueryPosting.pack(1, 1, false));
         assertEquals(0, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
         assertEquals(0, index.index.indexLessThan.size());
@@ -75,10 +75,10 @@ public class DoubleIndexTest extends TestCase {
         Token<Double> t2 = new Token<Double>(10.0, MatchCondition.GREATER_THAN_EQUALS);
         Token<Double> t3 = new Token<Double>(100.0, MatchCondition.GREATER_THAN_EQUALS);
         Token<Double> t4 = new Token<Double>(-100.0, MatchCondition.GREATER_THAN_EQUALS);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
-        index.addPosting(t2, QueryPosting.pack(1, 1));
-        index.addPosting(t3, QueryPosting.pack(1, 1));
-        index.addPosting(t4, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(1, 1, false));
+        index.addPosting(t3, QueryPosting.pack(1, 1, false));
+        index.addPosting(t4, QueryPosting.pack(1, 1, false));
 
         assertEquals(4, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
@@ -100,7 +100,7 @@ public class DoubleIndexTest extends TestCase {
     public void testLess() {
         DoubleIndex index = new DoubleIndex("foo");
         Token<Double> t1 = new Token<Double>(1.0, MatchCondition.LESS_THAN);
-        index.addPosting(t1, QueryPosting.pack(1, 1));
+        index.addPosting(t1, QueryPosting.pack(1, 1, false));
         assertEquals(0, index.index.indexEquals.size());
         assertEquals(0, index.index.indexGreaterThan.size());
         assertEquals(1, index.index.indexLessThan.size());

@@ -18,7 +18,7 @@ public class GeoDistanceIndexTest extends TestCase {
         GeoDistanceIndex index = new GeoDistanceIndex("foo");
         GeoPerimeter perimeter = new GeoPerimeter(53.55, 10, 100000); //Hamburg, Germany +100km
         Token<GeoPerimeter> t = new Token<GeoPerimeter>(perimeter);
-        index.addPosting(t, QueryPosting.pack(1, 1));
+        index.addPosting(t, QueryPosting.pack(1, 1, false));
 
         LatLng latLng = new LatLng(53.866, 10.684); //Lübeck, about 65km north-east of Hamburg
         List<Token> tokens = new ArrayList<Token>();
@@ -34,7 +34,7 @@ public class GeoDistanceIndexTest extends TestCase {
         GeoDistanceIndex index = new GeoDistanceIndex("foo");
         GeoPerimeter perimeter = new GeoPerimeter(53.55, -179.98, 100000); //somewhere in Russia +100km
         Token<GeoPerimeter> t = new Token<GeoPerimeter>(perimeter);
-        index.addPosting(t, QueryPosting.pack(1, 1));
+        index.addPosting(t, QueryPosting.pack(1, 1, false));
 
         LatLng latLng = new LatLng(53.55, 179.98); //also somewhere in Russia
         List<Token> tokens = new ArrayList<Token>();
@@ -50,7 +50,7 @@ public class GeoDistanceIndexTest extends TestCase {
         GeoDistanceIndex index = new GeoDistanceIndex("foo");
         GeoPerimeter perimeter = new GeoPerimeter(53.55, 179.98, 100000); //somewhere in Russia +100km
         Token<GeoPerimeter> t = new Token<GeoPerimeter>(perimeter);
-        index.addPosting(t, QueryPosting.pack(1, 1));
+        index.addPosting(t, QueryPosting.pack(1, 1, false));
 
         LatLng latLng = new LatLng(53.55, -179.98); //also somewhere in Russia
         List<Token> tokens = new ArrayList<Token>();
