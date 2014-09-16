@@ -48,7 +48,7 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, Long posting, boolean not) {
+    public void addPosting(Token token, Long posting) {
         GeoPerimeter perimeter = (GeoPerimeter) token.getToken();
         index.add(perimeter.getRectangle(), posting);
         if (perimeter.spans180Longitude()) {

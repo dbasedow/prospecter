@@ -27,7 +27,7 @@ public interface FieldIndex {
      * @param posting query posting
      * @param not     whether posting has to go to the negative index
      */
-    public void addPosting(Token token, Long posting, boolean not);
+    public void addPosting(Token token, Long posting);
 
     /**
      * Delete a QueryPosting from index
@@ -36,7 +36,7 @@ public interface FieldIndex {
      * @param posting query posting
      * @param not     whether posting has to go to the negative index
      */
-    public void removePosting(Token token, Long posting, boolean not);
+    public void removePosting(Token token, Long posting);
 
     /**
      * Get FieldType of this FieldIndex

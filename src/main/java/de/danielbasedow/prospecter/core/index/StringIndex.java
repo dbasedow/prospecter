@@ -31,25 +31,25 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, Long posting, boolean not) {
+    public void addPosting(Token token, Long posting) {
         String tokenStr = (String) token.getToken();
-        addOrCreate(tokenStr, posting, not);
+        addOrCreate(tokenStr, posting);
     }
 
     @Override
-    public void removePosting(Token token, Long posting, boolean not) {
+    public void removePosting(Token token, Long posting) {
         String tokenStr = (String) token.getToken();
 
-        TLongList postingList = getOrCreatePostingList(tokenStr, not);
+        TLongList postingList = getOrCreatePostingList(tokenStr);
         postingList.remove(posting);
     }
 
-    public void addOrCreate(String token, Long posting, boolean not) {
-        TLongList postingList = getOrCreatePostingList(token, not);
+    public void addOrCreate(String token, Long posting) {
+        TLongList postingList = getOrCreatePostingList(token);
         postingList.add(posting);
     }
 
-    public TLongList getOrCreatePostingList(String token, boolean not) {
+    public TLongList getOrCreatePostingList(String token) {
         TLongList postingList = index.get(token);
         if (postingList == null) {
             postingList = new TLongArrayList();

@@ -29,7 +29,7 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, Long posting, boolean not) {
+    public void addPosting(Token token, Long posting) {
         TLongList postingList;
         if (index.containsKey((Integer) token.getToken())) {
             postingList = index.get((Integer) token.getToken());
@@ -41,7 +41,7 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public void removePosting(Token token, Long posting, boolean not) {
+    public void removePosting(Token token, Long posting) {
         TLongList postingList = index.get((Integer) token.getToken());
         if (postingList != null && postingList.contains(posting)) {
             LOGGER.debug("removing posting: " + String.valueOf(posting));

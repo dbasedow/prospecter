@@ -19,12 +19,12 @@ public abstract class AbstractRangeFieldIndex<T> extends AbstractFieldIndex {
     }
 
     @Override
-    public void addPosting(Token token, Long posting, boolean not) {
+    public void addPosting(Token token, Long posting) {
         index.addPosting(token, posting);
     }
 
     @Override
-    public void removePosting(Token token, Long posting, boolean not) {
+    public void removePosting(Token token, Long posting) {
         index.removePosting(token, posting);
     }
 }

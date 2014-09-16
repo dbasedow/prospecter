@@ -22,16 +22,8 @@ public abstract class AbstractFieldIndex implements FieldIndex {
     public void trim() {
     }
 
-    public void addPosting(Token token, Long posting) {
-        addPosting(token, posting, false);
-    }
-
-    public void removePosting(Token token, Long posting) {
-        removePosting(token, posting, false);
-    }
-
     @Override
-    public void removePosting(Token token, Long posting, boolean not) {
+    public void removePosting(Token token, Long posting) {
     }
 
 }
