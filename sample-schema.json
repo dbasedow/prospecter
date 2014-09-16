@@ -13,8 +13,5 @@
         "location": {
             "type": "GeoDistance"
         }
-    },
-    "persistence": {
-        "file": "queries.mapdb"
     }
 }

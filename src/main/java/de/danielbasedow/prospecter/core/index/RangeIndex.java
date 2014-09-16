@@ -17,25 +17,23 @@ public class RangeIndex<T> {
     protected final SortedMap<T, TLongList> indexLessThan = new ConcurrentSkipListMap<T, TLongList>();
     protected final SortedMap<T, TLongList> indexGreaterThan = new ConcurrentSkipListMap<T, TLongList>();
 
-    public TLongList match(Field field) {
-        TLongList postings = new TLongArrayList();
+    public void match(Field field, Matcher matcher) {
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             T tToken = (T) token.getToken();
-            collectEqualMatches(postings, tToken);
-            collectLessThanMatches(postings, tToken);
-            collectGreaterThanMatches(postings, tToken);
+            collectEqualMatches(matcher, tToken);
+            collectLessThanMatches(matcher, tToken);
+            collectGreaterThanMatches(matcher, tToken);
         }
-        return postings;
     }
 
-    protected void collectEqualMatches(TLongList postings, T token) {
+    protected void collectEqualMatches(Matcher matcher, T token) {
         if (indexEquals.containsKey(token)) {
-            postings.addAll(indexEquals.get(token));
+            matcher.addHits(indexEquals.get(token));
         }
     }
 
-    protected void collectGreaterThanMatches(TLongList postings, T token) {
+    protected void collectGreaterThanMatches(Matcher matcher, T token) {
         /**
          * The indexGreaterThan contains postings for "field > x" so if x is 10 a posting would be added for 10
          * in order to get the relevant postings we have to look at all key that are LESS than the field value
@@ -44,12 +42,12 @@ public class RangeIndex<T> {
         Map<T, TLongList> navigableMap = indexGreaterThan.headMap(token);
         if (navigableMap.size() > 0) {
             for (Map.Entry<T, TLongList> entry : navigableMap.entrySet()) {
-                postings.addAll(entry.getValue());
+                matcher.addHits(entry.getValue());
             }
         }
     }
 
-    protected void collectLessThanMatches(TLongList postings, T token) {
+    protected void collectLessThanMatches(Matcher matcher, T token) {
         /**
          * The indexLessThan contains postings for "field < x" so if x is 10 a posting would be added for 10
          * in order to get the relevant postings we have to look at all key that are GREATER than the field value
@@ -58,7 +56,7 @@ public class RangeIndex<T> {
         Map<T, TLongList> navigableMap = indexLessThan.tailMap(token);
         if (navigableMap.size() > 0) {
             for (Map.Entry<T, TLongList> entry : navigableMap.entrySet()) {
-                postings.addAll(entry.getValue());
+                matcher.addHits(entry.getValue());
             }
         }
     }

@@ -14,8 +14,8 @@ public abstract class AbstractRangeFieldIndex<T> extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher) {
-        return index.match(field);
+    public void match(Field field, Matcher matcher) {
+        index.match(field, matcher);
     }
 
     @Override

@@ -32,10 +32,9 @@ public interface Schema {
      *
      * @param fieldIndexName name of the field
      * @param field          field instance from a Document
-     * @return matching query postings
      * @throws UndefinedIndexFieldException
      */
-    public TLongList matchField(String fieldIndexName, Field field, Matcher matcher) throws UndefinedIndexFieldException;
+    public void matchField(String fieldIndexName, Field field, Matcher matcher) throws UndefinedIndexFieldException;
 
     /**
      * Add query to index. The postings will be added to the corresponding field indices.

@@ -22,13 +22,13 @@ public class StringIndexTest extends TestCase {
         index.addPosting(new Token("bar"), QueryPosting.pack(1, 1, false));
 
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(field, matcher);
-        assertEquals(1, postings.size());
+        index.match(field, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
 
         index.removePosting(new Token("bar"), QueryPosting.pack(1, 1, false));
         matcher = new Matcher(new QueryManager());
-        postings = index.match(field, matcher);
-        assertEquals(0, postings.size());
+        index.match(field, matcher);
+        assertEquals(0, matcher.getPositiveMatchCount());
     }
 
 }

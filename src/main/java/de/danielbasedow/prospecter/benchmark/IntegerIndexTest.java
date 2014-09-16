@@ -28,17 +28,17 @@ public class IntegerIndexTest {
         System.out.print((new Date()).getTime());
         System.out.println(" start matching");
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(new Field("foo", tokens), matcher);
+        index.match(new Field("foo", tokens), matcher);
         System.out.print((new Date()).getTime());
         System.out.println(" done matching");
-        System.out.println("Matched: " + Integer.toString(postings.size()));
+        System.out.println("Matched: " + Integer.toString(matcher.getPositiveMatchCount()));
     }
 
     private static void fillIndex(IntegerIndex index, int count, MatchCondition condition, int max) {
         for (int i = 0; i < count; i++) {
             int randInt = (int) (Math.random() * max);
             Token<Integer> token = new Token<Integer>(randInt, condition);
-            index.addPosting(token, QueryPosting.pack(1, 1, false));
+            index.addPosting(token, QueryPosting.pack(i, 1, false));
         }
     }
 

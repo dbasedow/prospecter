@@ -33,14 +33,14 @@ public class IntegerIndexTest extends TestCase {
         int[] int_single = {2};
         Field f = makeField(int_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(1, postings.size());
+        index.match(f, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
         //multiple values in one field:
         int[] ints_multi = {1, 2};
         f = makeField(ints_multi);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(2, postings.size());
+        index.match(f, matcher);
+        assertEquals(2, matcher.getPositiveMatchCount());
     }
 
     public void testGreater() {
@@ -50,30 +50,30 @@ public class IntegerIndexTest extends TestCase {
         Token<Integer> t3 = new Token<Integer>(100, MatchCondition.GREATER_THAN);
         Token<Integer> t4 = new Token<Integer>(-100, MatchCondition.GREATER_THAN);
         index.addPosting(t1, QueryPosting.pack(1, 1, false));
-        index.addPosting(t2, QueryPosting.pack(1, 1, false));
-        index.addPosting(t3, QueryPosting.pack(1, 1, false));
-        index.addPosting(t4, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(2, 1, false));
+        index.addPosting(t3, QueryPosting.pack(3, 1, false));
+        index.addPosting(t4, QueryPosting.pack(4, 1, false));
         assertEquals(0, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
         assertEquals(0, index.index.indexLessThan.size());
         int[] int_single = {2};
         Field f = makeField(int_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(2, postings.size());
+        index.match(f, matcher);
+        assertEquals(2, matcher.getPositiveMatchCount());
 
         int[] int_high = {101};
         f = makeField(int_high);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(4, postings.size());
+        index.match(f, matcher);
+        assertEquals(4, matcher.getPositiveMatchCount());
 
         //deletion
-        index.removePosting(t3, QueryPosting.pack(1, 1, false));
+        index.removePosting(t3, QueryPosting.pack(3, 1, false));
         f = makeField(int_high);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(3, postings.size());
+        index.match(f, matcher);
+        assertEquals(3, matcher.getPositiveMatchCount());
     }
 
     public void testGreaterEqual() {
@@ -83,9 +83,9 @@ public class IntegerIndexTest extends TestCase {
         Token<Integer> t3 = new Token<Integer>(100, MatchCondition.GREATER_THAN_EQUALS);
         Token<Integer> t4 = new Token<Integer>(-100, MatchCondition.GREATER_THAN_EQUALS);
         index.addPosting(t1, QueryPosting.pack(1, 1, false));
-        index.addPosting(t2, QueryPosting.pack(1, 1, false));
-        index.addPosting(t3, QueryPosting.pack(1, 1, false));
-        index.addPosting(t4, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(2, 1, false));
+        index.addPosting(t3, QueryPosting.pack(3, 1, false));
+        index.addPosting(t4, QueryPosting.pack(4, 1, false));
 
         assertEquals(4, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
@@ -94,14 +94,14 @@ public class IntegerIndexTest extends TestCase {
         int[] int_single = {2};
         Field f = makeField(int_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(2, postings.size());
+        index.match(f, matcher);
+        assertEquals(2, matcher.getPositiveMatchCount());
 
         int[] int_high = {100};
         f = makeField(int_high);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(4, postings.size());
+        index.match(f, matcher);
+        assertEquals(4, matcher.getPositiveMatchCount());
     }
 
     public void testLess() {
@@ -115,8 +115,8 @@ public class IntegerIndexTest extends TestCase {
         int[] int_single = {0};
         Field f = makeField(int_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(1, postings.size());
+        index.match(f, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
     }
 
     public void testLessEqual() {

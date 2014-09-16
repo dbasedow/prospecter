@@ -18,16 +18,14 @@ public class StringIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher) {
-        TLongList postings = new TLongArrayList();
+    public void match(Field field, Matcher matcher) {
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             String strToken = (String) token.getToken();
             if (index.containsKey(strToken)) {
-                postings.addAll(index.get(strToken));
+                matcher.addHits(index.get(strToken));
             }
         }
-        return postings;
     }
 
     @Override

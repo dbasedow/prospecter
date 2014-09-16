@@ -36,15 +36,13 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher) {
-        TLongList postingsFound = new TLongArrayList();
+    public void match(Field field, Matcher matcher) {
         List<Token> tokens = field.getTokens();
         for (Token token : tokens) {
             LatLng latLng = (LatLng) token.getToken();
             GeoPerimeter perimeter = new GeoPerimeter(latLng.getLatitude(), latLng.getLongitude(), 0);
-            index.intersects(perimeter.getRectangle(), new MatchCollectionProcedure(postingsFound));
+            index.intersects(perimeter.getRectangle(), new MatchCollectionProcedure(matcher));
         }
-        return postingsFound;
     }
 
     @Override
@@ -64,15 +62,15 @@ public class GeoDistanceIndex extends AbstractFieldIndex {
     }
 
     private class MatchCollectionProcedure implements TLongProcedure {
-        private final TLongList hits;
+        private final Matcher matcher;
 
-        public MatchCollectionProcedure(TLongList hitList) {
-            hits = hitList;
+        public MatchCollectionProcedure(Matcher matcher) {
+            this.matcher = matcher;
         }
 
         @Override
         public boolean execute(long i) {
-            hits.add(i);
+            matcher.addHit(i);
             return true;
         }
     }

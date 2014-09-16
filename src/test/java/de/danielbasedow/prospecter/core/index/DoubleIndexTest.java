@@ -33,14 +33,14 @@ public class DoubleIndexTest extends TestCase {
         double[] double_single = {2.0};
         Field f = makeField(double_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(1, postings.size());
+        index.match(f, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
         //multiple values in one field:
         double[] doubles_multiple = {1, 2};
         f = makeField(doubles_multiple);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(2, postings.size());
+        index.match(f, matcher);
+        assertEquals(2, matcher.getPositiveMatchCount());
     }
 
     public void testGreater() {
@@ -50,23 +50,23 @@ public class DoubleIndexTest extends TestCase {
         Token<Double> t3 = new Token<Double>(100.0, MatchCondition.GREATER_THAN);
         Token<Double> t4 = new Token<Double>(-100.0, MatchCondition.GREATER_THAN);
         index.addPosting(t1, QueryPosting.pack(1, 1, false));
-        index.addPosting(t2, QueryPosting.pack(1, 1, false));
-        index.addPosting(t3, QueryPosting.pack(1, 1, false));
-        index.addPosting(t4, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(2, 1, false));
+        index.addPosting(t3, QueryPosting.pack(3, 1, false));
+        index.addPosting(t4, QueryPosting.pack(4, 1, false));
         assertEquals(0, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
         assertEquals(0, index.index.indexLessThan.size());
         double[] double_single = {2};
         Field f = makeField(double_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(2, postings.size());
+        index.match(f, matcher);
+        assertEquals(2, matcher.getPositiveMatchCount());
 
         double[] double_high = {101};
         f = makeField(double_high);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(4, postings.size());
+        index.match(f, matcher);
+        assertEquals(4, matcher.getPositiveMatchCount());
     }
 
     public void testGreaterEqual() {
@@ -76,9 +76,9 @@ public class DoubleIndexTest extends TestCase {
         Token<Double> t3 = new Token<Double>(100.0, MatchCondition.GREATER_THAN_EQUALS);
         Token<Double> t4 = new Token<Double>(-100.0, MatchCondition.GREATER_THAN_EQUALS);
         index.addPosting(t1, QueryPosting.pack(1, 1, false));
-        index.addPosting(t2, QueryPosting.pack(1, 1, false));
-        index.addPosting(t3, QueryPosting.pack(1, 1, false));
-        index.addPosting(t4, QueryPosting.pack(1, 1, false));
+        index.addPosting(t2, QueryPosting.pack(2, 1, false));
+        index.addPosting(t3, QueryPosting.pack(3, 1, false));
+        index.addPosting(t4, QueryPosting.pack(4, 1, false));
 
         assertEquals(4, index.index.indexEquals.size());
         assertEquals(4, index.index.indexGreaterThan.size());
@@ -87,14 +87,14 @@ public class DoubleIndexTest extends TestCase {
         double[] double_single = {2};
         Field f = makeField(double_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(2, postings.size());
+        index.match(f, matcher);
+        assertEquals(2, matcher.getPositiveMatchCount());
 
         double[] double_high = {100};
         f = makeField(double_high);
         matcher = new Matcher(new QueryManager());
-        postings = index.match(f, matcher);
-        assertEquals(4, postings.size());
+        index.match(f, matcher);
+        assertEquals(4, matcher.getPositiveMatchCount());
     }
 
     public void testLess() {
@@ -108,7 +108,7 @@ public class DoubleIndexTest extends TestCase {
         double[] double_single = {0};
         Field f = makeField(double_single);
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(f, matcher);
-        assertEquals(1, postings.size());
+        index.match(f, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
     }
 }

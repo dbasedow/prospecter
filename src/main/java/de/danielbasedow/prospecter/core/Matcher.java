@@ -30,7 +30,7 @@ public class Matcher {
         }
     }
 
-    private void addHit(long posting) {
+    public void addHit(long posting) {
         int[] unpacked = QueryPosting.unpack(posting);
         boolean negativeHit = unpacked[QueryPosting.QUERY_NOT_INDEX] == 1;
 
@@ -41,7 +41,7 @@ public class Matcher {
         }
     }
 
-    private void addPositiveHit(int queryId, int bit){
+    private void addPositiveHit(int queryId, int bit) {
         BitSet bits;
         if (hits.containsKey(queryId)) {
             bits = hits.get(queryId);
@@ -51,6 +51,7 @@ public class Matcher {
         }
         bits.set(bit);
     }
+
     private void addNegativeHit(int queryId, int bit) {
         QueryNegativeCounter counter;
         if (negativeHits.containsKey(queryId)) {
@@ -60,6 +61,14 @@ public class Matcher {
             negativeHits.put(queryId, counter);
         }
         counter.add(bit);
+    }
+
+    public int getPositiveMatchCount() {
+        return hits.size();
+    }
+
+    public int getNegativeMatchCount() {
+        return negativeHits.size();
     }
 
     public List<Integer> getMatchedQueries() {

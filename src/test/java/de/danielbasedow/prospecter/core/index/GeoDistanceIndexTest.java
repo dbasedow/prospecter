@@ -26,8 +26,8 @@ public class GeoDistanceIndexTest extends TestCase {
         Field field = new Field("foo", tokens);
 
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(field, matcher);
-        assertEquals(1, postings.size());
+        index.match(field, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
     }
 
     public void testWesternWrap() {
@@ -42,8 +42,8 @@ public class GeoDistanceIndexTest extends TestCase {
         Field field = new Field("foo", tokens);
 
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(field, matcher);
-        assertEquals(1, postings.size());
+        index.match(field, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
     }
 
     public void testEasternWrap() {
@@ -58,7 +58,7 @@ public class GeoDistanceIndexTest extends TestCase {
         Field field = new Field("foo", tokens);
 
         Matcher matcher = new Matcher(new QueryManager());
-        TLongList postings = index.match(field, matcher);
-        assertEquals(1, postings.size());
+        index.match(field, matcher);
+        assertEquals(1, matcher.getPositiveMatchCount());
     }
 }

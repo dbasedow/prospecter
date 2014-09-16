@@ -16,16 +16,14 @@ public interface FieldIndex {
      * Finds all QueryPosting that match the given Field and returns them as a List
      *
      * @param field     Field instance from Document to match against
-     * @return query    postings matching field
      */
-    public TLongList match(Field field, Matcher matcher);
+    public void match(Field field, Matcher matcher);
 
     /**
      * Add a single QueryPosting that will be matched if token is present in the field in match()
      *
      * @param token   Token to match on later on
      * @param posting query posting
-     * @param not     whether posting has to go to the negative index
      */
     public void addPosting(Token token, Long posting);
 
@@ -34,7 +32,6 @@ public interface FieldIndex {
      *
      * @param token   Token to delete
      * @param posting query posting
-     * @param not     whether posting has to go to the negative index
      */
     public void removePosting(Token token, Long posting);
 

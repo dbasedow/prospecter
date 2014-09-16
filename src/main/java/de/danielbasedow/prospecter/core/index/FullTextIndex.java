@@ -63,16 +63,14 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field, Matcher matcher) {
-        TLongList postings = new TLongArrayList();
+    public void match(Field field, Matcher matcher) {
         for (Token token : field.getTokens()) {
             Integer t = (Integer) token.getToken();
             TLongList additionalPostings = index.get(t);
             if (additionalPostings != null) {
-                postings.addAll(additionalPostings);
+                matcher.addHits(additionalPostings);
             }
         }
-        return postings;
     }
 
     public Analyzer getAnalyzer() {
