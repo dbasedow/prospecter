@@ -22,6 +22,7 @@ public class LuceneStandardAnalyzer extends LuceneAnalyzer {
         org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_4_9, stopWordSet);
 
         TokenMapper mapper = injector.getInstance(TokenMapper.class);
+        mapper.setBloomFilter(getBloomFilter(options));
         return new LuceneStandardAnalyzer(mapper, analyzer);
     }
 }

@@ -1,5 +1,9 @@
 package de.danielbasedow.prospecter.core;
 
+import com.skjegstad.utils.BloomFilter;
+
 public interface TokenMapper {
-    int getTermId(String str, boolean dontGenerateNewIds);
+    public int getTermId(String str, boolean dontGenerateNewIds);
+
+    public void setBloomFilter(BloomFilter<String> bloomFilter);
 }

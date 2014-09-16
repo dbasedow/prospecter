@@ -3,7 +3,11 @@
         "textField": {
             "type": "FullText",
             "options": {
-                "stopwords": "predefined"
+                "stopwords": "predefined",
+                "bloomfilter": {
+                    "expectedNumberOfElements": 200000,
+                    "falsePositiveProbability": 0.001
+                }
             }
         }
     },

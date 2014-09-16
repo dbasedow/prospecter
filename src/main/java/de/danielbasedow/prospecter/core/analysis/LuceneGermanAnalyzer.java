@@ -22,6 +22,7 @@ public class LuceneGermanAnalyzer extends LuceneAnalyzer {
         org.apache.lucene.analysis.Analyzer analyzer = new GermanAnalyzer(Version.LUCENE_4_9, stopWordSet);
 
         TokenMapper mapper = injector.getInstance(TokenMapper.class);
+        mapper.setBloomFilter(getBloomFilter(options));
         return new LuceneGermanAnalyzer(mapper, analyzer);
     }
 }
