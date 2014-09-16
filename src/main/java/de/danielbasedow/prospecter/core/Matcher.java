@@ -40,19 +40,15 @@ public class Matcher {
         int queryId = unpacked[QueryPosting.QUERY_ID_INDEX];
 
         if (unpacked[QueryPosting.QUERY_NOT_INDEX] == 1) {
-            QueryNegativeCounter counter;
-            if (negativeHits.containsKey(queryId)) {
-                counter = negativeHits.get(queryId);
-            } else {
+            QueryNegativeCounter counter = negativeHits.get(queryId);
+            if (counter == null) {
                 counter = new QueryNegativeCounter();
                 negativeHits.put(queryId, counter);
             }
             counter.add(unpacked[QueryPosting.QUERY_BIT_INDEX]);
         } else {
-            BitSet bits;
-            if (hits.containsKey(queryId)) {
-                bits = hits.get(queryId);
-            } else {
+            BitSet bits = hits.get(queryId);
+            if (bits == null) {
                 bits = new BitSet();
                 hits.put(queryId, bits);
             }
