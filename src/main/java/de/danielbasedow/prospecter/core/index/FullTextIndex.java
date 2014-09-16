@@ -1,6 +1,7 @@
 package de.danielbasedow.prospecter.core.index;
 
 
+import de.danielbasedow.prospecter.core.Matcher;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.analysis.Analyzer;
 import de.danielbasedow.prospecter.core.document.Field;
@@ -73,7 +74,7 @@ public class FullTextIndex extends AbstractFieldIndex {
     }
 
     @Override
-    public TLongList match(Field field, boolean negative) {
+    public TLongList match(Field field, Matcher matcher, boolean negative) {
         TIntObjectHashMap<TLongList> indexToUse = index;
         if (negative) {
             indexToUse = negativeIndex;

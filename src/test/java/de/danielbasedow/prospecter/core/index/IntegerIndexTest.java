@@ -1,8 +1,10 @@
 package de.danielbasedow.prospecter.core.index;
 
 import de.danielbasedow.prospecter.core.MatchCondition;
+import de.danielbasedow.prospecter.core.Matcher;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
+import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
 import gnu.trove.list.TLongList;
 import junit.framework.TestCase;
@@ -30,12 +32,14 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(0, index.index.indexLessThan.size());
         int[] int_single = {2};
         Field f = makeField(int_single);
-        TLongList postings = index.match(f);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(f, matcher);
         assertEquals(1, postings.size());
         //multiple values in one field:
         int[] ints_multi = {1, 2};
         f = makeField(ints_multi);
-        postings = index.match(f);
+        matcher = new Matcher(new QueryManager());
+        postings = index.match(f, matcher);
         assertEquals(2, postings.size());
     }
 
@@ -54,18 +58,21 @@ public class IntegerIndexTest extends TestCase {
         assertEquals(0, index.index.indexLessThan.size());
         int[] int_single = {2};
         Field f = makeField(int_single);
-        TLongList postings = index.match(f);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(f, matcher);
         assertEquals(2, postings.size());
 
         int[] int_high = {101};
         f = makeField(int_high);
-        postings = index.match(f);
+        matcher = new Matcher(new QueryManager());
+        postings = index.match(f, matcher);
         assertEquals(4, postings.size());
 
         //deletion
         index.removePosting(t3, QueryPosting.pack(1, 1));
         f = makeField(int_high);
-        postings = index.match(f);
+        matcher = new Matcher(new QueryManager());
+        postings = index.match(f, matcher);
         assertEquals(3, postings.size());
     }
 
@@ -86,12 +93,14 @@ public class IntegerIndexTest extends TestCase {
 
         int[] int_single = {2};
         Field f = makeField(int_single);
-        TLongList postings = index.match(f);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(f, matcher);
         assertEquals(2, postings.size());
 
         int[] int_high = {100};
         f = makeField(int_high);
-        postings = index.match(f);
+        matcher = new Matcher(new QueryManager());
+        postings = index.match(f, matcher);
         assertEquals(4, postings.size());
     }
 
@@ -105,7 +114,8 @@ public class IntegerIndexTest extends TestCase {
 
         int[] int_single = {0};
         Field f = makeField(int_single);
-        TLongList postings = index.match(f);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(f, matcher);
         assertEquals(1, postings.size());
     }
 

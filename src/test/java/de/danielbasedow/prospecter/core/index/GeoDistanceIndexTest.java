@@ -1,5 +1,7 @@
 package de.danielbasedow.prospecter.core.index;
 
+import de.danielbasedow.prospecter.core.Matcher;
+import de.danielbasedow.prospecter.core.query.QueryManager;
 import de.danielbasedow.prospecter.core.query.QueryPosting;
 import de.danielbasedow.prospecter.core.Token;
 import de.danielbasedow.prospecter.core.document.Field;
@@ -23,7 +25,8 @@ public class GeoDistanceIndexTest extends TestCase {
         tokens.add(new Token<LatLng>(latLng));
         Field field = new Field("foo", tokens);
 
-        TLongList postings = index.match(field);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(field, matcher);
         assertEquals(1, postings.size());
     }
 
@@ -38,7 +41,8 @@ public class GeoDistanceIndexTest extends TestCase {
         tokens.add(new Token<LatLng>(latLng));
         Field field = new Field("foo", tokens);
 
-        TLongList postings = index.match(field);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(field, matcher);
         assertEquals(1, postings.size());
     }
 
@@ -53,7 +57,8 @@ public class GeoDistanceIndexTest extends TestCase {
         tokens.add(new Token<LatLng>(latLng));
         Field field = new Field("foo", tokens);
 
-        TLongList postings = index.match(field);
+        Matcher matcher = new Matcher(new QueryManager());
+        TLongList postings = index.match(field, matcher);
         assertEquals(1, postings.size());
     }
 }

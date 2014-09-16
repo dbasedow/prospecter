@@ -16,7 +16,7 @@ public class MatcherTest extends TestCase {
         Matcher m = new Matcher(new QueryManager());
         ArrayList<Token> tokens = new ArrayList<Token>();
         tokens.add(new Token<Integer>(1, MatchCondition.EQUALS));
-        m.addHits(ft.match(new Field("_all", tokens)));
+        m.addHits(ft.match(new Field("_all", tokens), m));
         assertEquals(1, m.hits.size());
     }
 }
