@@ -34,14 +34,17 @@ public abstract class LuceneAnalyzer implements Analyzer {
 
     @Override
     public List<Token> tokenize(String input, boolean dontGenerateNewIds) throws TokenizerException {
-        List<String> tokens = new ArrayList<String>();
+        List<Token> tokens = new ArrayList<Token>();
         try {
             TokenStream ts = luceneAnalyzer.tokenStream("_", new StringReader(input));
             CharTermAttribute cta = ts.addAttribute(CharTermAttribute.class);
             try {
                 ts.reset();
                 while (ts.incrementToken()) {
-                    tokens.add(cta.toString());
+                    int termId = tokenMapper.getTermId(cta.toString(), dontGenerateNewIds);
+                    if (termId != 0) {
+                        tokens.add(new Token<Integer>(termId));
+                    }
                 }
                 ts.end();
             } finally {
@@ -51,7 +54,7 @@ public abstract class LuceneAnalyzer implements Analyzer {
             e.printStackTrace();
             throw new TokenizerException();
         }
-        return tokenMapper.getTermIds(tokens, dontGenerateNewIds);
+        return tokens;
     }
 
     public static Analyzer make(JsonNode options) {
