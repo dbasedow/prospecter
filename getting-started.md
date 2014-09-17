@@ -9,56 +9,26 @@ stand-alone server.
 
 Installation
 ------------
-You can either download a build from [Github](https://github.com/dbasedow/prospecter/releases) or clone the repository
-and build it yourself:
+Download the latest release from [Github](https://github.com/dbasedow/prospecter/releases). Unzip it and you're done!
+The archive contains a sample configuration and schema to play around with.
 
-    git clone git@github.com:dbasedow/prospecter.git
-    mvn clean compile assembly:single
+The default configuration uses the data/schemas directory for schemas and listens on 127.0.0.1:8888
 
-You then end up with a stand-alone JAR file in the target directory.
+Starting the Server
+-------------------
+If you are using OSX, Linux or any other UNIX-like operating system you can start the server using the bundled shell
+script.
 
-Configuration
--------------
-Create a directory somewhere where you will place configuration files and data. In that directory place a file called
-**server-config.json** with the following content:
+    cd prospecter-0.2.0
+    ./start-server.sh
 
-    {
-        "port": 8888,
-        "bindInterface": "127.0.0.1",
-        "homeDir": "/path/to/your/directory/schemas"
-    }
+The script checks if Java is installed and then starts the Prospecter server using data/server.json as a config file
+and a memory limit for the JVM of 512MB.
 
-Of course you can change the port and bindInterface settings. To listen on all interfaces set bindInterface to 0.0.0.0.
-The homeDir is the directory where schema configurations and data are stored, make sure it exists.
+If you're on Windows you have to start Prospecter by executing:
 
-You could already start Prospecter now, but what's the point without a schema.
-
-Create a new subdirectory in your homeDir. The directory name becomes the schema name, so it is best to only use
-lower-case letters, numbers and dashes.
-
-A schema tells Prospecter what fields can be searched in documents and what type they are. So we have to create a
-schema configuration file: put a file called **schema.json** in your schema directory with the following content.
-
-    {
-        "fields": {
-            "description": {
-                "type": "FullText",
-                "options": {
-                    "stopwords": "predefined"
-                }
-            }
-        },
-        "persistence": {
-            "file": "queries.mapdb"
-        }
-    }
-
-This will result in a schema with a single field of type text. Common english stopwords will not be indexed, which saves
-memory.
-
-That's it! You can now use prospecter by typing
-
-    java -server -jar prospecter-x.x.x-SNAPSHOT-jar-with-dependencies.jar /path/to/your/directory/server-config.json
+    cd prospecter-0.2.0
+    java -Xmx512m -server -jar prospecter.jar data/server.json
 
 You should see some logging output. Prospecter is now waiting for connections. To stop Prospecter hit Ctrl + C or send a
 "kill -HUP".
