@@ -1,7 +1,7 @@
 # Site settings
 title: Prospecter
 email: your-email@domain.com
-description: "Personal website of <a href=\"http://dbasedow.github.io/\">Daniel Basedow</a>, mostly about software development."
+description: "Personal website of Daniel Basedow, mostly about software development."
 baseurl: "/prospecter"
 url: "http://dbasedow.github.io/prospecter"
 github_username:  dbasedow
