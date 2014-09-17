@@ -41,7 +41,7 @@ Specified the type of the field. Available types are:
 
 **options**
 
-At the moment only FullText fields support options.
+At the moment only FullText and DateTime fields support options.
 
 You can set a different Analyzer by specifying *analyzer* in the options. The value has to be a string naming a class
 that implements the de.danielbasedow.prospecter.core.analysis.Analyzer interface. The default is
@@ -64,6 +64,29 @@ following settings are available for *stopwords*:
 | ["word1", "word2", ...] | Custom stop word list. |
 
 If you implement your own Analyzer your make() method will receive the option object during startup.
+
+**bloomfilter**
+
+For FullText fields that will contain many unique terms it is possible to configure a
+[Bloom filter](http://en.wikipedia.org/wiki/Bloom_filter) this makes token mapping faster. The bloom filter needs two
+values:
+
+    "options": {
+        ...
+        "bloomfilter": {
+            "expectedNumberOfElements": 200000,
+            "falsePositiveProbability": 0.001
+        }
+        ...
+    }
+
+*expectedNumberOfElements* is a guess of how many unique terms will be indexed. This can be hard to estimate in advance.
+*falsePositiveProbability* the probability a false positive. Bloom filters can not determine with 100% certainty if an
+element is present. They can only say for certain if an element is definitely **not** present. The higher the 
+probability of false positives, the higher the possibility of unnecessary lookups.
+
+If the expectedNumberOfElements is reached and more elements get added the actual falsePositiveProbability will go up.
+Memory usage of the Bloom filter increases with more expected elements and/or lower false positive probability.
 
 **format**
 
